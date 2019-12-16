@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq; 
 using UnityEditor; 
 
 [Serializable]
@@ -18,21 +19,29 @@ public class DialogPart
 
     private Action<DialogPart> m_onRemoveDialogPart = null;
     private GUIStyle m_nodeStyle = null;
+    private GUIStyle m_connectionPointStyle = null; 
     private GUIContent m_dialogPartIcon = null;
     private GUIContent m_answerIcon = null;
-    private GUIContent m_currentIcon = null; 
+    private GUIContent m_currentIcon = null;
+    private GUIContent m_pointIcon = null;
+
+    public Rect InPointRect { get { return new Rect(m_nodeRect.position.x - 15.5f, m_nodeRect.position.y + 6.0f, 25, 25);  } }
     #endregion
 
 
     #region Constructor
-    public DialogPart(Vector2 _nodePosition, Action<DialogPart> _onRemovePart, GUIStyle _normalStyle)
+    public DialogPart(Vector2 _nodePosition, Action<DialogPart> _onRemovePart, GUIStyle _normalStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _pointIcon)
     {
         m_partToken = UnityEngine.Random.Range(0, 10000); 
         m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, Dialog.INITIAL_RECT_WIDTH, 0);
         m_onRemoveDialogPart = _onRemovePart;
         m_nodeStyle = _normalStyle;
-        m_nodeStyle = _normalStyle;
+        m_connectionPointStyle = _connectionPointStyle;
         m_contents = new List<DialogContent>();
+        m_dialogPartIcon = _dialogPartIcon;
+        m_answerIcon = _answerIcon;
+        m_currentIcon = m_type == DialogPartType.BasicType ? m_dialogPartIcon : m_answerIcon;
+        m_pointIcon = _pointIcon;
         AddNewContent();
     }
     #endregion 
@@ -40,6 +49,9 @@ public class DialogPart
 
     #region Methods
 #if UNITY_EDITOR
+    /// <summary>
+    /// Add new content to this part
+    /// </summary>
     private void AddNewContent()
     {
         if (m_contents == null) m_contents = new List<DialogContent>();
@@ -50,6 +62,10 @@ public class DialogPart
             (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_contents.Count) + (Dialog.BASIC_CONTENT_HEIGHT * m_contents.Count) + (Dialog.SPACE_HEIGHT * ((m_contents.Count * 2)+1)) + Dialog.BUTTON_HEIGHT); 
     }
 
+    /// <summary>
+    /// Change the type of the dialog part and modify the GUI according to the new type
+    /// </summary>
+    /// <param name="_type"></param>
     private void ChangeType(DialogPartType _type)
     {
         m_type = _type;
@@ -57,6 +73,10 @@ public class DialogPart
         {
             case DialogPartType.BasicType:
                 m_currentIcon = m_dialogPartIcon;
+                for (int i = 0; i < m_contents.Count - 1; i++)
+                {
+                    m_contents[i].LinkedToken = -1; 
+                }
                 break;
             case DialogPartType.PlayerAnswer:
                 m_currentIcon = m_answerIcon; 
@@ -69,8 +89,14 @@ public class DialogPart
     /// <summary>
     /// Draw the Dialog part editor
     /// </summary>
-    public void Draw(List<string> _linesID, List<string> _linesContent, List<DialogPart> _otherParts)
+    public void Draw(List<string> _linesID, List<string> _linesContent, List<DialogPart> _otherParts, Action<DialogContent> _onOutDialogContentSelected, Action<DialogPart> _onInDialogPartSelected)
     {
+        // --- Draw the connections between the parts --- //
+        if(GUI.Button(InPointRect, m_pointIcon))
+        {
+            _onInDialogPartSelected.Invoke(this); 
+        }
+        // --- Draw the Part and its Content --- //
         GUI.Box(m_nodeRect, "", m_nodeStyle);
         Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + Dialog.MARGIN_HEIGHT, 25, 25);
         if(GUI.Button(_r, m_currentIcon, m_nodeStyle))
@@ -78,20 +104,19 @@ public class DialogPart
             ProcessContextMenu();  
         }
         _r = new Rect(m_nodeRect.x + 10, m_nodeRect.y + Dialog.MARGIN_HEIGHT, Dialog.CONTENT_WIDTH , Dialog.TITLE_HEIGHT);
-        GUI.Label(_r, "Dialog Part " + m_partToken.ToString() );
+        GUI.Label(_r, m_type.ToString() + " " + m_partToken.ToString() );
         _r.y += Dialog.TITLE_HEIGHT;
         DialogContent _c; 
         for (int i = 0; i < m_contents.Count; i++)
         {
             _c = m_contents[i]; 
-            _r.y = _c.Draw(_r.position, _linesID, _linesContent, RemoveContent);
-            if (_c.LinkedToken == -1) continue; 
+            _r.y = _c.Draw(_r.position, _linesID, _linesContent, RemoveContent, (m_type == DialogPartType.PlayerAnswer || (m_type == DialogPartType.BasicType && i == m_contents.Count - 1)), m_pointIcon, _onOutDialogContentSelected, _otherParts);
         }
         _r = new Rect(_r.position.x, _r.position.y + Dialog.SPACE_HEIGHT, _r.width, Dialog.BUTTON_HEIGHT); 
-        if(GUI.Button(_r, "Add Content"))
+        if(GUI.Button(_r,"Add new Content"))
         {
             AddNewContent(); 
-        }
+        }    
     }
 
     /// <summary>
@@ -202,13 +227,15 @@ public class DialogPart
     /// <param name="_nodeStyle">The Node Style when the Part isn't selected</param>
     /// <param name="_selectedNodeStyle">The Node Style when the Part is selected</param>
     /// <param name="_onRemovePart">Action Called to remove the Part from the Dialog</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon ,Action<DialogPart> _onRemovePart)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _pointIcon ,Action<DialogPart> _onRemovePart)
     {
         m_nodeStyle = _nodeStyle;
         m_onRemoveDialogPart = _onRemovePart;
         m_dialogPartIcon = _dialogPartIcon;
         m_answerIcon = _answerIcon;
-        m_currentIcon = m_dialogPartIcon;
+        m_currentIcon = m_type == DialogPartType.BasicType ? m_dialogPartIcon : m_answerIcon;
+        m_connectionPointStyle = _connectionPointStyle;
+        m_pointIcon = _pointIcon; 
     }
 #endif
 

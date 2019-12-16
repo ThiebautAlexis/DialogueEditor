@@ -11,8 +11,10 @@ public class Dialog
     #region Fields and Properties
 #if UNITY_EDITOR
     private GUIStyle m_nodeStyle = null;
+    private GUIStyle m_connectionPointStyle = null; 
     private GUIContent m_icon = null;
-    private GUIContent m_answerIcon = null; 
+    private GUIContent m_answerIcon = null;
+    private GUIContent m_pointIcon = null; 
     public const float INITIAL_RECT_WIDTH = 300;
     public const float CONTENT_WIDTH = 280;
     public const float MARGIN_HEIGHT = 12;
@@ -42,11 +44,19 @@ public class Dialog
 #endregion
 
     #region Methods
+    /// <summary>
+    /// Add a new part to the dialog
+    /// </summary>
+    /// <param name="_pos"></param>
     public void AddPart(Vector2 _pos)
     {
-        m_dialogParts.Add(new DialogPart(_pos, RemovePart, m_nodeStyle)); 
+        m_dialogParts.Add(new DialogPart(_pos, RemovePart, m_nodeStyle, m_connectionPointStyle, m_icon, m_answerIcon, m_pointIcon)); 
     }
 
+    /// <summary>
+    /// Drag all the dialog parts
+    /// </summary>
+    /// <param name="_delta"></param>
     public void DragAll(Vector2 _delta)
     {
         if (m_dialogParts == null) return; 
@@ -56,13 +66,16 @@ public class Dialog
         }
     }
 
-    public void Draw()
+    /// <summary>
+    /// Draw the dialog
+    /// </summary>
+    public void Draw(Action<DialogContent> _onOutContentSelected, Action<DialogPart> _onInPartSelected)
     {
         if (m_dialogParts == null) m_dialogParts = new List<DialogPart>();
         bool _change = false;
         for(int i = 0; i < m_dialogParts.Count; i++)
         {
-            m_dialogParts[i].Draw(m_linesID, m_linesContent, m_dialogParts);
+            m_dialogParts[i].Draw(m_linesID, m_linesContent, m_dialogParts, _onOutContentSelected, _onInPartSelected);
             if(m_dialogParts[i].ProcessEvent(Event.current))
             {
                 _change = true;
@@ -72,15 +85,22 @@ public class Dialog
         GUI.changed = _change; 
     }
 
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIContent _basicIcon, GUIContent _answerIcon)
+    /// <summary>
+    /// Init the Editor settings for the dialog and all of them parts
+    /// </summary>
+    /// <param name="_nodeStyle">Style of the node</param>
+    /// <param name="_basicIcon">Icon of the basic Node Type</param>
+    /// <param name="_answerIcon">Icon of the Answer Node Type</param>
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _basicIcon, GUIContent _answerIcon, GUIContent _pointIcon)
     {
         m_nodeStyle = _nodeStyle;
         m_icon = _basicIcon;
-        m_answerIcon = _answerIcon; 
+        m_answerIcon = _answerIcon;
+        m_pointIcon = _pointIcon; 
         if (m_dialogParts == null) m_dialogParts = new List<DialogPart>(); 
         for(int i = 0; i < m_dialogParts.Count; i++)
         {
-            m_dialogParts[i].InitEditorSettings(_nodeStyle, _basicIcon, _answerIcon, RemovePart); 
+            m_dialogParts[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, m_pointIcon, RemovePart); 
         }
         if(File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{m_spreadSheetID}.csv")))
         {
@@ -104,6 +124,11 @@ public class Dialog
         }
     }
 
+    /// <summary>
+    /// Process the events of the Dialog
+    /// </summary>
+    /// <param name="_e">Current Event</param>
+    /// <returns></returns>
     public bool ProcessEvent(Event _e)
     {
         if(m_dialogParts.Any(p => p.IsSelected) && _e.keyCode == KeyCode.Delete)
@@ -119,18 +144,26 @@ public class Dialog
         return false; 
     }
 
+    /// <summary>
+    /// Remove the part
+    /// </summary>
+    /// <param name="_part">Part to remove</param>
     private void RemovePart(DialogPart _part)
     {
         if(m_dialogParts.Contains(_part))
             m_dialogParts.Remove(_part); 
     }
 
+    /// <summary>
+    /// Save the dialog as a Json File
+    /// </summary>
     private void SaveDialog()
     {
         string _jsonDialog = JsonUtility.ToJson(this);
         string _name = m_dialogName.Replace(" ", string.Empty);
         Debug.Log(m_dialogName + " has been saved in " + Path.Combine(Application.persistentDataPath, "Dialogs", _name)); 
         File.WriteAllText(Path.Combine(Application.persistentDataPath, "Dialogs", _name), _jsonDialog);
+        UnityEditor.EditorUtility.DisplayDialog("File saved", $"The {m_dialogName} dialog has been successfully saved", "Ok!"); 
     }
 
     #endregion

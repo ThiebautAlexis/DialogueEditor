@@ -12,10 +12,10 @@ public class DialogEditor : EditorWindow
     #region Fields and Properties
     #region GUIStyles
     private GUIStyle m_defaultNodeStyle = null;
-    private GUIStyle m_inPointStyle = null;
-    private GUIStyle m_outPointStyle = null;
+    private GUIStyle m_pointStyle = null;
     private GUIContent m_dialogPartIcon = null;
-    private GUIContent m_answerPartIcon = null; 
+    private GUIContent m_answerPartIcon = null;
+    private GUIContent m_pointIcon = null; 
     #endregion
 
     #region Editor Fields
@@ -36,9 +36,12 @@ public class DialogEditor : EditorWindow
         {
             m_currentDialog = value;
             if (m_defaultNodeStyle == null) LoadStyles(); 
-            m_currentDialog.InitEditorSettings(m_defaultNodeStyle, m_dialogPartIcon, m_answerPartIcon); 
+            m_currentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_pointIcon); 
         }
     }
+
+    private DialogPart m_inSelectedPart = null;
+    private DialogContent m_outSelectedContent = null; 
     #endregion
 
     #endregion
@@ -183,21 +186,18 @@ public class DialogEditor : EditorWindow
     private void LoadStyles()
     {
         m_defaultNodeStyle = new GUIStyle();
-        m_defaultNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node0.png") as Texture2D;
+        m_defaultNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
         m_defaultNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
-        m_inPointStyle = new GUIStyle();
-        m_inPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
-        m_inPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
-        m_inPointStyle.border = new RectOffset(4, 4, 12, 12);
-
-        m_outPointStyle = new GUIStyle();
-        m_outPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right.png") as Texture2D;
-        m_outPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right on.png") as Texture2D;
-        m_outPointStyle.border = new RectOffset(4, 4, 12, 12);
+        m_pointStyle = new GUIStyle();
+        m_pointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
+        m_pointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
+        m_pointStyle.border = new RectOffset(4, 4, 12, 12);
 
         m_dialogPartIcon = EditorGUIUtility.IconContent("sv_icon_dot9_pix16_gizmo");
-        m_answerPartIcon = EditorGUIUtility.IconContent("sv_icon_dot14_pix16_gizmo"); 
+        m_answerPartIcon = EditorGUIUtility.IconContent("sv_icon_dot14_pix16_gizmo");
+        m_pointIcon = EditorGUIUtility.IconContent("PlayButton"); 
+        // StepButton ou PlayButton
     }
 
     /// <summary>
@@ -257,13 +257,38 @@ public class DialogEditor : EditorWindow
     {
         CurrentDialog = _newDialog;
     }
+
+    private void SelectInPart(DialogPart _part)
+    {
+        m_inSelectedPart = _part; 
+        if(m_inSelectedPart != null && m_outSelectedContent != null)
+        {
+            LinkDialogs(); 
+        }
+    }
+
+    private void SelectOutContent(DialogContent _content)
+    {
+        m_outSelectedContent = _content;
+        if (m_inSelectedPart != null && m_outSelectedContent != null)
+        {
+            LinkDialogs(); 
+        }
+    }
+
+    private void LinkDialogs()
+    {
+        m_outSelectedContent.LinkedToken = m_inSelectedPart.PartToken; 
+        m_inSelectedPart = null;
+        m_outSelectedContent = null;
+    }
     #endregion
 
     #region Unity Methods
     protected virtual void OnEnable()
     {
         LoadStyles(); 
-        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_dialogPartIcon, m_answerPartIcon);
+        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_pointIcon);
     } 
     protected virtual void OnGUI()
     {
@@ -271,8 +296,12 @@ public class DialogEditor : EditorWindow
         DrawGrid(100, 0.4f, Color.black);
 
         ProcessEditorEvents(Event.current);
-        if(CurrentDialog != null) CurrentDialog.Draw();
-
+        if(CurrentDialog != null) CurrentDialog.Draw(SelectOutContent, SelectInPart);
+        if(m_outSelectedContent != null && m_inSelectedPart == null)
+        {
+            Handles.DrawBezier(m_outSelectedContent.PointRect.center, Event.current.mousePosition, m_outSelectedContent.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+            GUI.changed = true; 
+        }
 
         if (m_isCreationPopupOpen)
         {
