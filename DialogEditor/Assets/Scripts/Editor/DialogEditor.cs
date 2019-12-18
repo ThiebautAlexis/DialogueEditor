@@ -59,6 +59,7 @@ public class DialogEditor : EditorWindow
 
     #region Original Methods
 
+    #if UNITY_EDITOR
     /// <summary>
     /// Create a Dialog and save it as a Json file. Also download the spreadsheet
     /// </summary>
@@ -183,6 +184,9 @@ public class DialogEditor : EditorWindow
         GUI.changed = true;
     }
 
+    /// <summary>
+    /// Load of styles and Icons of the Dialogs Editor
+    /// </summary>
     private void LoadStyles()
     {
         m_defaultNodeStyle = new GUIStyle();
@@ -282,6 +286,7 @@ public class DialogEditor : EditorWindow
         m_inSelectedPart = null;
         m_outSelectedContent = null;
     }
+    #endif
     #endregion
 
     #region Unity Methods

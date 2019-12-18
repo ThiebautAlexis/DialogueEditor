@@ -32,7 +32,7 @@ public class DialogPart
     #region Constructor
     public DialogPart(Vector2 _nodePosition, Action<DialogPart> _onRemovePart, GUIStyle _normalStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _pointIcon)
     {
-        m_partToken = UnityEngine.Random.Range(0, 10000); 
+        m_partToken = Time.time.GetHashCode(); 
         m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, Dialog.INITIAL_RECT_WIDTH, 0);
         m_onRemoveDialogPart = _onRemovePart;
         m_nodeStyle = _normalStyle;
