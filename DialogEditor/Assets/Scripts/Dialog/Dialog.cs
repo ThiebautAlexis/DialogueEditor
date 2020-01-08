@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
@@ -28,20 +27,21 @@ public class Dialog
     [SerializeField]private string m_spreadSheetID = "";
     public string SpreadSheetID { get { return m_spreadSheetID; } }
 
-    [SerializeField]private List<DialogPart> m_dialogParts = new List<DialogPart>();
-    private List<string> m_linesID = new List<string>();
-    private List<string> m_linesContent = new List<string>(); 
-    public bool AnyPartIsSelected {  get { return m_dialogParts.Any(p => p.IsSelected);  } }
-#endregion
+    [SerializeField]private List<DialogSet> m_dialogSets = new List<DialogSet>();
+    private string m_lineDescriptor = ""; 
+    public bool AnyPartIsSelected {  get { return m_dialogSets.Any(p => p.IsSelected);  } }
+
+    public string DialogName { get { return m_dialogName; } }
+    #endregion
 
     #region Constructor
     public Dialog(string _name, string _id)
     {
         m_dialogName = _name;
         m_spreadSheetID = _id;
-        m_dialogParts = new List<DialogPart>(); 
+        m_dialogSets = new List<DialogSet>();
     }
-#endregion
+    #endregion
 
     #region Methods
     /// <summary>
@@ -50,7 +50,7 @@ public class Dialog
     /// <param name="_pos"></param>
     public void AddPart(Vector2 _pos)
     {
-        m_dialogParts.Add(new DialogPart(_pos, RemovePart, m_nodeStyle, m_connectionPointStyle, m_icon, m_answerIcon, m_pointIcon)); 
+        m_dialogSets.Add(new DialogSet(_pos, RemovePart, m_nodeStyle, m_connectionPointStyle, m_icon, m_answerIcon, m_pointIcon)); 
     }
 
     /// <summary>
@@ -59,24 +59,24 @@ public class Dialog
     /// <param name="_delta"></param>
     public void DragAll(Vector2 _delta)
     {
-        if (m_dialogParts == null) return; 
-        for(int i = 0; i < m_dialogParts.Count; i++)
+        if (m_dialogSets == null) return; 
+        for(int i = 0; i < m_dialogSets.Count; i++)
         {
-            m_dialogParts[i].Drag(_delta); 
+            m_dialogSets[i].Drag(_delta); 
         }
     }
 
     /// <summary>
     /// Draw the dialog
     /// </summary>
-    public void Draw(Action<DialogContent> _onOutContentSelected, Action<DialogPart> _onInPartSelected)
+    public void Draw(Action<DialogLine> _onOutContentSelected, Action<DialogSet> _onInPartSelected)
     {
-        if (m_dialogParts == null) m_dialogParts = new List<DialogPart>();
+        if (m_dialogSets == null) m_dialogSets = new List<DialogSet>();
         bool _change = false;
-        for(int i = 0; i < m_dialogParts.Count; i++)
+        for(int i = 0; i < m_dialogSets.Count; i++)
         {
-            m_dialogParts[i].Draw(m_linesID, m_linesContent, m_dialogParts, _onOutContentSelected, _onInPartSelected);
-            if(m_dialogParts[i].ProcessEvent(Event.current))
+            m_dialogSets[i].Draw(m_lineDescriptor, m_dialogSets, _onOutContentSelected, _onInPartSelected);
+            if(m_dialogSets[i].ProcessEvent(Event.current))
             {
                 _change = true;
             }
@@ -97,30 +97,14 @@ public class Dialog
         m_icon = _basicIcon;
         m_answerIcon = _answerIcon;
         m_pointIcon = _pointIcon; 
-        if (m_dialogParts == null) m_dialogParts = new List<DialogPart>(); 
-        for(int i = 0; i < m_dialogParts.Count; i++)
+        if (m_dialogSets == null) m_dialogSets = new List<DialogSet>(); 
+        for(int i = 0; i < m_dialogSets.Count; i++)
         {
-            m_dialogParts[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, m_pointIcon, RemovePart); 
+            m_dialogSets[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, m_pointIcon, RemovePart); 
         }
-        if(File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{m_spreadSheetID}.csv")))
+        if (File.Exists(Path.Combine(Application.persistentDataPath, "LineDescriptors", m_dialogName + ".lua")))
         {
-            string[] _text = File.ReadAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{m_spreadSheetID}.csv"));
-            List<string> _tempIDs = new List<string>();
-            List<string> _tempQuotes = new List<string>();
-            string[] _part; 
-            for (int i = 1; i < _text.Length; i++)
-            {
-               _part = _text[i].Split(',');
-                if (_part.Length < 2)
-                {
-                    Debug.Log("Can't Split"); 
-                    continue;
-                }
-               _tempIDs.Add(_part[0]);
-               _tempQuotes.Add(_part[1]); 
-            }
-            m_linesID = _tempIDs;
-            m_linesContent = _tempQuotes; 
+            m_lineDescriptor = File.ReadAllText(Path.Combine(Application.persistentDataPath, "LineDescriptors", m_dialogName + ".lua"));
         }
     }
 
@@ -131,10 +115,10 @@ public class Dialog
     /// <returns></returns>
     public bool ProcessEvent(Event _e)
     {
-        if(m_dialogParts.Any(p => p.IsSelected) && _e.keyCode == KeyCode.Delete)
+        if(m_dialogSets.Any(p => p.IsSelected) && _e.keyCode == KeyCode.Delete)
         {
-            DialogPart _selectedPart = m_dialogParts.Where(p => p.IsSelected).FirstOrDefault();
-            m_dialogParts.Remove(_selectedPart); 
+            DialogSet _selectedPart = m_dialogSets.Where(p => p.IsSelected).FirstOrDefault();
+            m_dialogSets.Remove(_selectedPart); 
             return true; 
         }
         if (_e.type == EventType.KeyDown && _e.control && _e.keyCode == KeyCode.S)
@@ -148,10 +132,10 @@ public class Dialog
     /// Remove the part
     /// </summary>
     /// <param name="_part">Part to remove</param>
-    private void RemovePart(DialogPart _part)
+    private void RemovePart(DialogSet _part)
     {
-        if(m_dialogParts.Contains(_part))
-            m_dialogParts.Remove(_part); 
+        if(m_dialogSets.Contains(_part))
+            m_dialogSets.Remove(_part); 
     }
 
     /// <summary>

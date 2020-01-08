@@ -40,8 +40,8 @@ public class DialogEditor : EditorWindow
         }
     }
 
-    private DialogPart m_inSelectedPart = null;
-    private DialogContent m_outSelectedContent = null; 
+    private DialogSet m_inSelectedPart = null;
+    private DialogLine m_outSelectedContent = null; 
     #endregion
 
     #endregion
@@ -92,8 +92,29 @@ public class DialogEditor : EditorWindow
         if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor")))
             Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor")); 
         WebClient _get = new WebClient();
-        _get.DownloadFile(new Uri($"https://docs.google.com/spreadsheets/d/{_spreadsheetID}/export?format=csv"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{_spreadsheetID}.csv"));
-    }
+        _get.DownloadFile(new Uri($"https://docs.google.com/spreadsheets/d/{_spreadsheetID}/export?format=tsv"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{_spreadsheetID}.tsv"));
+        // Create the Line Descriptor
+
+        string[] _text = File.ReadAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{_spreadsheetID}.tsv"));
+        string[] _variablesName = _text[0].Split(Convert.ToChar(9));
+        string _lineDescriptor = "";
+        string[] _variables;
+        string _luaData; 
+        for (int i = 1; i < _text.Length; i++)
+        {
+            _variables = _text[i].Split(Convert.ToChar(9));
+            _luaData = $"{_variables[0]} = {{\n";
+            for(int j = 0; j < _variablesName.Length; j++)
+            {
+                _luaData += $"{_variablesName[j]} = \"{_variables[j]}\";\n";
+            }
+            _luaData += "};\n"; 
+            _lineDescriptor += _luaData;
+        }
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "LineDescriptors")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "LineDescriptors"));
+        File.WriteAllText(Path.Combine(Application.persistentDataPath, "LineDescriptors", m_currentDialog.DialogName + ".lua"), _lineDescriptor); 
+    }   
 
     /// <summary>
     /// Draw a grid into the Editor Window
@@ -262,7 +283,7 @@ public class DialogEditor : EditorWindow
         CurrentDialog = _newDialog;
     }
 
-    private void SelectInPart(DialogPart _part)
+    private void SelectInPart(DialogSet _part)
     {
         m_inSelectedPart = _part; 
         if(m_inSelectedPart != null && m_outSelectedContent != null)
@@ -271,7 +292,7 @@ public class DialogEditor : EditorWindow
         }
     }
 
-    private void SelectOutContent(DialogContent _content)
+    private void SelectOutContent(DialogLine _content)
     {
         m_outSelectedContent = _content;
         if (m_inSelectedPart != null && m_outSelectedContent != null)
