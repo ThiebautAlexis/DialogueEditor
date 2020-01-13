@@ -12,7 +12,7 @@ public class Dialog
     #region CONSTANTS
     public static string LineDescriptorPath { get { return Path.Combine(Application.persistentDataPath, "LineDescriptors"); } }
     public static string DialogAssetPath { get { return Path.Combine(Application.persistentDataPath, "Dialogs"); } }
-
+    public static string DialogAssetExtension { get { return ".dialogasset"; } }
     #endregion
 
 #if UNITY_EDITOR
@@ -164,8 +164,8 @@ public class Dialog
     {
         string _jsonDialog = JsonUtility.ToJson(this);
         string _name = m_dialogName.Replace(" ", string.Empty);
-        Debug.Log(m_dialogName + " has been saved in " + Path.Combine(Application.persistentDataPath, "Dialogs", _name)); 
-        File.WriteAllText(Path.Combine(DialogAssetPath, _name), _jsonDialog);
+        Debug.Log("The Dialog Asset " + m_dialogName + " has been saved in " + Path.Combine(Application.persistentDataPath, "Dialogs", _name + DialogAssetExtension)); 
+        File.WriteAllText(Path.Combine(DialogAssetPath, _name + DialogAssetExtension), _jsonDialog);
         UnityEditor.EditorUtility.DisplayDialog("File saved", $"The {m_dialogName} dialog has been successfully saved", "Ok!"); 
     }
 #endif

@@ -80,7 +80,7 @@ public class DialogEditor : EditorWindow
         {
             Directory.CreateDirectory(Dialog.DialogAssetPath);
         }
-        File.WriteAllText(Path.Combine(Dialog.DialogAssetPath, _dialogName), _jsonDialog);
+        File.WriteAllText(Path.Combine(Dialog.DialogAssetPath, _dialogName + Dialog.DialogAssetExtension), _jsonDialog);
         titleContent = new GUIContent(_dialogName); 
     }
 
@@ -178,11 +178,11 @@ public class DialogEditor : EditorWindow
         GUILayout.Label("Open Dialog");
         if(Directory.Exists(Path.Combine(Application.persistentDataPath, "Dialogs")))
         {
-            string[] _names = Directory.GetFiles(Dialog.DialogAssetPath).Select(Path.GetFileName).ToArray();
+            string[] _names = Directory.GetFiles(Dialog.DialogAssetPath).Select(Path.GetFileNameWithoutExtension).ToArray();
             m_DialogIndex = EditorGUILayout.Popup(m_DialogIndex, _names); 
             if(GUILayout.Button("Open Dialog") && m_DialogIndex > -1)
             {
-                string _jsonFile = File.ReadAllText(Path.Combine(Dialog.DialogAssetPath, _names[m_DialogIndex]));
+                string _jsonFile = File.ReadAllText(Path.Combine(Dialog.DialogAssetPath, _names[m_DialogIndex] + Dialog.DialogAssetExtension));
                 SetNewDialog(JsonUtility.FromJson<Dialog>(_jsonFile));
                 m_isSelectingPopupOpen = false;
                 titleContent = new GUIContent(_names[m_DialogIndex]);

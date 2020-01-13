@@ -29,7 +29,7 @@ public class DialogReader : MonoBehaviour
         m_lineDescriptor = new Script();
         m_lineDescriptor.DoString(_lineDescriptor);
 
-        string _jsonFile = File.ReadAllText(Path.Combine(Dialog.DialogAssetPath, m_dialogName));
+        string _jsonFile = File.ReadAllText(Path.Combine(Dialog.DialogAssetPath, m_dialogName + Dialog.DialogAssetExtension));
         m_dialog = JsonUtility.FromJson<Dialog>(_jsonFile); 
 
         if(m_textDisplayer)
