@@ -15,6 +15,7 @@ public class DialogEditor : EditorWindow
     private GUIStyle m_pointStyle = null;
     private GUIContent m_dialogPartIcon = null;
     private GUIContent m_answerPartIcon = null;
+    private GUIContent m_startingSetIcon = null; 
     private GUIContent m_pointIcon = null; 
     #endregion
 
@@ -36,7 +37,7 @@ public class DialogEditor : EditorWindow
         {
             m_currentDialog = value;
             if (m_defaultNodeStyle == null) LoadStyles(); 
-            m_currentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_pointIcon); 
+            m_currentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon); 
         }
     }
 
@@ -75,11 +76,11 @@ public class DialogEditor : EditorWindow
         DownloadSpreadSheet(_spreadsheetId); 
         SetNewDialog(new Dialog(_dialogName, _spreadsheetId));
         string _jsonDialog = JsonUtility.ToJson(CurrentDialog);
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Dialogs")))
+        if (!Directory.Exists(Dialog.DialogAssetPath))
         {
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Dialogs"));
+            Directory.CreateDirectory(Dialog.DialogAssetPath);
         }
-        File.WriteAllText(Path.Combine(Application.persistentDataPath, "Dialogs", _dialogName), _jsonDialog);
+        File.WriteAllText(Path.Combine(Dialog.DialogAssetPath, _dialogName), _jsonDialog);
         titleContent = new GUIContent(_dialogName); 
     }
 
@@ -111,9 +112,9 @@ public class DialogEditor : EditorWindow
             _luaData += "};\n"; 
             _lineDescriptor += _luaData;
         }
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "LineDescriptors")))
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "LineDescriptors"));
-        File.WriteAllText(Path.Combine(Application.persistentDataPath, "LineDescriptors", m_currentDialog.DialogName + ".lua"), _lineDescriptor); 
+        if (!Directory.Exists(Dialog.LineDescriptorPath))
+            Directory.CreateDirectory(Dialog.LineDescriptorPath);
+        File.WriteAllText(Path.Combine(Dialog.LineDescriptorPath, m_currentDialog.DialogName + ".lua"), _lineDescriptor); 
     }   
 
     /// <summary>
@@ -177,11 +178,11 @@ public class DialogEditor : EditorWindow
         GUILayout.Label("Open Dialog");
         if(Directory.Exists(Path.Combine(Application.persistentDataPath, "Dialogs")))
         {
-            string[] _names = Directory.GetFiles(Path.Combine(Application.persistentDataPath, "Dialogs")).Select(Path.GetFileName).ToArray();
+            string[] _names = Directory.GetFiles(Dialog.DialogAssetPath).Select(Path.GetFileName).ToArray();
             m_DialogIndex = EditorGUILayout.Popup(m_DialogIndex, _names); 
             if(GUILayout.Button("Open Dialog") && m_DialogIndex > -1)
             {
-                string _jsonFile = File.ReadAllText(Path.Combine(Application.persistentDataPath, "Dialogs", _names[m_DialogIndex]));
+                string _jsonFile = File.ReadAllText(Path.Combine(Dialog.DialogAssetPath, _names[m_DialogIndex]));
                 SetNewDialog(JsonUtility.FromJson<Dialog>(_jsonFile));
                 m_isSelectingPopupOpen = false;
                 titleContent = new GUIContent(_names[m_DialogIndex]);
@@ -221,6 +222,7 @@ public class DialogEditor : EditorWindow
 
         m_dialogPartIcon = EditorGUIUtility.IconContent("sv_icon_dot9_pix16_gizmo");
         m_answerPartIcon = EditorGUIUtility.IconContent("sv_icon_dot14_pix16_gizmo");
+        m_startingSetIcon = EditorGUIUtility.IconContent("Favorite Icon");
         m_pointIcon = EditorGUIUtility.IconContent("PlayButton"); 
         // StepButton ou PlayButton
     }
@@ -288,7 +290,7 @@ public class DialogEditor : EditorWindow
         m_inSelectedPart = _part; 
         if(m_inSelectedPart != null && m_outSelectedContent != null)
         {
-            LinkDialogs(); 
+            LinkDialogSet(); 
         }
     }
 
@@ -297,11 +299,11 @@ public class DialogEditor : EditorWindow
         m_outSelectedContent = _content;
         if (m_inSelectedPart != null && m_outSelectedContent != null)
         {
-            LinkDialogs(); 
+            LinkDialogSet(); 
         }
     }
 
-    private void LinkDialogs()
+    private void LinkDialogSet()
     {
         m_outSelectedContent.LinkedToken = m_inSelectedPart.PartToken; 
         m_inSelectedPart = null;
@@ -314,7 +316,7 @@ public class DialogEditor : EditorWindow
     protected virtual void OnEnable()
     {
         LoadStyles(); 
-        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_pointIcon);
+        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon);
     } 
     protected virtual void OnGUI()
     {
