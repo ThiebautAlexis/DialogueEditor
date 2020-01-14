@@ -365,6 +365,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec9beb6b446e4054f809ed8db98af0d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_lineDescriptorReference:
+    m_AssetGUID: adc3d56bdfd6773439c8b06871b2e7d0
+    m_SubObjectName: 
   m_dialogName: Test
   m_textDisplayer: {fileID: 185976353}
   m_font: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

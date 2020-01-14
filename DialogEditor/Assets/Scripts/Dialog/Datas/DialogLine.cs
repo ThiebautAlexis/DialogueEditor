@@ -28,6 +28,9 @@ public class DialogLine
     #endregion
 
     #region Methods
+
+#if UNITY_EDITOR
+
     public void InitEditor(string _lineDescriptor)
     {
         Script _luaScript = new Script();
@@ -97,5 +100,6 @@ public class DialogLine
         }
         return _r.y; 
     }
+#endif
     #endregion
 }

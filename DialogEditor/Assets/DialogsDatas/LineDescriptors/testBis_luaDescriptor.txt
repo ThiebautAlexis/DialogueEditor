@@ -1,0 +1,15 @@
+AL13STR = {
+ID = "AL13STR";
+Text_En_en = "Hello World Again !";
+Text_Fr_fr  = "Bonjour Monde encore!";
+};
+EV15POL = {
+ID = "EV15POL";
+Text_En_en = "Hello World!";
+Text_Fr_fr  = "Bonjour Monde!";
+};
+WIL21STR = {
+ID = "WIL21STR";
+Text_En_en = "What?";
+Text_Fr_fr  = "Quoi?";
+};

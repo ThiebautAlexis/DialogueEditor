@@ -114,7 +114,7 @@ public class DialogEditor : EditorWindow
         }
         if (!Directory.Exists(Dialog.LineDescriptorPath))
             Directory.CreateDirectory(Dialog.LineDescriptorPath);
-        File.WriteAllText(Path.Combine(Dialog.LineDescriptorPath, m_currentDialog.DialogName + ".lua"), _lineDescriptor); 
+        File.WriteAllText(Path.Combine(Dialog.LineDescriptorPath, m_currentDialog.DialogName + Dialog.LineDescriptorPostfixWithExtension), _lineDescriptor); 
     }   
 
     /// <summary>
@@ -178,7 +178,7 @@ public class DialogEditor : EditorWindow
         GUILayout.Label("Open Dialog");
         if(Directory.Exists(Path.Combine(Application.persistentDataPath, "Dialogs")))
         {
-            string[] _names = Directory.GetFiles(Dialog.DialogAssetPath).Select(Path.GetFileNameWithoutExtension).ToArray();
+            string[] _names = Directory.GetFiles(Dialog.DialogAssetPath, "*"+Dialog.DialogAssetExtension).Select(Path.GetFileNameWithoutExtension).ToArray();
             m_DialogIndex = EditorGUILayout.Popup(m_DialogIndex, _names); 
             if(GUILayout.Button("Open Dialog") && m_DialogIndex > -1)
             {

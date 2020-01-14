@@ -10,9 +10,11 @@ public class Dialog
     #region Fields and Properties
 
     #region CONSTANTS
-    public static string LineDescriptorPath { get { return Path.Combine(Application.persistentDataPath, "LineDescriptors"); } }
-    public static string DialogAssetPath { get { return Path.Combine(Application.persistentDataPath, "Dialogs"); } }
-    public static string DialogAssetExtension { get { return ".dialogasset"; } }
+    public static string LineDescriptorPath { get { return Path.Combine(Application.dataPath, "DialogsDatas", "LineDescriptors"); } }
+    public static string LineDescriptorPostfixWithExtension { get { return "_luaDescriptor.txt";  } }
+    public static string LineDescriptorPostfix { get { return "_luaDescriptor"; } }
+    public static string DialogAssetPath { get { return Path.Combine(Application.dataPath, "DialogsDatas", "Dialogs"); } }
+    public static string DialogAssetExtension { get { return ".json"; } }
     #endregion
 
 #if UNITY_EDITOR
@@ -113,9 +115,9 @@ public class Dialog
         {
             m_dialogSets[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, _startingSetIcon, m_pointIcon, RemovePart, SetStartingDialogSet); 
         }
-        if (File.Exists(Path.Combine(LineDescriptorPath, m_dialogName + ".lua")))
+        if (File.Exists(Path.Combine(LineDescriptorPath, m_dialogName + LineDescriptorPostfixWithExtension)))
         {
-            m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_dialogName + ".lua"));
+            m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_dialogName + LineDescriptorPostfixWithExtension));
         }
     }
 
@@ -164,7 +166,7 @@ public class Dialog
     {
         string _jsonDialog = JsonUtility.ToJson(this);
         string _name = m_dialogName.Replace(" ", string.Empty);
-        Debug.Log("The Dialog Asset " + m_dialogName + " has been saved in " + Path.Combine(Application.persistentDataPath, "Dialogs", _name + DialogAssetExtension)); 
+        Debug.Log("The Dialog Asset " + m_dialogName + " has been saved in " + DialogAssetPath); 
         File.WriteAllText(Path.Combine(DialogAssetPath, _name + DialogAssetExtension), _jsonDialog);
         UnityEditor.EditorUtility.DisplayDialog("File saved", $"The {m_dialogName} dialog has been successfully saved", "Ok!"); 
     }

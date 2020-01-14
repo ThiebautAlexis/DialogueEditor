@@ -4,7 +4,9 @@ using UnityEngine;
 using TMPro;
 using System.IO;
 using MoonSharp.Interpreter;
-using System.Linq; 
+using System.Linq;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations; 
 
 public class DialogReader : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class DialogReader : MonoBehaviour
     [SerializeField] private float m_fontSize = 12;
     [SerializeField] private Color m_fontColor = Color.black;
 
+    private AsyncOperationHandle<TextAsset> m_lineDescriptorAsyncHandler;
+    private AsyncOperationHandle<TextAsset> m_dialogAssetAsyncHandler;
+
     private Dialog m_dialog = null;
     private Script m_lineDescriptor = null;
     #endregion
@@ -24,14 +29,6 @@ public class DialogReader : MonoBehaviour
     #region Original Methods
     private void InitReader()
     {
-        if (m_dialogName == string.Empty) return;
-        string _lineDescriptor = File.ReadAllText(Path.Combine(Dialog.LineDescriptorPath, m_dialogName + ".lua"));
-        m_lineDescriptor = new Script();
-        m_lineDescriptor.DoString(_lineDescriptor);
-
-        string _jsonFile = File.ReadAllText(Path.Combine(Dialog.DialogAssetPath, m_dialogName + Dialog.DialogAssetExtension));
-        m_dialog = JsonUtility.FromJson<Dialog>(_jsonFile); 
-
         if(m_textDisplayer)
         {
             if (m_font) m_textDisplayer.font = m_font;
@@ -42,6 +39,15 @@ public class DialogReader : MonoBehaviour
 
     private IEnumerator DisplayDialog()
     {
+        while (!m_dialogAssetAsyncHandler.IsDone ||!m_lineDescriptorAsyncHandler.IsDone)
+        {
+            yield return new WaitForSeconds(.5f); 
+        }
+        if (m_dialog == null)
+        {
+            Debug.Log("Dialog is null"); 
+            yield break;
+        }
         // Get the Starting Dialog Set //
         DialogSet _set = m_dialog.GetNextSet();
         yield return StartCoroutine(DisplayDialogSet(_set)); 
@@ -84,8 +90,39 @@ public class DialogReader : MonoBehaviour
     #region Unity Methods
     private void Awake()
     {
+        if (m_dialogName != string.Empty)
+        {
+            m_lineDescriptorAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName);
+            m_lineDescriptorAsyncHandler.Completed += OnDialogAssetLoaded;
+            m_dialogAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName + Dialog.LineDescriptorPostfix);
+            m_dialogAssetAsyncHandler.Completed += OnLineDescriptorLoaded;
+        }
+        
         InitReader(); 
 
+    }
+
+    private void OnDialogAssetLoaded(AsyncOperationHandle<TextAsset> _loadedAsset)
+    {
+        if(_loadedAsset.Result == null)
+        {
+            Debug.LogError("IS NULL");
+            return; 
+        }
+        m_dialog = JsonUtility.FromJson<Dialog>(_loadedAsset.Result.ToString());
+        Debug.Log("Dialog is ready"); 
+    }
+
+    private void OnLineDescriptorLoaded(AsyncOperationHandle<TextAsset> _loadedAsset)
+    {
+        if (_loadedAsset.Result == null)
+        {
+            Debug.LogError("IS NULL");
+            return;
+        }
+        m_lineDescriptor = new Script();
+        m_lineDescriptor.DoString(_loadedAsset.Result.ToString());
+        Debug.Log("Line Descriptor is ready"); 
     }
 
     private void Start()

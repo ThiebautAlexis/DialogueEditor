@@ -47,6 +47,7 @@ public class DialogSet
 
 
     #region Constructor
+#if UNITY_EDITOR
     public DialogSet(Vector2 _nodePosition, Action<DialogSet> _onRemovePart, Action<DialogSet> _onSetStartingSet, GUIStyle _normalStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon)
     {
         m_partToken = UnityEngine.Random.Range(0, int.MaxValue); 
@@ -63,7 +64,9 @@ public class DialogSet
         m_pointIcon = _pointIcon;
         AddNewContent();
     }
-    #endregion 
+#endif
+
+    #endregion
 
 
     #region Methods
