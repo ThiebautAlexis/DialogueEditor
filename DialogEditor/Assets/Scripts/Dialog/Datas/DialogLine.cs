@@ -31,6 +31,10 @@ public class DialogLine
 
 #if UNITY_EDITOR
 
+    /// <summary>
+    /// Get all the Ids of the dialog lines from the Line Descriptor
+    /// </summary>
+    /// <param name="_lineDescriptor"></param>
     public void InitEditor(string _lineDescriptor)
     {
         Script _luaScript = new Script();
@@ -39,8 +43,19 @@ public class DialogLine
         m_ids = _dynValues.Select(v => v.Table.Get("ID").String).ToArray();
     }
 
-
-    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, bool _drawPoint, GUIContent _pointIcon, Action<DialogLine> _onOutContentSelected, List<DialogSet> _otherParts)
+    /// <summary>
+    /// Draw the Dialog Line
+    /// </summary>
+    /// <param name="_startPos">Starting position of the rect within the line will be drawn</param>
+    /// <param name="_lineDescriptor">Line Descriptor</param>
+    /// <param name="_removeAction">Action called when the Dialog Line is removed</param>
+    /// <param name="_drawPoint">Does this Dialog Line has to draw an out point</param>
+    /// <param name="_pointIcon">Icon of the out point</param>
+    /// <param name="_pointStyle"> Style of the point
+    /// <param name="_onOutLineSelected">Action called when the out point of this line is selected</param>
+    /// <param name="_otherParts">The other sets in the current Dialog</param>
+    /// <returns>Height used to draw the dialog Line</returns>
+    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, bool _drawPoint, GUIContent _pointIcon, GUIStyle _pointStyle, Action<DialogLine> _onOutLineSelected, List<DialogSet> _otherParts)
     {
         if (m_ids == null)
             InitEditor(_lineDescriptor); 
@@ -93,9 +108,9 @@ public class DialogLine
                 }
                 else m_linkedToken = -1; 
             }
-            if (GUI.Button(m_pointRect, _pointIcon))
+            if (GUI.Button(m_pointRect, _pointIcon, _pointStyle))
             {
-                _onOutContentSelected?.Invoke(this);
+                _onOutLineSelected?.Invoke(this);
             }
         }
         return _r.y; 

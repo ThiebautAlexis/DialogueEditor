@@ -16,31 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: f1a3bc38a670b3442a726e1c2cccefdd
-  m_SerializeEntries:
-  - m_GUID: 26151c7328f4f7142bbc1641a9c87184
-    m_Address: testBis
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: bfa1f6b30da9aef4e9e8501a0d15b639
-    m_Address: testBis_luaDescriptor
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: ca63dcdfc067be34d99741ee7cc72284
-    m_Address: Test
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: f97417196f8ebaf4991a3ec32ab2625f
-    m_Address: Test_luaDescriptor
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1b564be3ff95ed147bae8c85e6b26ea6, type: 2}
   m_SchemaSet:

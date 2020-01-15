@@ -12,13 +12,13 @@ public class DialogSet
     [SerializeField] private Rect m_nodeRect = new Rect();
     [SerializeField] private List<DialogLine> m_dialogLines = new List<DialogLine>(); 
     [SerializeField] private int m_partToken = 0;
-    [SerializeField] private DialogPartType m_type = DialogPartType.BasicType;
+    [SerializeField] private DialogSetType m_type = DialogSetType.BasicType;
     [SerializeField] private bool m_isStartingSet = false; 
     public int PartToken { get { return m_partToken; } }
     private bool m_isDragged = false;
 
     public List<DialogLine> DialogLines { get { return m_dialogLines; }}
-    public DialogPartType Type { get { return m_type; } }
+    public DialogSetType Type { get { return m_type; } }
     public bool IsSelected { get; set; }
     public bool IsStartingSet
     {
@@ -60,7 +60,7 @@ public class DialogSet
         m_basicSetIcon = _dialogPartIcon;
         m_answerIcon = _answerIcon;
         m_startingSetIcon = _startingSetIcon;
-        m_currentIcon = m_type == DialogPartType.BasicType ? m_basicSetIcon : m_answerIcon;
+        m_currentIcon = m_type == DialogSetType.BasicType ? m_basicSetIcon : m_answerIcon;
         m_pointIcon = _pointIcon;
         AddNewContent();
     }
@@ -88,37 +88,43 @@ public class DialogSet
     /// Change the type of the dialog part and modify the GUI according to the new type
     /// </summary>
     /// <param name="_type"></param>
-    private void ChangeType(DialogPartType _type)
+    private void ChangeType(DialogSetType _type)
     {
         m_type = _type;
         switch (m_type)
         {
-            case DialogPartType.BasicType:
+            case DialogSetType.BasicType:
                 m_currentIcon = m_basicSetIcon;
                 for (int i = 0; i < m_dialogLines.Count - 1; i++)
                 {
                     m_dialogLines[i].LinkedToken = -1; 
                 }
                 break;
-            case DialogPartType.PlayerAnswer:
+            case DialogSetType.PlayerAnswer:
                 m_currentIcon = m_answerIcon; 
                 break;
+            case DialogSetType.Condition:
+                break; 
             default:
                 break;
         }
     }
 
     /// <summary>
-    /// Draw the Dialog part editor
+    /// Draw the Dialog Set Editor
     /// </summary>
-    public void Draw(string _lineDescriptor, List<DialogSet> _otherParts, Action<DialogLine> _onOutDialogContentSelected, Action<DialogSet> _onInDialogPartSelected)
+    /// <param name="_lineDescriptor">Line Descriptor</param>
+    /// <param name="_otherSets">The other dialog sets</param>
+    /// <param name="_onOutDialogLineSelected">Action called when an out point is selected</param>
+    /// <param name="_onInDialogSetSelected">Action called when the In point of the Dialog set is selected</param>
+    public void Draw(string _lineDescriptor, List<DialogSet> _otherSets, Action<DialogLine> _onOutDialogLineSelected, Action<DialogSet> _onInDialogSetSelected)
     {
         // --- Draw the connections between the parts --- //
-        if(GUI.Button(InPointRect, m_pointIcon))
+        if(GUI.Button(InPointRect, m_pointIcon, m_connectionPointStyle))
         {
-            _onInDialogPartSelected.Invoke(this); 
+            _onInDialogSetSelected.Invoke(this); 
         }
-        // --- Draw the Part and its Content --- //
+        // --- Draw the Set and its Lines --- //
         GUI.Box(m_nodeRect, "", m_nodeStyle);
         Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + Dialog.MARGIN_HEIGHT, 25, 25);
         if(GUI.Button(_r, m_currentIcon, m_nodeStyle))
@@ -132,10 +138,10 @@ public class DialogSet
         for (int i = 0; i < m_dialogLines.Count; i++)
         {
             _c = m_dialogLines[i]; 
-            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, (m_type == DialogPartType.PlayerAnswer || (m_type == DialogPartType.BasicType && i == m_dialogLines.Count - 1)), m_pointIcon, _onOutDialogContentSelected, _otherParts);
+            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, (m_type == DialogSetType.PlayerAnswer || (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1)), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets);
         }
         _r = new Rect(_r.position.x, _r.position.y + Dialog.SPACE_HEIGHT, _r.width, Dialog.BUTTON_HEIGHT); 
-        if(GUI.Button(_r,"Add new Content"))
+        if(GUI.Button(_r,"Add new Dialog Line"))
         {
             AddNewContent(); 
         }
@@ -223,12 +229,12 @@ public class DialogSet
         GenericMenu _genericMenu = new GenericMenu();
         switch (m_type)
         {
-            case DialogPartType.BasicType:
+            case DialogSetType.BasicType:
                 _genericMenu.AddDisabledItem(new GUIContent("Set as Basic Dialog Part"));
-                _genericMenu.AddItem(new GUIContent("Set as Answer Dialog Part"), false, () => ChangeType(DialogPartType.PlayerAnswer));
+                _genericMenu.AddItem(new GUIContent("Set as Answer Dialog Part"), false, () => ChangeType(DialogSetType.PlayerAnswer));
                 break;
-            case DialogPartType.PlayerAnswer:
-                _genericMenu.AddItem(new GUIContent("Set as Basic Dialog Part"), false, () => ChangeType(DialogPartType.BasicType));
+            case DialogSetType.PlayerAnswer:
+                _genericMenu.AddItem(new GUIContent("Set as Basic Dialog Part"), false, () => ChangeType(DialogSetType.BasicType));
                 _genericMenu.AddDisabledItem(new GUIContent("Set as Answer Dialog Part"));
                 break;
             default:
@@ -243,6 +249,9 @@ public class DialogSet
         _genericMenu.ShowAsContext();
     }
     
+    /// <summary>
+    /// Set this set as the starting one in the Dialog
+    /// </summary>
     private void SetStartingSet()
     {
         m_onSetStartingSet?.Invoke(this); 
@@ -256,23 +265,28 @@ public class DialogSet
     {
         m_dialogLines.Remove(_content);
         m_nodeRect = new Rect(m_nodeRect.position.x, m_nodeRect.position.y, Dialog.INITIAL_RECT_WIDTH, (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_dialogLines.Count) + (Dialog.BASIC_CONTENT_HEIGHT * m_dialogLines.Count) + (Dialog.SPACE_HEIGHT * ((m_dialogLines.Count * 2) + 1)) + Dialog.BUTTON_HEIGHT);
-    }        
+    }
 
     /// <summary>
     /// Initialize the Editor Settings for the part
     /// </summary>
-    /// <param name="_nodeStyle">The Node Style when the Part isn't selected</param>
-    /// <param name="_selectedNodeStyle">The Node Style when the Part is selected</param>
-    /// <param name="_onRemovePart">Action Called to remove the Part from the Dialog</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemovePart, Action<DialogSet> _setStartingSet)
+    /// <param name="_nodeStyle">The Node Style of the Set</param>
+    /// <param name="_connectionPointStyle">Style of the connection point</param>
+    /// <param name="_dialogSetIcon">Icon of the Basic Dailog set</param>
+    /// <param name="_answerIcon">Icon of the Answer Dialog Set</param>
+    /// <param name="_startingSetIcon">Icon of the Starting Set</param>
+    /// <param name="_pointIcon">Icon of the in/out points</param>
+    /// <param name="_onRemovePart">Action Called to remove the Set from the Dialog</param>
+    /// <param name="_setStartingSet">Action called when the set is switch as the starting set</param>
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogSetIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemovePart, Action<DialogSet> _setStartingSet)
     {
         m_nodeStyle = _nodeStyle;
         m_onRemoveDialogPart = _onRemovePart;
         m_onSetStartingSet = _setStartingSet; 
-        m_basicSetIcon = _dialogPartIcon;
+        m_basicSetIcon = _dialogSetIcon;
         m_answerIcon = _answerIcon;
         m_startingSetIcon = _startingSetIcon;
-        m_currentIcon = m_type == DialogPartType.BasicType ? m_basicSetIcon : m_answerIcon;
+        m_currentIcon = m_type == DialogSetType.BasicType ? m_basicSetIcon : m_answerIcon;
         m_connectionPointStyle = _connectionPointStyle;
         m_pointIcon = _pointIcon; 
     }
@@ -281,8 +295,9 @@ public class DialogSet
     #endregion
 }
 
-public enum DialogPartType
+public enum DialogSetType
 {
     BasicType, 
-    PlayerAnswer
+    PlayerAnswer, 
+    Condition
 }

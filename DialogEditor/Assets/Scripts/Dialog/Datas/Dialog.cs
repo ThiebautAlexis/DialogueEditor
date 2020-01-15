@@ -101,8 +101,11 @@ public class Dialog
     /// Init the Editor settings for the dialog and all of them parts
     /// </summary>
     /// <param name="_nodeStyle">Style of the node</param>
+    /// <param name="_connectionPointStyle">Style of the Connection Point</param>
     /// <param name="_basicIcon">Icon of the basic Node Type</param>
     /// <param name="_answerIcon">Icon of the Answer Node Type</param>
+    /// <param name="_startingSetIcon">Icon of the starting set</param>
+    /// <param name="_pointIcon">Connection Point Icon</param>
     public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _basicIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon)
     {
         m_nodeStyle = _nodeStyle;
@@ -115,9 +118,9 @@ public class Dialog
         {
             m_dialogSets[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, _startingSetIcon, m_pointIcon, RemovePart, SetStartingDialogSet); 
         }
-        if (File.Exists(Path.Combine(LineDescriptorPath, m_dialogName + LineDescriptorPostfixWithExtension)))
+        if (File.Exists(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension)))
         {
-            m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_dialogName + LineDescriptorPostfixWithExtension));
+            m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension));
         }
     }
 
@@ -151,6 +154,10 @@ public class Dialog
             m_dialogSets.Remove(_part); 
     }
 
+    /// <summary>
+    /// Set the Dialog Set as the starting set in this dialog
+    /// </summary>
+    /// <param name="_startingSet"></param>
     private void SetStartingDialogSet(DialogSet _startingSet)
     {
         for (int i = 0; i < m_dialogSets.Count; i++)
@@ -171,6 +178,7 @@ public class Dialog
         UnityEditor.EditorUtility.DisplayDialog("File saved", $"The {m_dialogName} dialog has been successfully saved", "Ok!"); 
     }
 #endif
+
 
     public DialogSet GetNextSet()
     {

@@ -95,7 +95,6 @@ public class DialogEditor : EditorWindow
         WebClient _get = new WebClient();
         _get.DownloadFile(new Uri($"https://docs.google.com/spreadsheets/d/{_spreadsheetID}/export?format=tsv"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{_spreadsheetID}.tsv"));
         // Create the Line Descriptor
-
         string[] _text = File.ReadAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DialogEditor", $"{_spreadsheetID}.tsv"));
         string[] _variablesName = _text[0].Split(Convert.ToChar(9));
         string _lineDescriptor = "";
@@ -114,7 +113,7 @@ public class DialogEditor : EditorWindow
         }
         if (!Directory.Exists(Dialog.LineDescriptorPath))
             Directory.CreateDirectory(Dialog.LineDescriptorPath);
-        File.WriteAllText(Path.Combine(Dialog.LineDescriptorPath, m_currentDialog.DialogName + Dialog.LineDescriptorPostfixWithExtension), _lineDescriptor); 
+        File.WriteAllText(Path.Combine(Dialog.LineDescriptorPath, _spreadsheetID.GetHashCode().ToString() + Dialog.LineDescriptorPostfixWithExtension), _lineDescriptor); 
     }   
 
     /// <summary>
@@ -216,9 +215,9 @@ public class DialogEditor : EditorWindow
         m_defaultNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
         m_pointStyle = new GUIStyle();
-        m_pointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
-        m_pointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
-        m_pointStyle.border = new RectOffset(4, 4, 12, 12);
+        m_pointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
+        m_pointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+        m_pointStyle.border = new RectOffset(-10, -4, -4, 0);
 
         m_dialogPartIcon = EditorGUIUtility.IconContent("sv_icon_dot9_pix16_gizmo");
         m_answerPartIcon = EditorGUIUtility.IconContent("sv_icon_dot14_pix16_gizmo");

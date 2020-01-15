@@ -22,6 +22,8 @@ public class DialogReader : MonoBehaviour
 
     private Dialog m_dialog = null;
     private Script m_lineDescriptor = null;
+
+    private System.Action m_onMouseClicked = null; 
     #endregion
 
     #region Methods
@@ -65,14 +67,22 @@ public class DialogReader : MonoBehaviour
     {
         switch (_set.Type)
         {
-            case DialogPartType.BasicType:
+            case DialogSetType.BasicType:
+                bool _displayNextLine = false;
+
+                m_onMouseClicked += () => _displayNextLine = true;
                 for (int i = 0; i < _set.DialogLines.Count; i++)
                 {
                     m_textDisplayer.text = GetDialogLineContent(_set.DialogLines[i].Key, "Text_En_en");
-                    yield return new WaitForSeconds(1.0f);
+                    while (!_displayNextLine)
+                    {
+                        yield return null; 
+                    }
+                    _displayNextLine = false; 
                 }
+                m_onMouseClicked = null; 
                 break;
-            case DialogPartType.PlayerAnswer:
+            case DialogSetType.PlayerAnswer:
                 break;
             default:
                 break;
@@ -92,16 +102,18 @@ public class DialogReader : MonoBehaviour
     {
         if (m_dialogName != string.Empty)
         {
-            m_lineDescriptorAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName);
-            m_lineDescriptorAsyncHandler.Completed += OnDialogAssetLoaded;
-            m_dialogAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName + Dialog.LineDescriptorPostfix);
-            m_dialogAssetAsyncHandler.Completed += OnLineDescriptorLoaded;
+            m_dialogAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName);
+            m_dialogAssetAsyncHandler.Completed += OnDialogAssetLoaded;
         }
         
         InitReader(); 
-
     }
 
+    /// <summary>
+    /// Called when the DialogAsset is loaded
+    /// Get the Dialog and Start loading the LineDescriptor
+    /// </summary>
+    /// <param name="_loadedAsset">The loaded asset Handler</param>
     private void OnDialogAssetLoaded(AsyncOperationHandle<TextAsset> _loadedAsset)
     {
         if(_loadedAsset.Result == null)
@@ -110,9 +122,16 @@ public class DialogReader : MonoBehaviour
             return; 
         }
         m_dialog = JsonUtility.FromJson<Dialog>(_loadedAsset.Result.ToString());
-        Debug.Log("Dialog is ready"); 
+        Debug.Log("Dialog is ready");
+        m_lineDescriptorAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialog.SpreadSheetID.GetHashCode().ToString() + Dialog.LineDescriptorPostfix);
+        m_lineDescriptorAsyncHandler.Completed += OnLineDescriptorLoaded;
     }
 
+    /// <summary>
+    /// Called when the linedescriptor is loaded
+    /// DoString on the line descriptor content 
+    /// </summary>
+    /// <param name="_loadedAsset">The loaded asset Handler</param>
     private void OnLineDescriptorLoaded(AsyncOperationHandle<TextAsset> _loadedAsset)
     {
         if (_loadedAsset.Result == null)
@@ -130,6 +149,11 @@ public class DialogReader : MonoBehaviour
         StartCoroutine(DisplayDialog()); 
     }
 
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+            m_onMouseClicked?.Invoke(); 
+    }
     #endregion
 
     #endregion
