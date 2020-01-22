@@ -31,7 +31,8 @@ public class Dialog
     public const float SPACE_HEIGHT = 10;
     public const float POPUP_HEIGHT = 15;
     public const float BUTTON_HEIGHT = 30;
-    public const float BASIC_CONTENT_HEIGHT = 100;
+    public const float DIALOGLINE_SETTINGS_HEIGHT = BASIC_CONTENT_HEIGHT + (POPUP_HEIGHT*2); 
+    public const float BASIC_CONTENT_HEIGHT = 40;
 #endif
     [SerializeField]private string m_dialogName = "";
     [SerializeField]private string m_spreadSheetID = "";

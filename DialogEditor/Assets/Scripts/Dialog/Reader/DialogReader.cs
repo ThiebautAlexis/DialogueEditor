@@ -71,13 +71,15 @@ public class DialogReader : MonoBehaviour
                 bool _displayNextLine = false;
 
                 m_onMouseClicked += () => _displayNextLine = true;
+                DialogLine _line = null; 
                 for (int i = 0; i < _set.DialogLines.Count; i++)
                 {
-                    m_textDisplayer.text = GetDialogLineContent(_set.DialogLines[i].Key, "Text_En_en");
-                    while (!_displayNextLine)
-                    {
-                        yield return null; 
-                    }
+                    _line = _set.DialogLines[i]; 
+                    m_textDisplayer.text = GetDialogLineContent(_line.Key, "Text_En_en");
+                    if (_line.WaitingType == WaitingType.WaitForClick)
+                        yield return new WaitUntil(() => _displayNextLine);
+                    else
+                        yield return new WaitForSeconds(_line.WaitingTime); 
                     _displayNextLine = false; 
                 }
                 m_onMouseClicked = null; 
@@ -95,19 +97,6 @@ public class DialogReader : MonoBehaviour
         DynValue _content = m_lineDescriptor.Globals.Get(_dialogLineID).Table.Get(_localisationKey);
         return _content.String;
     }
-    #endregion
-
-    #region Unity Methods
-    private void Awake()
-    {
-        if (m_dialogName != string.Empty)
-        {
-            m_dialogAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName);
-            m_dialogAssetAsyncHandler.Completed += OnDialogAssetLoaded;
-        }
-        
-        InitReader(); 
-    }
 
     /// <summary>
     /// Called when the DialogAsset is loaded
@@ -116,10 +105,10 @@ public class DialogReader : MonoBehaviour
     /// <param name="_loadedAsset">The loaded asset Handler</param>
     private void OnDialogAssetLoaded(AsyncOperationHandle<TextAsset> _loadedAsset)
     {
-        if(_loadedAsset.Result == null)
+        if (_loadedAsset.Result == null)
         {
             Debug.LogError("IS NULL");
-            return; 
+            return;
         }
         m_dialog = JsonUtility.FromJson<Dialog>(_loadedAsset.Result.ToString());
         Debug.Log("Dialog is ready");
@@ -141,7 +130,20 @@ public class DialogReader : MonoBehaviour
         }
         m_lineDescriptor = new Script();
         m_lineDescriptor.DoString(_loadedAsset.Result.ToString());
-        Debug.Log("Line Descriptor is ready"); 
+        Debug.Log("Line Descriptor is ready");
+    }
+    #endregion
+
+    #region Unity Methods
+    private void Awake()
+    {
+        if (m_dialogName != string.Empty)
+        {
+            m_dialogAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName);
+            m_dialogAssetAsyncHandler.Completed += OnDialogAssetLoaded;
+        }
+        
+        InitReader(); 
     }
 
     private void Start()

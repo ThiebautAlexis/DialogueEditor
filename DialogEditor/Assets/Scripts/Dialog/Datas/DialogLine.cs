@@ -10,10 +10,12 @@ public class DialogLine
 {
     #region Fields and Properties
     [SerializeField] private int m_index = -1;
-    [SerializeField] private int m_nextIndex = -1;
+    private int m_nextIndex = -1;
     [SerializeField] private string m_key = "";
     private string m_content = "";
     [SerializeField] private int m_linkedToken = -1;
+    [SerializeField] private WaitingType m_waitingType = WaitingType.WaitForTime;
+    [SerializeField] private float m_waitingTime = 0.0f; 
     private Rect m_pointRect;
 
     private string[] m_ids = null; 
@@ -21,20 +23,22 @@ public class DialogLine
     
     public string Key { get { return m_key; } }
     public int LinkedToken { get { return m_linkedToken; } set { m_linkedToken = value; } }
+    public WaitingType WaitingType { get { return m_waitingType; } }
+    public float WaitingTime { get { return m_waitingTime; } }
     #endregion
 
     #region Constructor 
 
-    #endregion
+        #endregion
 
-    #region Methods
+        #region Methods
 
 #if UNITY_EDITOR
 
-    /// <summary>
-    /// Get all the Ids of the dialog lines from the Line Descriptor
-    /// </summary>
-    /// <param name="_lineDescriptor"></param>
+        /// <summary>
+        /// Get all the Ids of the dialog lines from the Line Descriptor
+        /// </summary>
+        /// <param name="_lineDescriptor"></param>
     public void InitEditor(string _lineDescriptor)
     {
         Script _luaScript = new Script();
@@ -49,13 +53,13 @@ public class DialogLine
     /// <param name="_startPos">Starting position of the rect within the line will be drawn</param>
     /// <param name="_lineDescriptor">Line Descriptor</param>
     /// <param name="_removeAction">Action called when the Dialog Line is removed</param>
-    /// <param name="_drawPoint">Does this Dialog Line has to draw an out point</param>
+    /// <param name="_isLastPoint">Does this Dialog Line has to draw an out point</param>
     /// <param name="_pointIcon">Icon of the out point</param>
     /// <param name="_pointStyle"> Style of the point
     /// <param name="_onOutLineSelected">Action called when the out point of this line is selected</param>
     /// <param name="_otherParts">The other sets in the current Dialog</param>
     /// <returns>Height used to draw the dialog Line</returns>
-    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, bool _drawPoint, GUIContent _pointIcon, GUIStyle _pointStyle, Action<DialogLine> _onOutLineSelected, List<DialogSet> _otherParts)
+    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, DialogSetType _dialogSetType, bool _isLastPoint, GUIContent _pointIcon, GUIStyle _pointStyle, Action<DialogLine> _onOutLineSelected, List<DialogSet> _otherParts)
     {
         if (m_ids == null)
             InitEditor(_lineDescriptor); 
@@ -88,11 +92,28 @@ public class DialogLine
             m_content = _content.String;
         }
         _r.y += Dialog.POPUP_HEIGHT;
+
+        // -- Draw the dialog line content -- //
         _r = new Rect(_startPos.x, _r.position.y + Dialog.SPACE_HEIGHT, Dialog.CONTENT_WIDTH, Dialog.BASIC_CONTENT_HEIGHT);
         GUI.TextArea(_r, m_content);
         _r.y += Dialog.BASIC_CONTENT_HEIGHT;
+
+        EditorGUI.BeginDisabledGroup(_dialogSetType == DialogSetType.PlayerAnswer);
+        // -- Draw the Dialog Line Waiting Type -- // 
+        _r = new Rect(_startPos.x, _r.position.y, Dialog.CONTENT_WIDTH, Dialog.POPUP_HEIGHT);
+        m_waitingType = (WaitingType)EditorGUI.EnumPopup(_r, "Waiting Type: ", m_waitingType);
+        _r.y += Dialog.POPUP_HEIGHT;
+
+        EditorGUI.BeginDisabledGroup(m_waitingType == WaitingType.WaitForClick); 
+        // -- Draw the Dialog Waiting Time Value -- //
+        _r = new Rect(_startPos.x, _r.position.y, Dialog.CONTENT_WIDTH, Dialog.POPUP_HEIGHT);
+        m_waitingTime = EditorGUI.Slider(_r, "Waiting Time (s): " ,m_waitingTime, 0, 10); 
+        _r.y += Dialog.POPUP_HEIGHT;
+        EditorGUI.EndDisabledGroup();
+        EditorGUI.EndDisabledGroup(); 
+
         m_pointRect = new Rect(_startPos.x + Dialog.CONTENT_WIDTH, (_startPos.y + _r.y) / 2, 25, 25);
-        if (_drawPoint)
+        if (_isLastPoint || _dialogSetType == DialogSetType.PlayerAnswer)
         {
             if(m_linkedToken != -1)
             {
@@ -117,4 +138,9 @@ public class DialogLine
     }
 #endif
     #endregion
+}
+public enum WaitingType
+{
+    WaitForClick, 
+    WaitForTime,
 }

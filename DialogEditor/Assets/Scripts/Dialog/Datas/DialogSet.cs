@@ -81,7 +81,7 @@ public class DialogSet
         m_nodeRect = new Rect(m_nodeRect.position.x,
             m_nodeRect.position.y,
             Dialog.INITIAL_RECT_WIDTH, 
-            (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_dialogLines.Count) + (Dialog.BASIC_CONTENT_HEIGHT * m_dialogLines.Count) + (Dialog.SPACE_HEIGHT * ((m_dialogLines.Count * 2)+1)) + Dialog.BUTTON_HEIGHT); 
+            (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_dialogLines.Count) + (Dialog.DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (Dialog.SPACE_HEIGHT * ((m_dialogLines.Count * 2)+1)) + Dialog.BUTTON_HEIGHT); 
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ public class DialogSet
         for (int i = 0; i < m_dialogLines.Count; i++)
         {
             _c = m_dialogLines[i]; 
-            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, (m_type == DialogSetType.PlayerAnswer || (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1)), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets);
+            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, m_type , (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets);
         }
         _r = new Rect(_r.position.x, _r.position.y + Dialog.SPACE_HEIGHT, _r.width, Dialog.BUTTON_HEIGHT); 
         if(GUI.Button(_r,"Add new Dialog Line"))
@@ -264,7 +264,7 @@ public class DialogSet
     private void RemoveContent(DialogLine _content)
     {
         m_dialogLines.Remove(_content);
-        m_nodeRect = new Rect(m_nodeRect.position.x, m_nodeRect.position.y, Dialog.INITIAL_RECT_WIDTH, (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_dialogLines.Count) + (Dialog.BASIC_CONTENT_HEIGHT * m_dialogLines.Count) + (Dialog.SPACE_HEIGHT * ((m_dialogLines.Count * 2) + 1)) + Dialog.BUTTON_HEIGHT);
+        m_nodeRect = new Rect(m_nodeRect.position.x, m_nodeRect.position.y, Dialog.INITIAL_RECT_WIDTH, (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_dialogLines.Count) + (Dialog.DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (Dialog.SPACE_HEIGHT * ((m_dialogLines.Count * 2) + 1)) + Dialog.BUTTON_HEIGHT);
     }
 
     /// <summary>
