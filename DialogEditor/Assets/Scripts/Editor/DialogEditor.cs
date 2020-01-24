@@ -10,13 +10,17 @@ using System.Linq;
 public class DialogEditor : EditorWindow
 {
     #region Fields and Properties
+
     #region GUIStyles
     private GUIStyle m_defaultNodeStyle = null;
-    private GUIStyle m_pointStyle = null;
+    private GUIStyle m_conditionNodeStyle = null; 
+    private GUIStyle m_defaultPointStyle = null;
+    private GUIStyle m_conditionPointStyle = null;
     private GUIContent m_dialogPartIcon = null;
     private GUIContent m_answerPartIcon = null;
     private GUIContent m_startingSetIcon = null; 
-    private GUIContent m_pointIcon = null; 
+    private GUIContent m_pointIcon = null;
+    private GUIContent m_conditionIcon = null; 
     #endregion
 
     #region Editor Fields
@@ -36,13 +40,14 @@ public class DialogEditor : EditorWindow
         set
         {
             m_currentDialog = value;
-            if (m_defaultNodeStyle == null) LoadStyles(); 
-            m_currentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon); 
+            if (m_defaultNodeStyle == null) LoadStyles();
+            CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_conditionNodeStyle, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
         }
     }
 
-    private DialogSet m_inSelectedPart = null;
-    private DialogLine m_outSelectedContent = null; 
+    private DialogNode m_inSelectedNode = null;
+    private DialogLine m_outSelectedLine = null;
+    private DialogCondition m_outSelectedCondition = null; 
     #endregion
 
     #endregion
@@ -50,7 +55,7 @@ public class DialogEditor : EditorWindow
     #region Methods
 
     #region Static Methods
-    [MenuItem("Window/Dialog Editor")]
+    [MenuItem("Window/Dialog Editor/Open Editor")]
     public static void OpenWindow()
     {
         DialogEditor _window = GetWindow<DialogEditor>();
@@ -214,16 +219,25 @@ public class DialogEditor : EditorWindow
         m_defaultNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
         m_defaultNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
-        m_pointStyle = new GUIStyle();
-        m_pointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
-        m_pointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
-        m_pointStyle.border = new RectOffset(-10, -4, -4, 0);
+        m_conditionNodeStyle = new GUIStyle();
+        m_conditionNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
+        m_conditionNodeStyle.border = new RectOffset(12, 12, 12, 12);
+
+        m_defaultPointStyle = new GUIStyle();
+        m_defaultPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
+        m_defaultPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+        m_defaultPointStyle.border = new RectOffset(-10, -4, -4, 0);
+
+        m_conditionPointStyle = new GUIStyle();
+        m_conditionPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
+        m_conditionPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6 on.png") as Texture2D;
+        m_conditionPointStyle.border = new RectOffset(-10, -4, -4, 0);
 
         m_dialogPartIcon = EditorGUIUtility.IconContent("sv_icon_dot9_pix16_gizmo");
         m_answerPartIcon = EditorGUIUtility.IconContent("sv_icon_dot14_pix16_gizmo");
+        m_conditionIcon = EditorGUIUtility.IconContent("sv_icon_dot12_pix16_gizmo");
         m_startingSetIcon = EditorGUIUtility.IconContent("Favorite Icon");
-        m_pointIcon = EditorGUIUtility.IconContent("PlayButton"); 
-        // StepButton ou PlayButton
+        m_pointIcon = EditorGUIUtility.IconContent("PlayButton");
     }
 
     /// <summary>
@@ -263,13 +277,15 @@ public class DialogEditor : EditorWindow
         {
             _genericMenu.AddDisabledItem(new GUIContent("Update SpreadSheet"));
             _genericMenu.AddSeparator(""); 
-            _genericMenu.AddDisabledItem(new GUIContent("Add Dialog Node")); 
+            _genericMenu.AddDisabledItem(new GUIContent("Add Dialog Node"));
+            _genericMenu.AddDisabledItem(new GUIContent("Add Condition Node"));
         }
         else
         {
             _genericMenu.AddItem(new GUIContent("Update SpreadSheet"), false, () => DownloadSpreadSheet(CurrentDialog.SpreadSheetID));
             _genericMenu.AddSeparator("");
-            _genericMenu.AddItem(new GUIContent("Add Dialog Node"), false, () => CurrentDialog.AddPart(_mousePosition));
+            _genericMenu.AddItem(new GUIContent("Add Dialog Node"), false, () => CurrentDialog.AddSet(_mousePosition));
+            _genericMenu.AddItem(new GUIContent("Add Condition Node"), false, () => CurrentDialog.AddCondition(_mousePosition));
         }
         _genericMenu.ShowAsContext();
     }
@@ -284,29 +300,59 @@ public class DialogEditor : EditorWindow
         CurrentDialog = _newDialog;
     }
 
-    private void SelectInPart(DialogSet _part)
+    /// <summary>
+    /// Select the In point of the DialogSet 
+    /// </summary>
+    /// <param name="_node">Set to select</param>
+    private void SelectInPart(DialogNode _node)
     {
-        m_inSelectedPart = _part; 
-        if(m_inSelectedPart != null && m_outSelectedContent != null)
+        m_inSelectedNode = _node; 
+        if(m_inSelectedNode != null && m_outSelectedLine != null)
         {
             LinkDialogSet(); 
         }
     }
 
-    private void SelectOutContent(DialogLine _content)
+    /// <summary>
+    /// Select the out point of a dialog set
+    /// </summary>
+    /// <param name="_line">Content linked to the out point selected</param>
+    private void SelectOutLine(DialogLine _line)
     {
-        m_outSelectedContent = _content;
-        if (m_inSelectedPart != null && m_outSelectedContent != null)
+        if (m_outSelectedCondition != null) m_outSelectedCondition = null; 
+        m_outSelectedLine = _line;
+        if (m_inSelectedNode != null && m_outSelectedLine != null)
         {
             LinkDialogSet(); 
         }
     }
 
+    /// <summary>
+    /// Select the out point of a condition
+    /// </summary>
+    /// <param name="_condition">Content linked to the out point selected</param>
+    private void SelectOutCondition(DialogCondition _condition)
+    {
+        if (m_outSelectedLine != null) m_outSelectedLine = null; 
+        m_outSelectedCondition = _condition;
+        if (m_inSelectedNode != null && m_outSelectedCondition != null)
+        {
+            LinkDialogSet();
+        }
+    }
+
+    /// <summary>
+    /// Link two dialog sets
+    /// </summary>
     private void LinkDialogSet()
     {
-        m_outSelectedContent.LinkedToken = m_inSelectedPart.PartToken; 
-        m_inSelectedPart = null;
-        m_outSelectedContent = null;
+        if (m_outSelectedCondition != null)
+            m_outSelectedCondition.LinkedToken = m_inSelectedNode.NodeToken;
+        else if (m_outSelectedLine != null)
+            m_outSelectedLine.LinkedToken = m_inSelectedNode.NodeToken; 
+        m_inSelectedNode = null;
+        m_outSelectedLine = null;
+        m_outSelectedCondition = null; 
     }
     #endif
     #endregion
@@ -315,7 +361,7 @@ public class DialogEditor : EditorWindow
     protected virtual void OnEnable()
     {
         LoadStyles(); 
-        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_pointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon);
+        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_conditionNodeStyle, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
     } 
     protected virtual void OnGUI()
     {
@@ -323,12 +369,21 @@ public class DialogEditor : EditorWindow
         DrawGrid(100, 0.4f, Color.black);
 
         ProcessEditorEvents(Event.current);
-        if(CurrentDialog != null) CurrentDialog.Draw(SelectOutContent, SelectInPart);
-        if(m_outSelectedContent != null && m_inSelectedPart == null)
+        if(CurrentDialog != null) CurrentDialog.Draw(SelectOutLine, SelectInPart, SelectOutCondition);
+        if(m_inSelectedNode == null)
         {
-            Handles.DrawBezier(m_outSelectedContent.PointRect.center, Event.current.mousePosition, m_outSelectedContent.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
-            GUI.changed = true; 
+            if (m_outSelectedLine != null && m_outSelectedLine.PointRect != Rect.zero)
+            {
+                Handles.DrawBezier(m_outSelectedLine.PointRect.center, Event.current.mousePosition, m_outSelectedLine.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                GUI.changed = true;
+            }
+            else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRect != Rect.zero)
+            {
+                Handles.DrawBezier(m_outSelectedCondition.OutPointRect.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                GUI.changed = true;
+            }
         }
+
 
         if (m_isCreationPopupOpen)
         {

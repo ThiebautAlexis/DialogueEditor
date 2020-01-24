@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.IO;
 using MoonSharp.Interpreter;
 using System.Linq;
 using UnityEngine.AddressableAssets;
@@ -29,6 +28,9 @@ public class DialogReader : MonoBehaviour
     #region Methods
 
     #region Original Methods
+    /// <summary>
+    /// Initialize the settings of the text displayer
+    /// </summary>
     private void InitReader()
     {
         if(m_textDisplayer)
@@ -39,6 +41,10 @@ public class DialogReader : MonoBehaviour
         }      
     }
 
+    /// <summary>
+    /// Display the whole dialog
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator DisplayDialog()
     {
         while (!m_dialogAssetAsyncHandler.IsDone ||!m_lineDescriptorAsyncHandler.IsDone)
@@ -63,6 +69,11 @@ public class DialogReader : MonoBehaviour
         m_textDisplayer.text = string.Empty; 
     }
 
+    /// <summary>
+    /// Display all dialog lines of the dialog set
+    /// </summary>
+    /// <param name="_set">Displayed Dialog Set</param>
+    /// <returns></returns>
     private IEnumerator DisplayDialogSet(DialogSet _set)
     {
         switch (_set.Type)
@@ -92,6 +103,12 @@ public class DialogReader : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Get the Content of the Dialog Line according to the localisationKey Selected
+    /// </summary>
+    /// <param name="_dialogLineID">ID of the Dialog Line</param>
+    /// <param name="_localisationKey">Localisation Key to use</param>
+    /// <returns></returns>
     private string GetDialogLineContent(string _dialogLineID, string _localisationKey)
     {
         DynValue _content = m_lineDescriptor.Globals.Get(_dialogLineID).Table.Get(_localisationKey);

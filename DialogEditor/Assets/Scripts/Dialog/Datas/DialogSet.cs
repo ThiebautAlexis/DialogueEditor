@@ -6,20 +6,15 @@ using System.Linq;
 using UnityEditor; 
 
 [Serializable]
-public class DialogSet
+public class DialogSet : DialogNode
 {
     #region Fields and Properties
-    [SerializeField] private Rect m_nodeRect = new Rect();
     [SerializeField] private List<DialogLine> m_dialogLines = new List<DialogLine>(); 
-    [SerializeField] private int m_partToken = 0;
     [SerializeField] private DialogSetType m_type = DialogSetType.BasicType;
     [SerializeField] private bool m_isStartingSet = false; 
-    public int PartToken { get { return m_partToken; } }
-    private bool m_isDragged = false;
 
     public List<DialogLine> DialogLines { get { return m_dialogLines; }}
     public DialogSetType Type { get { return m_type; } }
-    public bool IsSelected { get; set; }
     public bool IsStartingSet
     {
         get
@@ -34,15 +29,9 @@ public class DialogSet
 
     private Action<DialogSet> m_onRemoveDialogPart = null;
     private Action<DialogSet> m_onSetStartingSet = null; 
-    private GUIStyle m_nodeStyle = null;
-    private GUIStyle m_connectionPointStyle = null; 
     private GUIContent m_basicSetIcon = null;
     private GUIContent m_answerIcon = null;
-    private GUIContent m_currentIcon = null;
-    private GUIContent m_pointIcon = null;
     private GUIContent m_startingSetIcon = null; 
-
-    public Rect InPointRect { get { return new Rect(m_nodeRect.position.x - 15.5f, m_nodeRect.position.y + 6.0f, 25, 25);  } }
     #endregion
 
 
@@ -50,7 +39,7 @@ public class DialogSet
 #if UNITY_EDITOR
     public DialogSet(Vector2 _nodePosition, Action<DialogSet> _onRemovePart, Action<DialogSet> _onSetStartingSet, GUIStyle _normalStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon)
     {
-        m_partToken = UnityEngine.Random.Range(0, int.MaxValue); 
+        m_NodeToken = UnityEngine.Random.Range(0, int.MaxValue); 
         m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, Dialog.INITIAL_RECT_WIDTH, 0);
         m_onRemoveDialogPart = _onRemovePart;
         m_onSetStartingSet = _onSetStartingSet;
@@ -65,7 +54,6 @@ public class DialogSet
         AddNewContent();
     }
 #endif
-
     #endregion
 
 
@@ -77,6 +65,10 @@ public class DialogSet
     private void AddNewContent()
     {
         if (m_dialogLines == null) m_dialogLines = new List<DialogLine>();
+        if (m_type == DialogSetType.BasicType && m_dialogLines.Count > 0)
+        {
+            m_dialogLines.Last().LinkedToken = -1;
+        }
         m_dialogLines.Add(new DialogLine());
         m_nodeRect = new Rect(m_nodeRect.position.x,
             m_nodeRect.position.y,
@@ -103,8 +95,6 @@ public class DialogSet
             case DialogSetType.PlayerAnswer:
                 m_currentIcon = m_answerIcon; 
                 break;
-            case DialogSetType.Condition:
-                break; 
             default:
                 break;
         }
@@ -116,14 +106,16 @@ public class DialogSet
     /// <param name="_lineDescriptor">Line Descriptor</param>
     /// <param name="_otherSets">The other dialog sets</param>
     /// <param name="_onOutDialogLineSelected">Action called when an out point is selected</param>
-    /// <param name="_onInDialogSetSelected">Action called when the In point of the Dialog set is selected</param>
-    public void Draw(string _lineDescriptor, List<DialogSet> _otherSets, Action<DialogLine> _onOutDialogLineSelected, Action<DialogSet> _onInDialogSetSelected)
+    /// <param name="_onInDialogNodeSelected">Action called when the In point of the Dialog set is selected</param>
+    public void Draw(string _lineDescriptor, List<DialogSet> _otherSets, List<DialogCondition> _otherConditions, Action<DialogLine> _onOutDialogLineSelected, Action<DialogNode> _onInDialogNodeSelected)
     {
+        
         // --- Draw the connections between the parts --- //
         if(GUI.Button(InPointRect, m_pointIcon, m_connectionPointStyle))
         {
-            _onInDialogSetSelected.Invoke(this); 
+            _onInDialogNodeSelected.Invoke(this); 
         }
+        
         // --- Draw the Set and its Lines --- //
         GUI.Box(m_nodeRect, "", m_nodeStyle);
         Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + Dialog.MARGIN_HEIGHT, 25, 25);
@@ -132,13 +124,13 @@ public class DialogSet
             ProcessContextMenu();  
         }
         _r = new Rect(m_nodeRect.x + 10, m_nodeRect.y + Dialog.MARGIN_HEIGHT, Dialog.CONTENT_WIDTH , Dialog.TITLE_HEIGHT);
-        GUI.Label(_r, m_type.ToString() + " " + m_partToken.ToString() );
+        GUI.Label(_r, m_type.ToString() + " " + m_NodeToken.ToString() );
         _r.y += Dialog.TITLE_HEIGHT;
         DialogLine _c; 
         for (int i = 0; i < m_dialogLines.Count; i++)
         {
             _c = m_dialogLines[i]; 
-            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, m_type , (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets);
+            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, m_type , (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets, _otherConditions);
         }
         _r = new Rect(_r.position.x, _r.position.y + Dialog.SPACE_HEIGHT, _r.width, Dialog.BUTTON_HEIGHT); 
         if(GUI.Button(_r,"Add new Dialog Line"))
@@ -154,67 +146,8 @@ public class DialogSet
     }
 
     /// <summary>
-    /// Move the position of the Node of the delta
-    /// </summary>
-    /// <param name="_delta">Where to move the node position</param>
-    public void Drag(Vector2 _delta)
-    {
-        Rect _r = new Rect(m_nodeRect.position + _delta, m_nodeRect.size);
-        m_nodeRect = _r;
-    }
-
-    /// <summary>
-    ///Process the events relatives to the Dialog parts
-    /// </summary>
-    /// <param name="_e"></param>
-    /// <returns></returns>
-    public bool ProcessEvent(Event _e)
-    {
-        switch (_e.type)
-        {
-            case EventType.MouseDown:
-                if (_e.button == 0)
-                {
-                    if (m_nodeRect.Contains(_e.mousePosition))
-                    {
-                        m_isDragged = true;
-                        GUI.changed = true;
-                        IsSelected = true;
-                    }
-                    else
-                    {
-                        GUI.changed = true;
-                        IsSelected = false;
-                    }
-                }
-                else if (_e.button == 1 && IsSelected && m_nodeRect.Contains(_e.mousePosition))
-                {
-                    ProcessContextMenu();
-                    _e.Use();
-                }
-                else
-                    m_isDragged = false;
-                break;
-            case EventType.MouseUp:
-                m_isDragged = false;
-                break;
-            case EventType.MouseDrag:
-                if (_e.button == 0 && m_isDragged)
-                {
-                    Drag(_e.delta);
-                    _e.Use();
-                    return true;
-                }
-                break;
-            default:
-                break;
-        }
-        return false;
-    }
-
-    /// <summary>
     /// Call the event "m_onRemoveDialogPart" with argument as itself
-    /// -> Remove this part from the Dialog 
+    /// -> Remove this set from the Dialog 
     /// </summary>
     private void OnClickRemoveNode()
     {
@@ -224,7 +157,7 @@ public class DialogSet
     /// <summary>
     /// Display the Context menu on the selected DialogPart
     /// </summary>
-    private void ProcessContextMenu()
+    protected override void ProcessContextMenu()
     {
         GenericMenu _genericMenu = new GenericMenu();
         switch (m_type)
@@ -276,12 +209,12 @@ public class DialogSet
     /// <param name="_answerIcon">Icon of the Answer Dialog Set</param>
     /// <param name="_startingSetIcon">Icon of the Starting Set</param>
     /// <param name="_pointIcon">Icon of the in/out points</param>
-    /// <param name="_onRemovePart">Action Called to remove the Set from the Dialog</param>
+    /// <param name="_onRemoveSet">Action Called to remove the Set from the Dialog</param>
     /// <param name="_setStartingSet">Action called when the set is switch as the starting set</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogSetIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemovePart, Action<DialogSet> _setStartingSet)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogSetIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemoveSet, Action<DialogSet> _setStartingSet)
     {
         m_nodeStyle = _nodeStyle;
-        m_onRemoveDialogPart = _onRemovePart;
+        m_onRemoveDialogPart = _onRemoveSet;
         m_onSetStartingSet = _setStartingSet; 
         m_basicSetIcon = _dialogSetIcon;
         m_answerIcon = _answerIcon;
@@ -298,6 +231,5 @@ public class DialogSet
 public enum DialogSetType
 {
     BasicType, 
-    PlayerAnswer, 
-    Condition
+    PlayerAnswer
 }

@@ -31,10 +31,9 @@ public class DialogLine
 
         #endregion
 
-        #region Methods
+    #region Methods
 
 #if UNITY_EDITOR
-
         /// <summary>
         /// Get all the Ids of the dialog lines from the Line Descriptor
         /// </summary>
@@ -57,9 +56,9 @@ public class DialogLine
     /// <param name="_pointIcon">Icon of the out point</param>
     /// <param name="_pointStyle"> Style of the point
     /// <param name="_onOutLineSelected">Action called when the out point of this line is selected</param>
-    /// <param name="_otherParts">The other sets in the current Dialog</param>
+    /// <param name="_otherSets">The other sets in the current Dialog</param>
     /// <returns>Height used to draw the dialog Line</returns>
-    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, DialogSetType _dialogSetType, bool _isLastPoint, GUIContent _pointIcon, GUIStyle _pointStyle, Action<DialogLine> _onOutLineSelected, List<DialogSet> _otherParts)
+    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, DialogSetType _dialogSetType, bool _isLastPoint, GUIContent _pointIcon, GUIStyle _pointStyle, Action<DialogLine> _onOutLineSelected, List<DialogSet> _otherSets, List<DialogCondition> _otherConditions)
     {
         if (m_ids == null)
             InitEditor(_lineDescriptor); 
@@ -117,17 +116,22 @@ public class DialogLine
         {
             if(m_linkedToken != -1)
             {
-                if (_otherParts.Any(p => p.PartToken == m_linkedToken))
+                Rect _linkedRect = Rect.zero;
+                if (_otherSets.Any(s => s.NodeToken == m_linkedToken))
+                    _linkedRect = _otherSets.Where(p => p.NodeToken == m_linkedToken).First().InPointRect;
+                else if (_otherConditions.Any(c => c.NodeToken == m_linkedToken))
+                    _linkedRect = _otherConditions.Where(p => p.NodeToken == m_linkedToken).First().InPointRect;
+                else
+                    m_linkedToken = -1;
+                if (_linkedRect != Rect.zero)
                 {
-                    Rect _linkedRect = _otherParts.Where(p => p.PartToken == m_linkedToken).First().InPointRect; 
                     Handles.DrawBezier(m_pointRect.center, _linkedRect.center, m_pointRect.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.black, null, 2.0f);
-                    Handles.color = Color.black; 
+                    Handles.color = Color.black;
                     if (Handles.Button((m_pointRect.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                     {
-                        m_linkedToken = -1; 
+                        m_linkedToken = -1;
                     }
                 }
-                else m_linkedToken = -1; 
             }
             if (GUI.Button(m_pointRect, _pointIcon, _pointStyle))
             {
