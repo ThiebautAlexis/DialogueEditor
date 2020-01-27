@@ -40,7 +40,7 @@ public class DialogSet : DialogNode
     public DialogSet(Vector2 _nodePosition, Action<DialogSet> _onRemovePart, Action<DialogSet> _onSetStartingSet, GUIStyle _normalStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon)
     {
         m_NodeToken = UnityEngine.Random.Range(0, int.MaxValue); 
-        m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, Dialog.INITIAL_RECT_WIDTH, 0);
+        m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, INITIAL_NODE_WIDTH, 0);
         m_onRemoveDialogPart = _onRemovePart;
         m_onSetStartingSet = _onSetStartingSet;
         m_nodeStyle = _normalStyle;
@@ -72,8 +72,8 @@ public class DialogSet : DialogNode
         m_dialogLines.Add(new DialogLine());
         m_nodeRect = new Rect(m_nodeRect.position.x,
             m_nodeRect.position.y,
-            Dialog.INITIAL_RECT_WIDTH, 
-            (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_dialogLines.Count) + (Dialog.DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (Dialog.SPACE_HEIGHT * ((m_dialogLines.Count * 2)+1)) + Dialog.BUTTON_HEIGHT); 
+            INITIAL_NODE_WIDTH, 
+            INITIAL_NODE_HEIGHT + SPACE_HEIGHT + (DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (SPACE_HEIGHT * (m_dialogLines.Count+1)) + BUTTON_HEIGHT); 
     }
 
     /// <summary>
@@ -118,21 +118,21 @@ public class DialogSet : DialogNode
         
         // --- Draw the Set and its Lines --- //
         GUI.Box(m_nodeRect, "", m_nodeStyle);
-        Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + Dialog.MARGIN_HEIGHT, 25, 25);
+        Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + MARGIN_HEIGHT, 25, 25);
         if(GUI.Button(_r, m_currentIcon, m_nodeStyle))
         {
             ProcessContextMenu();  
         }
-        _r = new Rect(m_nodeRect.x + 10, m_nodeRect.y + Dialog.MARGIN_HEIGHT, Dialog.CONTENT_WIDTH , Dialog.TITLE_HEIGHT);
+        _r = new Rect(m_nodeRect.x + 10, _r.y, CONTENT_WIDTH , TITLE_HEIGHT);
         GUI.Label(_r, m_type.ToString() + " " + m_NodeToken.ToString() );
-        _r.y += Dialog.TITLE_HEIGHT;
+        _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT; 
         DialogLine _c; 
         for (int i = 0; i < m_dialogLines.Count; i++)
         {
             _c = m_dialogLines[i]; 
             _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, m_type , (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets, _otherConditions);
         }
-        _r = new Rect(_r.position.x, _r.position.y + Dialog.SPACE_HEIGHT, _r.width, Dialog.BUTTON_HEIGHT); 
+        _r = new Rect(_r.position.x, _r.y + SPACE_HEIGHT, _r.width, BUTTON_HEIGHT); 
         if(GUI.Button(_r,"Add new Dialog Line"))
         {
             AddNewContent(); 
@@ -140,7 +140,7 @@ public class DialogSet : DialogNode
         // --- Draw the starting Icon if this set is the Starting Set --- //
         if (m_isStartingSet)
         {
-            _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35 - 25 , m_nodeRect.position.y + Dialog.MARGIN_HEIGHT, 25, 25);
+            _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35 - 25 , m_nodeRect.position.y + MARGIN_HEIGHT, 25, 25);
             GUI.Box(_r, m_startingSetIcon, m_nodeStyle);
         }
     }
@@ -197,7 +197,7 @@ public class DialogSet : DialogNode
     private void RemoveContent(DialogLine _content)
     {
         m_dialogLines.Remove(_content);
-        m_nodeRect = new Rect(m_nodeRect.position.x, m_nodeRect.position.y, Dialog.INITIAL_RECT_WIDTH, (Dialog.MARGIN_HEIGHT * 2) + Dialog.TITLE_HEIGHT + (Dialog.POPUP_HEIGHT * m_dialogLines.Count) + (Dialog.DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (Dialog.SPACE_HEIGHT * ((m_dialogLines.Count * 2) + 1)) + Dialog.BUTTON_HEIGHT);
+        m_nodeRect = new Rect(m_nodeRect.position.x, m_nodeRect.position.y, INITIAL_NODE_WIDTH, INITIAL_NODE_HEIGHT + SPACE_HEIGHT + (DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (SPACE_HEIGHT * (m_dialogLines.Count + 1)) + BUTTON_HEIGHT);
     }
 
     /// <summary>

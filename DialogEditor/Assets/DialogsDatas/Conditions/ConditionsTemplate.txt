@@ -1,0 +1,5 @@
+condition_1 = false;
+condition_2 = false;
+condition_3 = true;
+condition_test = false;
+caca = true;

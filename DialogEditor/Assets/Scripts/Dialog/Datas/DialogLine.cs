@@ -70,13 +70,13 @@ public class DialogLine
 
             m_content = _content.String;
         }
-        Rect _r = new Rect(_startPos.x, _startPos.y + Dialog.SPACE_HEIGHT, Dialog.POPUP_HEIGHT, Dialog.POPUP_HEIGHT);
+        Rect _r = new Rect(_startPos.x, _startPos.y + DialogNode.SPACE_HEIGHT, DialogNode.POPUP_HEIGHT, DialogNode.POPUP_HEIGHT);
         if (GUI.Button(_r, "-"))
         {
             _removeAction.Invoke(this);
             return _r.y;
         }
-        _r = new Rect(_r.position.x + Dialog.POPUP_HEIGHT, _r.position.y, Dialog.CONTENT_WIDTH - Dialog.POPUP_HEIGHT, Dialog.POPUP_HEIGHT);
+        _r = new Rect(_r.position.x + DialogNode.POPUP_HEIGHT, _r.position.y, DialogNode.CONTENT_WIDTH - DialogNode.POPUP_HEIGHT, DialogNode.POPUP_HEIGHT);
         
         m_nextIndex = EditorGUI.Popup(_r, "Line ID", m_index, m_ids);
         if (m_nextIndex != m_index)
@@ -90,28 +90,28 @@ public class DialogLine
             
             m_content = _content.String;
         }
-        _r.y += Dialog.POPUP_HEIGHT;
+        _r.y += DialogNode.POPUP_HEIGHT;
 
         // -- Draw the dialog line content -- //
-        _r = new Rect(_startPos.x, _r.position.y + Dialog.SPACE_HEIGHT, Dialog.CONTENT_WIDTH, Dialog.BASIC_CONTENT_HEIGHT);
+        _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.BASIC_CONTENT_HEIGHT);
         GUI.TextArea(_r, m_content);
-        _r.y += Dialog.BASIC_CONTENT_HEIGHT;
+        _r.y += DialogNode.BASIC_CONTENT_HEIGHT;
 
         EditorGUI.BeginDisabledGroup(_dialogSetType == DialogSetType.PlayerAnswer);
         // -- Draw the Dialog Line Waiting Type -- // 
-        _r = new Rect(_startPos.x, _r.position.y, Dialog.CONTENT_WIDTH, Dialog.POPUP_HEIGHT);
+        _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.POPUP_HEIGHT);
         m_waitingType = (WaitingType)EditorGUI.EnumPopup(_r, "Waiting Type: ", m_waitingType);
-        _r.y += Dialog.POPUP_HEIGHT;
+        _r.y += DialogNode.POPUP_HEIGHT;
 
         EditorGUI.BeginDisabledGroup(m_waitingType == WaitingType.WaitForClick); 
         // -- Draw the Dialog Waiting Time Value -- //
-        _r = new Rect(_startPos.x, _r.position.y, Dialog.CONTENT_WIDTH, Dialog.POPUP_HEIGHT);
+        _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.POPUP_HEIGHT);
         m_waitingTime = EditorGUI.Slider(_r, "Waiting Time (s): " ,m_waitingTime, 0, 10); 
-        _r.y += Dialog.POPUP_HEIGHT;
         EditorGUI.EndDisabledGroup();
-        EditorGUI.EndDisabledGroup(); 
-
-        m_pointRect = new Rect(_startPos.x + Dialog.CONTENT_WIDTH, (_startPos.y + _r.y) / 2, 25, 25);
+        EditorGUI.EndDisabledGroup();
+        _r.y += DialogNode.SPACE_HEIGHT;
+        
+        m_pointRect = new Rect(_startPos.x + DialogNode.CONTENT_WIDTH, (_startPos.y + _r.y) / 2, 25, 25);
         if (_isLastPoint || _dialogSetType == DialogSetType.PlayerAnswer)
         {
             if(m_linkedToken != -1)

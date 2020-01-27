@@ -9,15 +9,25 @@ public abstract class DialogNode
     [SerializeField] protected int m_NodeToken = 0;
     protected bool m_isDragged = false;
 
+#if UNITY_EDITOR
     protected GUIStyle m_nodeStyle = null;
     protected GUIStyle m_connectionPointStyle = null;
     protected GUIContent m_pointIcon = null;
     protected GUIContent m_currentIcon = null;
-
+    public const float INITIAL_NODE_WIDTH = 250;
+    public const float INITIAL_NODE_HEIGHT = MARGIN_HEIGHT + TITLE_HEIGHT;
+    public const float CONTENT_WIDTH = 230;
+    public const float MARGIN_HEIGHT = 12;
+    public const float TITLE_HEIGHT = 20;
+    public const float SPACE_HEIGHT = 15;
+    public const float POPUP_HEIGHT = 15;
+    public const float BUTTON_HEIGHT = 30;
+    public const float DIALOGLINE_SETTINGS_HEIGHT = BASIC_CONTENT_HEIGHT + (POPUP_HEIGHT * 2) + SPACE_HEIGHT;
+    public const float BASIC_CONTENT_HEIGHT = 40;
+#endif
     public bool IsSelected { get; set; }
     public int NodeToken { get { return m_NodeToken; } }
     public Rect InPointRect { get { return new Rect(m_nodeRect.position.x - 15.5f, m_nodeRect.position.y + 6.0f, 25, 25); } }
-
 
 
     #region Methods

@@ -27,15 +27,6 @@ public class Dialog
     private GUIContent m_pointIcon = null;
     private GUIContent m_startingSetIcon = null;
     private GUIContent m_conditionIcon = null; 
-    public const float INITIAL_RECT_WIDTH = 300;
-    public const float CONTENT_WIDTH = 280;
-    public const float MARGIN_HEIGHT = 12;
-    public const float TITLE_HEIGHT = 20;
-    public const float SPACE_HEIGHT = 10;
-    public const float POPUP_HEIGHT = 15;
-    public const float BUTTON_HEIGHT = 30;
-    public const float DIALOGLINE_SETTINGS_HEIGHT = BASIC_CONTENT_HEIGHT + (POPUP_HEIGHT*2); 
-    public const float BASIC_CONTENT_HEIGHT = 40;
 #endif
     [SerializeField]private string m_dialogName = "";
     [SerializeField]private string m_spreadSheetID = "";
@@ -43,7 +34,8 @@ public class Dialog
 
     [SerializeField] private List<DialogSet> m_dialogSets = new List<DialogSet>();
     [SerializeField] private List<DialogCondition> m_dialogConditions = new List<DialogCondition>(); 
-    private string m_lineDescriptor = ""; 
+    private string m_lineDescriptor = "";
+    private string[] m_conditionsDescriptor = null; 
     public bool AnyPartIsSelected {  get { return m_dialogSets.Any(p => p.IsSelected) || m_dialogConditions.Any(c => c.IsSelected);  } }
 
     public string DialogName { get { return m_dialogName; } }
@@ -109,7 +101,7 @@ public class Dialog
         }
         for (int i = 0; i < m_dialogConditions.Count; i++)
         {
-            m_dialogConditions[i].Draw(m_lineDescriptor, m_dialogSets, m_dialogConditions, _onInNodeSelected, _onOutConditionSelected);
+            m_dialogConditions[i].Draw(m_conditionsDescriptor, m_dialogSets, m_dialogConditions, _onInNodeSelected, _onOutConditionSelected);
             if (m_dialogConditions[i].ProcessEvent(Event.current))
             {
                 _change = true;
@@ -151,6 +143,10 @@ public class Dialog
         if (File.Exists(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension)))
         {
             m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension));
+        }
+        if(File.Exists(DialogSettings.ConditionsFilePath))
+        {
+            m_conditionsDescriptor = File.ReadAllLines(DialogSettings.ConditionsFilePath).Select(c => c.Split('=')[0].Trim()).ToArray() ; 
         }
     }
 
