@@ -47,7 +47,8 @@ public class DialogEditor : EditorWindow
 
     private DialogNode m_inSelectedNode = null;
     private DialogLine m_outSelectedLine = null;
-    private DialogCondition m_outSelectedCondition = null; 
+    private DialogCondition m_outSelectedCondition = null;
+    private bool m_outConditionValue = true; 
     #endregion
 
     #endregion
@@ -331,10 +332,11 @@ public class DialogEditor : EditorWindow
     /// Select the out point of a condition
     /// </summary>
     /// <param name="_condition">Content linked to the out point selected</param>
-    private void SelectOutCondition(DialogCondition _condition)
+    private void SelectOutCondition(DialogCondition _condition, bool _valueCondition)
     {
         if (m_outSelectedLine != null) m_outSelectedLine = null; 
         m_outSelectedCondition = _condition;
+        m_outConditionValue = _valueCondition; 
         if (m_inSelectedNode != null && m_outSelectedCondition != null)
         {
             LinkDialogSet();
@@ -347,7 +349,12 @@ public class DialogEditor : EditorWindow
     private void LinkDialogSet()
     {
         if (m_outSelectedCondition != null)
-            m_outSelectedCondition.LinkedToken = m_inSelectedNode.NodeToken;
+        {
+            if(m_outConditionValue)
+                m_outSelectedCondition.LinkedTokenTrue = m_inSelectedNode.NodeToken;
+            else
+                m_outSelectedCondition.LinkedTokenFalse = m_inSelectedNode.NodeToken;
+        }
         else if (m_outSelectedLine != null)
             m_outSelectedLine.LinkedToken = m_inSelectedNode.NodeToken; 
         m_inSelectedNode = null;
@@ -377,9 +384,14 @@ public class DialogEditor : EditorWindow
                 Handles.DrawBezier(m_outSelectedLine.PointRect.center, Event.current.mousePosition, m_outSelectedLine.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
                 GUI.changed = true;
             }
-            else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRect != Rect.zero)
+            else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRectTrue != Rect.zero && m_outConditionValue)
             {
-                Handles.DrawBezier(m_outSelectedCondition.OutPointRect.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                Handles.DrawBezier(m_outSelectedCondition.OutPointRectTrue.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectTrue.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                GUI.changed = true;
+            }
+            else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRectFalse != Rect.zero && !m_outConditionValue)
+            {
+                Handles.DrawBezier(m_outSelectedCondition.OutPointRectFalse.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectFalse.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
                 GUI.changed = true;
             }
         }

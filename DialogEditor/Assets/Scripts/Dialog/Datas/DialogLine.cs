@@ -15,7 +15,7 @@ public class DialogLine
     private string m_content = "";
     [SerializeField] private int m_linkedToken = -1;
     [SerializeField] private WaitingType m_waitingType = WaitingType.WaitForTime;
-    [SerializeField] private float m_waitingTime = 0.0f; 
+    [SerializeField] private float m_waitingTime = 0.0f;
     private Rect m_pointRect;
 
     private string[] m_ids = null; 

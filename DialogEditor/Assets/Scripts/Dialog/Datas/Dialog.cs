@@ -87,7 +87,7 @@ public class Dialog
     /// <summary>
     /// Draw the dialog
     /// </summary>
-    public void Draw(Action<DialogLine> _onOutLineSelected, Action<DialogNode> _onInNodeSelected, Action<DialogCondition> _onOutConditionSelected)
+    public void Draw(Action<DialogLine> _onOutLineSelected, Action<DialogNode> _onInNodeSelected, Action<DialogCondition, bool> _onOutConditionSelected)
     {
         if (m_dialogSets == null) m_dialogSets = new List<DialogSet>();
         bool _change = false;
@@ -101,7 +101,7 @@ public class Dialog
         }
         for (int i = 0; i < m_dialogConditions.Count; i++)
         {
-            m_dialogConditions[i].Draw(m_conditionsDescriptor, m_dialogSets, m_dialogConditions, _onInNodeSelected, _onOutConditionSelected);
+            m_dialogConditions[i].Draw(m_dialogSets, m_dialogConditions, _onInNodeSelected, _onOutConditionSelected);
             if (m_dialogConditions[i].ProcessEvent(Event.current))
             {
                 _change = true;
@@ -130,23 +130,24 @@ public class Dialog
         m_answerIcon = _answerIcon;
         m_startingSetIcon = _startingSetIcon; 
         m_pointIcon = _pointIcon;
-        m_conditionIcon = _conditionIcon; 
-        if (m_dialogSets == null) m_dialogSets = new List<DialogSet>(); 
+        m_conditionIcon = _conditionIcon;
+        if (File.Exists(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension)))
+        {
+            m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension));
+        }
+        if (File.Exists(DialogSettings.ConditionsFilePath))
+        {
+            m_conditionsDescriptor = File.ReadAllLines(DialogSettings.ConditionsFilePath).Select(c => c.Split('=')[0].Trim()).ToArray();
+        }
+        if (m_dialogSets == null) m_dialogSets = new List<DialogSet>();
+        if (m_dialogConditions == null) m_dialogConditions = new List<DialogCondition>(); 
         for(int i = 0; i < m_dialogSets.Count; i++)
         {
             m_dialogSets[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, _startingSetIcon, m_pointIcon, RemoveSet, SetStartingDialogSet); 
         }
         for (int i = 0; i < m_dialogConditions.Count; i++)
         {
-            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition) ; 
-        }
-        if (File.Exists(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension)))
-        {
-            m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension));
-        }
-        if(File.Exists(DialogSettings.ConditionsFilePath))
-        {
-            m_conditionsDescriptor = File.ReadAllLines(DialogSettings.ConditionsFilePath).Select(c => c.Split('=')[0].Trim()).ToArray() ; 
+            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition, m_conditionsDescriptor) ; 
         }
     }
 
@@ -225,7 +226,7 @@ public class Dialog
     /// Get the first Set od this Dialog
     /// </summary>
     /// <returns></returns>
-    public DialogSet GetNextSet()
+    public DialogSet GetFirstSet()
     {
         if (!m_dialogSets.Any(s => s.IsStartingSet))
             return m_dialogSets[0]; 
@@ -239,8 +240,21 @@ public class Dialog
     /// <returns></returns>
     public DialogSet GetNextSet(int _nextToken)
     {
+        if(m_dialogConditions.Any(c => c.NodeToken == _nextToken))
+        {
+            DialogCondition _condition = m_dialogConditions.Where(c => c.NodeToken == _nextToken).FirstOrDefault();
+            if (_condition == null) return null;
+            /// CHECK CONDITION HERE ///
+            #if UNITY_EDITOR
+            // On Play Load the conditions Database to check with the current values
+            #else 
+            // Load the current profile of the player and check its Condition Database 
+            #endif
+            int _conditionToken = _condition.LinkedTokenTrue; //_condition.LinkedTokenFalse 
+            return GetNextSet(_conditionToken); 
+        }
         return m_dialogSets.Where(s => s.NodeToken == _nextToken).FirstOrDefault();
     }
 
-    #endregion
+#endregion
 }

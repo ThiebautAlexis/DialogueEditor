@@ -57,7 +57,7 @@ public class DialogReader : MonoBehaviour
             yield break;
         }
         // Get the Starting Dialog Set //
-        DialogSet _set = m_dialog.GetNextSet();
+        DialogSet _set = m_dialog.GetFirstSet();
         yield return StartCoroutine(DisplayDialogSet(_set)); 
         while (true)
         {
