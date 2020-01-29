@@ -5,10 +5,11 @@ using System.Collections.Generic;
 
 public class DialogSettingsEditorWindow : EditorWindow
 { 
-    private List<ConditionPair> m_conditions = null;
+    private List<ConditionPair> m_conditionsPair = null;
     private string m_addedCondition = "";
     private GUIStyle m_titleStyle;
 
+    private DialogsSettings m_dialogsSettings = null; 
     #region Methods 
 
     #region Static Method
@@ -24,11 +25,11 @@ public class DialogSettingsEditorWindow : EditorWindow
     private void DrawConditions()
     {
         GUILayout.Label("CONDITIONS", m_titleStyle);
-        for (int i = 0; i < m_conditions.Count; i++)
+        for (int i = 0; i < m_conditionsPair.Count; i++)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(m_conditions[i].Key, GUILayout.MinWidth(150), GUILayout.MaxWidth(200));
-            m_conditions[i].Value = GUILayout.Toggle(m_conditions[i].Value, "Initial Value");
+            GUILayout.Label(m_conditionsPair[i].Key, GUILayout.MinWidth(150), GUILayout.MaxWidth(200));
+            m_conditionsPair[i].Value = GUILayout.Toggle(m_conditionsPair[i].Value, "Initial Value");
             GUILayout.EndHorizontal();
         }
         GUILayout.BeginHorizontal();
@@ -36,19 +37,40 @@ public class DialogSettingsEditorWindow : EditorWindow
         if (GUILayout.Button("Add Condition to database") && m_addedCondition.Trim() != string.Empty)
         {
             m_addedCondition = m_addedCondition.Trim().Replace(' ', '_'); 
-            m_conditions.Add(new ConditionPair(m_addedCondition, false));
+            m_conditionsPair.Add(new ConditionPair(m_addedCondition, false));
             m_addedCondition = "";
         }
         GUILayout.EndHorizontal();
 
-        if (GUILayout.Button("Save Conditions"))
+        if (GUILayout.Button("Apply Conditions"))
         {
             string _savedDatas = string.Empty;
-            for (int i = 0; i < m_conditions.Count; i++)
+            for (int i = 0; i < m_conditionsPair.Count; i++)
             {
-                _savedDatas += m_conditions[i].Key + " = " + m_conditions[i].Value.ToString().ToLower() + ";\n";
+                _savedDatas += m_conditionsPair[i].Key + " = " + m_conditionsPair[i].Value.ToString().ToLower() + ";\n";
             }
-            File.WriteAllText(DialogSettings.ConditionsFilePath, _savedDatas);
+            m_dialogsSettings.LuaConditions = _savedDatas; 
+        }
+    }
+
+    private void LoadSettings()
+    {
+        if (!File.Exists(DialogsSettings.SettingsFilePath)) return; 
+        string _jsonSettings = File.ReadAllText(DialogsSettings.SettingsFilePath); 
+        m_dialogsSettings = JsonUtility.FromJson<DialogsSettings>(_jsonSettings); 
+    }
+
+    private void SaveSettings(bool _displayFeedback = true)
+    {
+        string _jsonSettings = JsonUtility.ToJson(m_dialogsSettings, true);
+        if (!Directory.Exists(DialogsSettings.SettingsPath))
+        {
+            Directory.CreateDirectory(DialogsSettings.SettingsPath);
+        }
+        File.WriteAllText(DialogsSettings.SettingsFilePath, _jsonSettings);
+        if(_displayFeedback)
+        {
+            EditorUtility.DisplayDialog("File saved", $"The Dialogs settings has been successfully saved", "Ok!");
         }
     }
     #endregion
@@ -56,27 +78,43 @@ public class DialogSettingsEditorWindow : EditorWindow
     #region Unity Methods
     private void OnEnable()
     {
-        if (!Directory.Exists(DialogSettings.ConditionsPath))
-            Directory.CreateDirectory(DialogSettings.ConditionsPath);
-        if (!File.Exists(DialogSettings.ConditionsFilePath))
-            File.WriteAllText(DialogSettings.ConditionsFilePath, "");
-        string[] _conditions = File.ReadAllLines(DialogSettings.ConditionsFilePath);
-        m_conditions = new List<ConditionPair>();
-        for (int i = 0; i < _conditions.Length; i++)
-        {
-            string[] _pair = _conditions[i].Split('=');
-            m_conditions.Add(new ConditionPair(_pair[0].Trim(), _pair[1].Trim())); 
-        }
 
         m_titleStyle = new GUIStyle();
         m_titleStyle.fontStyle = FontStyle.Bold;
         m_titleStyle.fontSize = 20;
-        m_titleStyle.alignment = TextAnchor.MiddleCenter; 
+        m_titleStyle.alignment = TextAnchor.MiddleCenter;
+
+        if (!Directory.Exists(DialogsSettings.SettingsPath))
+            Directory.CreateDirectory(DialogsSettings.SettingsPath);
+        if (!File.Exists(DialogsSettings.SettingsFilePath))
+        {
+            m_dialogsSettings = new DialogsSettings();
+            SaveSettings(false); 
+        }
+        else
+        {
+            LoadSettings(); 
+        }
+        if (m_dialogsSettings == null) return;
+        m_conditionsPair = new List<ConditionPair>();
+        if (m_dialogsSettings.LuaConditions == string.Empty) return; 
+        string[] _conditions = m_dialogsSettings.LuaConditions.Split('\n'); 
+        for (int i = 0; i < _conditions.Length; i++)
+        {
+            string[] _pair = _conditions[i].Split('=');
+            if (_pair[0].Trim() == string.Empty || _pair[1].Trim() == string.Empty) return; 
+            m_conditionsPair.Add(new ConditionPair(_pair[0].Trim(), _pair[1].Trim())); 
+        }
     }
 
     private void OnGUI()
     {
-        DrawConditions(); 
+        DrawConditions();
+
+        if (GUILayout.Button("Save Settings"))
+        {
+            SaveSettings();
+        }
     }
     #endregion
 

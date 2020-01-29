@@ -22,6 +22,7 @@ public class DialogCondition : DialogNode
     private Action<DialogCondition> m_onRemoveDialogCondition = null;
     private bool m_displayLUACode = false;
     private List<Condition> m_conditionsConverted = new List<Condition>();
+    private DialogsSettings m_dialogSettings; 
     private string[] m_conditionsDescriptor = null; 
     public static string[] Equalities = new string[2] { "==", "~=" };
     public static string[] BoolValues = new string[2] { "true", "false" };
@@ -268,7 +269,7 @@ public class DialogCondition : DialogNode
     /// <param name="_conditionIcon">Icon of the Condition Node</param>
     /// <param name="_pointIcon">Icon of the connection points</param>
     /// <param name="_onRemoveCondition">Event called when the Icon is removed</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon, Action<DialogCondition> _onRemoveCondition, string[] _conditionsDescriptor)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon, Action<DialogCondition> _onRemoveCondition, DialogsSettings _dialogSettings)
     {
         m_nodeStyle = _nodeStyle;
         m_connectionPointStyle = _connectionPointStyle;
@@ -276,7 +277,8 @@ public class DialogCondition : DialogNode
         m_currentIcon = _conditionIcon; 
         m_pointIcon = _pointIcon;
         m_onRemoveDialogCondition = _onRemoveCondition;
-        m_conditionsDescriptor = _conditionsDescriptor;
+        m_dialogSettings = _dialogSettings;
+        m_conditionsDescriptor = m_dialogSettings.LuaConditions.Split('\n').Select(c => c.Split('=')[0].Trim()).ToArray(); 
         InitConditionsFromString();
     }
 

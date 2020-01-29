@@ -35,7 +35,7 @@ public class Dialog
     [SerializeField] private List<DialogSet> m_dialogSets = new List<DialogSet>();
     [SerializeField] private List<DialogCondition> m_dialogConditions = new List<DialogCondition>(); 
     private string m_lineDescriptor = "";
-    private string[] m_conditionsDescriptor = null; 
+    private DialogsSettings m_dialogSettings = null; 
     public bool AnyPartIsSelected {  get { return m_dialogSets.Any(p => p.IsSelected) || m_dialogConditions.Any(c => c.IsSelected);  } }
 
     public string DialogName { get { return m_dialogName; } }
@@ -135,9 +135,9 @@ public class Dialog
         {
             m_lineDescriptor = File.ReadAllText(Path.Combine(LineDescriptorPath, m_spreadSheetID.GetHashCode().ToString() + LineDescriptorPostfixWithExtension));
         }
-        if (File.Exists(DialogSettings.ConditionsFilePath))
+        if (File.Exists(DialogsSettings.SettingsFilePath))
         {
-            m_conditionsDescriptor = File.ReadAllLines(DialogSettings.ConditionsFilePath).Select(c => c.Split('=')[0].Trim()).ToArray();
+            m_dialogSettings = JsonUtility.FromJson<DialogsSettings>(File.ReadAllText(DialogsSettings.SettingsFilePath)); 
         }
         if (m_dialogSets == null) m_dialogSets = new List<DialogSet>();
         if (m_dialogConditions == null) m_dialogConditions = new List<DialogCondition>(); 
@@ -147,7 +147,7 @@ public class Dialog
         }
         for (int i = 0; i < m_dialogConditions.Count; i++)
         {
-            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition, m_conditionsDescriptor) ; 
+            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition, m_dialogSettings) ; 
         }
     }
 

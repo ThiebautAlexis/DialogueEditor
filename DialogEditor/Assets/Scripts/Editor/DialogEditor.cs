@@ -81,7 +81,7 @@ public class DialogEditor : EditorWindow
         }
         DownloadSpreadSheet(_spreadsheetId); 
         SetNewDialog(new Dialog(_dialogName, _spreadsheetId));
-        string _jsonDialog = JsonUtility.ToJson(CurrentDialog);
+        string _jsonDialog = JsonUtility.ToJson(CurrentDialog, true);
         if (!Directory.Exists(Dialog.DialogAssetPath))
         {
             Directory.CreateDirectory(Dialog.DialogAssetPath);
