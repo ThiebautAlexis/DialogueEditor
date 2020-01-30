@@ -7,6 +7,7 @@ public class DialogSettingsEditorWindow : EditorWindow
 { 
     private List<ConditionPair> m_conditionsPair = null;
     private string m_addedCondition = "";
+    private string m_addedCharacterName = ""; 
     private GUIStyle m_titleStyle;
 
     private DialogsSettings m_dialogsSettings = null; 
@@ -30,6 +31,12 @@ public class DialogSettingsEditorWindow : EditorWindow
             GUILayout.BeginHorizontal();
             GUILayout.Label(m_conditionsPair[i].Key, GUILayout.MinWidth(150), GUILayout.MaxWidth(200));
             m_conditionsPair[i].Value = GUILayout.Toggle(m_conditionsPair[i].Value, "Initial Value");
+            if(GUILayout.Button("-", GUILayout.Width(15), GUILayout.Height(15)))
+            {
+                m_conditionsPair.RemoveAt(i);
+                GUILayout.EndHorizontal(); 
+                continue; 
+            }
             GUILayout.EndHorizontal();
         }
         GUILayout.BeginHorizontal();
@@ -51,6 +58,37 @@ public class DialogSettingsEditorWindow : EditorWindow
             }
             m_dialogsSettings.LuaConditions = _savedDatas; 
         }
+    }
+
+    private void DrawColors()
+    {
+        GUILayout.Label("COLORS", m_titleStyle);
+        m_dialogsSettings.OverrideCharacterColor = EditorGUILayout.Toggle("Override Character Color?", m_dialogsSettings.OverrideCharacterColor); 
+
+        CharacterColorSettings _settings = null;
+        for (int i = 0; i < m_dialogsSettings.CharactersColor.Count; i++)
+        {
+            _settings = m_dialogsSettings.CharactersColor[i]; 
+            GUILayout.BeginHorizontal(); 
+            GUILayout.Label(_settings.CharacterName, GUILayout.Width(position.width / 2 - 10));
+            _settings.CharacterColor = EditorGUILayout.ColorField(_settings.CharacterColor, GUILayout.Width(position.width / 2 - 20));
+            if (GUILayout.Button("-", GUILayout.Width(15), GUILayout.Height(15)))
+            {
+                m_dialogsSettings.CharactersColor.RemoveAt(i);
+                GUILayout.EndHorizontal();
+                continue; 
+            }
+            GUILayout.EndHorizontal(); 
+        }
+        GUILayout.BeginHorizontal();
+        m_addedCharacterName = GUILayout.TextField(m_addedCharacterName, GUILayout.Width(position.width/2)); 
+        if (GUILayout.Button("Add new Character", GUILayout.Width(position.width / 2)) && m_addedCharacterName.Length >= 3)
+        {
+            m_addedCharacterName = m_addedCharacterName.Replace(' ', '_'); 
+            m_dialogsSettings.CharactersColor.Add(new CharacterColorSettings(m_addedCharacterName));
+            m_addedCharacterName = string.Empty;
+        }
+        GUILayout.EndHorizontal(); 
     }
 
     private void LoadSettings()
@@ -110,6 +148,7 @@ public class DialogSettingsEditorWindow : EditorWindow
     private void OnGUI()
     {
         DrawConditions();
+        DrawColors(); 
 
         if (GUILayout.Button("Save Settings"))
         {

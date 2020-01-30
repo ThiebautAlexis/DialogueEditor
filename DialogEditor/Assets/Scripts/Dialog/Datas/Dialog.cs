@@ -2,7 +2,8 @@
 using UnityEngine;
 using System;
 using System.Linq;
-using System.IO; 
+using System.IO;
+using MoonSharp.Interpreter; 
 
 [Serializable]
 public class Dialog
@@ -93,7 +94,7 @@ public class Dialog
         bool _change = false;
         for(int i = 0; i < m_dialogSets.Count; i++)
         {
-            m_dialogSets[i].Draw(m_lineDescriptor, m_dialogSets, m_dialogConditions, _onOutLineSelected, _onInNodeSelected);
+            m_dialogSets[i].Draw(m_lineDescriptor, m_dialogSets, m_dialogConditions, _onOutLineSelected, _onInNodeSelected, m_dialogSettings.CharactersColor);
             if(m_dialogSets[i].ProcessEvent(Event.current))
             {
                 _change = true;
@@ -214,13 +215,31 @@ public class Dialog
     /// </summary>
     private void SaveDialog()
     {
-        string _jsonDialog = JsonUtility.ToJson(this);
+        string _jsonDialog = JsonUtility.ToJson(this, true);
         string _name = m_dialogName.Replace(" ", string.Empty);
         Debug.Log("The Dialog Asset " + m_dialogName + " has been saved in " + DialogAssetPath); 
         File.WriteAllText(Path.Combine(DialogAssetPath, _name + DialogAssetExtension), _jsonDialog);
         UnityEditor.EditorUtility.DisplayDialog("File saved", $"The {m_dialogName} dialog has been successfully saved", "Ok!"); 
     }
 #endif
+    private bool CheckCondition(string _condition)
+    {
+        string _conditionFuncString = ""; 
+        if (File.Exists(DialogsSettings.SettingsFilePath))
+        {
+            _conditionFuncString = JsonUtility.FromJson<DialogsSettings>(File.ReadAllText(DialogsSettings.SettingsFilePath)).LuaConditions;
+        }
+        _conditionFuncString += $@"
+function check_condition()
+            return {_condition}
+end;
+";
+        Script _script = new Script();
+        _script.DoString(_conditionFuncString);
+
+        DynValue _operation = _script.Globals.Get("check_condition"); 
+        return _script.Call(_operation).Boolean; 
+    }
 
     /// <summary>
     /// Get the first Set od this Dialog
@@ -244,13 +263,8 @@ public class Dialog
         {
             DialogCondition _condition = m_dialogConditions.Where(c => c.NodeToken == _nextToken).FirstOrDefault();
             if (_condition == null) return null;
-            /// CHECK CONDITION HERE ///
-            #if UNITY_EDITOR
-            // On Play Load the conditions Database to check with the current values
-            #else 
-            // Load the current profile of the player and check its Condition Database 
-            #endif
-            int _conditionToken = _condition.LinkedTokenTrue; //_condition.LinkedTokenFalse 
+
+            int _conditionToken = CheckCondition(_condition.Condition) ? _condition.LinkedTokenTrue : _condition.LinkedTokenFalse; 
             return GetNextSet(_conditionToken); 
         }
         return m_dialogSets.Where(s => s.NodeToken == _nextToken).FirstOrDefault();

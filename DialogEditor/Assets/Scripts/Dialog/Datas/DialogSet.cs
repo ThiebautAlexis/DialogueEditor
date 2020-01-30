@@ -107,7 +107,7 @@ public class DialogSet : DialogNode
     /// <param name="_otherSets">The other dialog sets</param>
     /// <param name="_onOutDialogLineSelected">Action called when an out point is selected</param>
     /// <param name="_onInDialogNodeSelected">Action called when the In point of the Dialog set is selected</param>
-    public void Draw(string _lineDescriptor, List<DialogSet> _otherSets, List<DialogCondition> _otherConditions, Action<DialogLine> _onOutDialogLineSelected, Action<DialogNode> _onInDialogNodeSelected)
+    public void Draw(string _lineDescriptor, List<DialogSet> _otherSets, List<DialogCondition> _otherConditions, Action<DialogLine> _onOutDialogLineSelected, Action<DialogNode> _onInDialogNodeSelected, List<CharacterColorSettings> _colorSettings)
     {
         
         // --- Draw the connections between the parts --- //
@@ -130,7 +130,7 @@ public class DialogSet : DialogNode
         for (int i = 0; i < m_dialogLines.Count; i++)
         {
             _c = m_dialogLines[i]; 
-            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, m_type , (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets, _otherConditions);
+            _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, m_type , (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets, _otherConditions, _colorSettings);
         }
         _r = new Rect(_r.position.x, _r.y + SPACE_HEIGHT, _r.width, BUTTON_HEIGHT); 
         if(GUI.Button(_r,"Add new Dialog Line"))

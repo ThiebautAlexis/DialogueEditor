@@ -1,1 +1,98 @@
-{"m_dialogName":"Test","m_spreadSheetID":"15zUWaJyK8YBBAKbx9x_uvrRAT_sBNRSmL5fDfmvOzH0","m_dialogSets":[{"m_nodeRect":{"serializedVersion":"2","x":897.0,"y":115.0,"width":250.0,"height":292.0},"m_NodeToken":39801549,"m_dialogLines":[{"m_index":2,"m_key":"WIL21STR","m_linkedToken":-1,"m_waitingType":0,"m_waitingTime":0.0},{"m_index":2,"m_key":"WIL21STR","m_linkedToken":-1,"m_waitingType":1,"m_waitingTime":0.0}],"m_type":0,"m_isStartingSet":false},{"m_nodeRect":{"serializedVersion":"2","x":51.0,"y":65.0,"width":250.0,"height":292.0},"m_NodeToken":942570906,"m_dialogLines":[{"m_index":1,"m_key":"EV15POL","m_linkedToken":-1,"m_waitingType":1,"m_waitingTime":0.0},{"m_index":0,"m_key":"AL13STR","m_linkedToken":1496495172,"m_waitingType":1,"m_waitingTime":0.0}],"m_type":0,"m_isStartingSet":false},{"m_nodeRect":{"serializedVersion":"2","x":906.0,"y":575.0,"width":250.0,"height":192.0},"m_NodeToken":1111069342,"m_dialogLines":[{"m_index":2,"m_key":"WIL21STR","m_linkedToken":-1,"m_waitingType":1,"m_waitingTime":0.0}],"m_type":0,"m_isStartingSet":false}],"m_dialogConditions":[{"m_nodeRect":{"serializedVersion":"2","x":457.0,"y":326.0,"width":250.0,"height":137.0},"m_NodeToken":1496495172,"m_condition":"if(condition_2 == true)","m_linkedTokenTrue":39801549,"m_linkedTokenFalse":1111069342}]}
+{
+    "m_dialogName": "Test",
+    "m_spreadSheetID": "15zUWaJyK8YBBAKbx9x_uvrRAT_sBNRSmL5fDfmvOzH0",
+    "m_dialogSets": [
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 975.0,
+                "y": 146.0,
+                "width": 250.0,
+                "height": 292.0
+            },
+            "m_NodeToken": 39801549,
+            "m_dialogLines": [
+                {
+                    "m_index": 2,
+                    "m_key": "WIL21STR",
+                    "m_linkedToken": -1,
+                    "m_waitingType": 0,
+                    "m_waitingTime": 0.0
+                },
+                {
+                    "m_index": 0,
+                    "m_key": "AL13STR",
+                    "m_linkedToken": -1,
+                    "m_waitingType": 1,
+                    "m_waitingTime": 2.5
+                }
+            ],
+            "m_type": 0,
+            "m_isStartingSet": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 129.0,
+                "y": 96.0,
+                "width": 250.0,
+                "height": 292.0
+            },
+            "m_NodeToken": 942570906,
+            "m_dialogLines": [
+                {
+                    "m_index": 1,
+                    "m_key": "EV15POL",
+                    "m_linkedToken": -1,
+                    "m_waitingType": 0,
+                    "m_waitingTime": 10.0
+                },
+                {
+                    "m_index": 0,
+                    "m_key": "AL13STR",
+                    "m_linkedToken": 1496495172,
+                    "m_waitingType": 0,
+                    "m_waitingTime": 10.0
+                }
+            ],
+            "m_type": 0,
+            "m_isStartingSet": true
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 980.0,
+                "y": 531.0,
+                "width": 250.0,
+                "height": 192.0
+            },
+            "m_NodeToken": 1111069342,
+            "m_dialogLines": [
+                {
+                    "m_index": 1,
+                    "m_key": "EV15POL",
+                    "m_linkedToken": -1,
+                    "m_waitingType": 0,
+                    "m_waitingTime": 10.0
+                }
+            ],
+            "m_type": 0,
+            "m_isStartingSet": false
+        }
+    ],
+    "m_dialogConditions": [
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 535.0,
+                "y": 357.0,
+                "width": 250.0,
+                "height": 152.0
+            },
+            "m_NodeToken": 1496495172,
+            "m_condition": "(condition_2 ~= false)\nand(condition_1 ~= false)",
+            "m_linkedTokenTrue": 39801549,
+            "m_linkedTokenFalse": 1111069342
+        }
+    ]
+}

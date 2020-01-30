@@ -9,12 +9,13 @@ public class DialogCondition : DialogNode
 {
     #region Fields and Properties
     // CONDITION STRUCTURE //
-    // if (condition_1 == true)
+    // (condition_1 == true)
     // and (condition_2 == false)
     // or (condition_3 == true)
     [SerializeField] private string m_condition = "";
     [SerializeField] private int m_linkedTokenTrue = -1;
     [SerializeField] private int m_linkedTokenFalse = -1; 
+    public string Condition { get { return m_condition; } }
     public int LinkedTokenTrue { get { return m_linkedTokenTrue; } set { m_linkedTokenTrue = value; } }
     public int LinkedTokenFalse { get { return m_linkedTokenFalse; } set { m_linkedTokenFalse = value; } }
 
@@ -69,7 +70,7 @@ public class DialogCondition : DialogNode
     /// </summary>
     private void AddCondition()
     {
-        string _conditionString = $"{(m_conditionsConverted.Count > 0 ? "and" : "if")}({m_conditionsDescriptor[0]} == false)";
+        string _conditionString = $"{(m_conditionsConverted.Count > 0 ? "and" : string.Empty)}({m_conditionsDescriptor[0]} == false)";
         m_conditionsConverted.Add(new Condition(_conditionString, m_conditionsDescriptor)); 
         m_nodeRect.height += POPUP_HEIGHT; 
     }
@@ -212,8 +213,8 @@ public class DialogCondition : DialogNode
         }
         else
         {
-            if(_conditionConverted.StartStatement != "if")_conditionConverted.StartStatement = "if"; 
-            GUI.Label(_r, _conditionConverted.StartStatement); 
+            if(_conditionConverted.StartStatement != string.Empty)_conditionConverted.StartStatement = string.Empty; 
+            GUI.Label(_r, "if"); 
         }
         // Condition
         _r = new Rect(_r.x + 35.5f , _r.y, 75, _r.height);

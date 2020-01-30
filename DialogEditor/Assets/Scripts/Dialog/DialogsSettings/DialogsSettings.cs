@@ -19,7 +19,7 @@ public class DialogsSettings
     
     public string LuaConditions { get { return m_luaConditions; } set { m_luaConditions = value; } }
     public List<CharacterColorSettings> CharactersColor { get { return m_charactersColor; } }
-    public bool OverrideCharacterColor { get { return m_overrideCharacterColor; } }
+    public bool OverrideCharacterColor { get { return m_overrideCharacterColor; } set { m_overrideCharacterColor = value; } }
     #endregion 
 }
 
@@ -30,7 +30,16 @@ public class CharacterColorSettings
     [SerializeField] private string m_characterName = string.Empty;
     [SerializeField] private Color m_characterColor = Color.black; 
 
-    public string CharacterIdentifier { get { return m_characterName.Substring(0,3).ToUpper(); } }
-    public Color CharacterColor { get { return m_characterColor; } }
+    public string CharacterName { get { return m_characterName;  } }
+    public string CharacterIdentifier { get { return m_characterName.Substring(0,2).ToUpper(); } }
+    public Color CharacterColor { get { return m_characterColor; } set { m_characterColor = value; } }
     #endregion
+
+    #region Constructor
+    public CharacterColorSettings(string _name)
+    {
+        m_characterName = _name;
+        m_characterColor = Color.black; 
+    }
+    #endregion 
 }

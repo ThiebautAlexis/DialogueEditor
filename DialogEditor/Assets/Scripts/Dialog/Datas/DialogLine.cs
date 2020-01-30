@@ -58,7 +58,7 @@ public class DialogLine
     /// <param name="_onOutLineSelected">Action called when the out point of this line is selected</param>
     /// <param name="_otherSets">The other sets in the current Dialog</param>
     /// <returns>Height used to draw the dialog Line</returns>
-    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, DialogSetType _dialogSetType, bool _isLastPoint, GUIContent _pointIcon, GUIStyle _pointStyle, Action<DialogLine> _onOutLineSelected, List<DialogSet> _otherSets, List<DialogCondition> _otherConditions)
+    public float Draw(Vector2 _startPos, string _lineDescriptor, Action<DialogLine> _removeAction, DialogSetType _dialogSetType, bool _isLastPoint, GUIContent _pointIcon, GUIStyle _pointStyle, Action<DialogLine> _onOutLineSelected, List<DialogSet> _otherSets, List<DialogCondition> _otherConditions, List<CharacterColorSettings> _colorSettings)
     {
         if (m_ids == null)
             InitEditor(_lineDescriptor); 
@@ -77,8 +77,14 @@ public class DialogLine
             return _r.y;
         }
         _r = new Rect(_r.position.x + DialogNode.POPUP_HEIGHT, _r.position.y, DialogNode.CONTENT_WIDTH - DialogNode.POPUP_HEIGHT, DialogNode.POPUP_HEIGHT);
-        
-        m_nextIndex = EditorGUI.Popup(_r, "Line ID", m_index, m_ids);
+
+        Color _originalColor = GUI.backgroundColor;
+        if(_colorSettings != null && _colorSettings.Any(s => s.CharacterIdentifier == m_key.Substring(0,2)))
+        {
+            GUI.backgroundColor = _colorSettings.Where(s => s.CharacterIdentifier == m_key.Substring(0, 2)).First().CharacterColor; 
+        }
+        m_nextIndex = EditorGUI.Popup(_r, "Line ID", m_index, m_ids) ;
+        GUI.backgroundColor = _originalColor; 
         if (m_nextIndex != m_index)
         {
             m_index = m_nextIndex;
