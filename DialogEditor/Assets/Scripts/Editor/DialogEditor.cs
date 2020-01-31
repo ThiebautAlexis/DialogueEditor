@@ -372,6 +372,13 @@ public class DialogEditor : EditorWindow
     } 
     protected virtual void OnGUI()
     {
+        /*
+        GUI.EndGroup();
+        Matrix4x4 _translation = Matrix4x4.TRS(Event.current.mousePosition, Quaternion.identity, Vector3.one);
+        Matrix4x4 _scale = Matrix4x4.Scale(new Vector3(.50f, .50f, 1.0f));
+        GUI.matrix = _translation * _scale * _translation.inverse;
+        */
+
         DrawGrid(20, 0.2f, Color.black);
         DrawGrid(100, 0.4f, Color.black);
 
