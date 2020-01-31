@@ -5,8 +5,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 975.0,
-                "y": 146.0,
+                "x": 926.0,
+                "y": 134.0,
                 "width": 250.0,
                 "height": 292.0
             },
@@ -33,8 +33,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 129.0,
-                "y": 96.0,
+                "x": 80.0,
+                "y": 84.0,
                 "width": 250.0,
                 "height": 292.0
             },
@@ -61,8 +61,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 980.0,
-                "y": 531.0,
+                "x": 931.0,
+                "y": 519.0,
                 "width": 250.0,
                 "height": 192.0
             },
@@ -84,8 +84,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 535.0,
-                "y": 357.0,
+                "x": 486.0,
+                "y": 345.0,
                 "width": 250.0,
                 "height": 152.0
             },

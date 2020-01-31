@@ -18,6 +18,7 @@ public class Dialog
     public static string DialogAssetExtension { get { return ".json"; } }
     #endregion
 
+    #region Editor
 #if UNITY_EDITOR
     private GUIStyle m_defaultNodeStyle = null;
     private GUIStyle m_conditionNodeStyle = null; 
@@ -27,8 +28,11 @@ public class Dialog
     private GUIContent m_answerIcon = null;
     private GUIContent m_pointIcon = null;
     private GUIContent m_startingSetIcon = null;
-    private GUIContent m_conditionIcon = null; 
+    private GUIContent m_conditionIcon = null;
+    public bool AnyPartIsSelected { get { return m_dialogSets.Any(p => p.IsSelected) || m_dialogConditions.Any(c => c.IsSelected); } }
 #endif
+    #endregion 
+
     [SerializeField]private string m_dialogName = "";
     [SerializeField]private string m_spreadSheetID = "";
     public string SpreadSheetID { get { return m_spreadSheetID; } }
@@ -37,7 +41,6 @@ public class Dialog
     [SerializeField] private List<DialogCondition> m_dialogConditions = new List<DialogCondition>(); 
     private string m_lineDescriptor = "";
     private DialogsSettings m_dialogSettings = null; 
-    public bool AnyPartIsSelected {  get { return m_dialogSets.Any(p => p.IsSelected) || m_dialogConditions.Any(c => c.IsSelected);  } }
 
     public string DialogName { get { return m_dialogName; } }
     #endregion
@@ -48,6 +51,7 @@ public class Dialog
         m_dialogName = _name;
         m_spreadSheetID = _id;
         m_dialogSets = new List<DialogSet>();
+        m_dialogConditions = new List<DialogCondition>();
     }
     #endregion
 
@@ -222,18 +226,31 @@ public class Dialog
         UnityEditor.EditorUtility.DisplayDialog("File saved", $"The {m_dialogName} dialog has been successfully saved", "Ok!"); 
     }
 #endif
-    private bool CheckCondition(string _condition)
+
+    /// <summary>
+    /// Return the string value of the function which check if the selected conditon is true
+    /// </summary>
+    /// <param name="_condition">Checked Condition</param>
+    /// <returns></returns>
+    public static string GetStringConditionMethod(string _condition)
     {
-        string _conditionFuncString = ""; 
-        if (File.Exists(DialogsSettings.SettingsFilePath))
-        {
-            _conditionFuncString = JsonUtility.FromJson<DialogsSettings>(File.ReadAllText(DialogsSettings.SettingsFilePath)).LuaConditions;
-        }
-        _conditionFuncString += $@"
+        return $@"
 function check_condition()
             return {_condition}
 end;
 ";
+    }
+
+    /// <summary>
+    /// Check if the condition of the node is true or false and return this value
+    /// </summary>
+    /// <param name="_condition">Condition (string) of the condition node</param>
+    /// <returns></returns>
+    private bool CheckCondition(string _condition)
+    {
+        string _conditionFuncString = "";
+        _conditionFuncString = DialogsSettingsManager.DialogsSettings.LuaConditions; 
+        _conditionFuncString += GetStringConditionMethod(_condition); 
         Script _script = new Script();
         _script.DoString(_conditionFuncString);
 
