@@ -28,7 +28,8 @@ public class DialogEditor : EditorWindow
     private Vector2 m_offset;
     private bool m_isCreationPopupOpen = false;
     private bool m_isSelectingPopupOpen = false;
-    private int m_DialogIndex = -1; 
+    private int m_DialogIndex = -1;
+    private float m_zoomScale = 1.0f; 
 
     private string m_dialogName = ""; 
     private string m_spreadsheetId = "";
@@ -48,7 +49,7 @@ public class DialogEditor : EditorWindow
     private DialogNode m_inSelectedNode = null;
     private DialogLine m_outSelectedLine = null;
     private DialogCondition m_outSelectedCondition = null;
-    private bool m_outConditionValue = true; 
+    private bool m_outConditionValue = true;
     #endregion
 
     #endregion
@@ -372,13 +373,7 @@ public class DialogEditor : EditorWindow
     } 
     protected virtual void OnGUI()
     {
-        /*
-        GUI.EndGroup();
-        Matrix4x4 _translation = Matrix4x4.TRS(Event.current.mousePosition, Quaternion.identity, Vector3.one);
-        Matrix4x4 _scale = Matrix4x4.Scale(new Vector3(.50f, .50f, 1.0f));
-        GUI.matrix = _translation * _scale * _translation.inverse;
-        */
-
+       
         DrawGrid(20, 0.2f, Color.black);
         DrawGrid(100, 0.4f, Color.black);
 

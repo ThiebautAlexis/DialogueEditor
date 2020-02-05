@@ -2,12 +2,15 @@
 using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq; 
 
 public class DialogSettingsEditorWindow : EditorWindow
 { 
     private List<ConditionPair> m_conditionsPair = null;
     private string m_addedCondition = "";
-    private string m_addedCharacterName = ""; 
+    private string m_addedCharacterName = "";
+    private string m_addedKey = "";
+    private string[] m_localisationKeys = new string[] { }; 
     private GUIStyle m_titleStyle;
 
     private DialogsSettings m_dialogsSettings = null; 
@@ -43,11 +46,12 @@ public class DialogSettingsEditorWindow : EditorWindow
         m_addedCondition = GUILayout.TextField(m_addedCondition, GUILayout.MinWidth(200));
         if (GUILayout.Button("Add Condition to database") && m_addedCondition.Trim() != string.Empty)
         {
-            m_addedCondition = m_addedCondition.Trim().Replace(' ', '_'); 
+            m_addedCondition = m_addedCondition.Trim().Replace(' ', '_');
             m_conditionsPair.Add(new ConditionPair(m_addedCondition, false));
             m_addedCondition = "";
         }
         GUILayout.EndHorizontal();
+       
 
         if (GUILayout.Button("Apply Conditions"))
         {
@@ -63,7 +67,7 @@ public class DialogSettingsEditorWindow : EditorWindow
     private void DrawColors()
     {
         GUILayout.Label("COLORS", m_titleStyle);
-        m_dialogsSettings.OverrideCharacterColor = EditorGUILayout.Toggle("Override Character Color?", m_dialogsSettings.OverrideCharacterColor); 
+        m_dialogsSettings.OverrideCharacterColor = EditorGUILayout.Toggle("Override Characters Color", m_dialogsSettings.OverrideCharacterColor); 
 
         CharacterColorSettings _settings = null;
         for (int i = 0; i < m_dialogsSettings.CharactersColor.Count; i++)
@@ -81,21 +85,115 @@ public class DialogSettingsEditorWindow : EditorWindow
             GUILayout.EndHorizontal(); 
         }
         GUILayout.BeginHorizontal();
-        m_addedCharacterName = GUILayout.TextField(m_addedCharacterName, GUILayout.Width(position.width/2)); 
+        m_addedCharacterName = GUILayout.TextField(m_addedCharacterName, GUILayout.Width(position.width / 2));
         if (GUILayout.Button("Add new Character", GUILayout.Width(position.width / 2)) && m_addedCharacterName.Length >= 3)
         {
-            m_addedCharacterName = m_addedCharacterName.Replace(' ', '_'); 
+            m_addedCharacterName = m_addedCharacterName.Replace(' ', '_');
             m_dialogsSettings.CharactersColor.Add(new CharacterColorSettings(m_addedCharacterName));
             m_addedCharacterName = string.Empty;
         }
-        GUILayout.EndHorizontal(); 
+        GUILayout.EndHorizontal();
     }
 
-    private void LoadSettings()
+    private void DrawLocalisationsKeys()
+    {
+        GUILayout.Label("LOCALISATION KEYS", m_titleStyle);
+        for (int i = 0; i < m_localisationKeys.Length; i++)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(m_localisationKeys[i]); 
+            if(GUILayout.Button("-", GUILayout.Width(15), GUILayout.Height(15)))
+            {
+                List<string> _temp = m_localisationKeys.ToList();
+                _temp.RemoveAt(i);
+                m_localisationKeys = _temp.ToArray();
+                m_dialogsSettings.LocalisationKeys = m_localisationKeys; 
+            }
+            GUILayout.EndHorizontal(); 
+        }
+        GUILayout.BeginHorizontal();
+        m_addedKey = GUILayout.TextField(m_addedKey, GUILayout.MinWidth(200));
+        if (GUILayout.Button("Add Key to database") && m_addedKey.Trim() != string.Empty)
+        {
+            m_addedKey = m_addedKey.Trim().Replace(' ', '_');
+            List<string> _temp = m_localisationKeys.ToList(); 
+            _temp.Add(m_addedKey);
+            m_localisationKeys = _temp.ToArray(); 
+            m_dialogsSettings.LocalisationKeys = m_localisationKeys;
+            m_addedKey = "";
+        }
+        GUILayout.EndHorizontal();
+        m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_localisationKeys); 
+    }
+
+    private void DrawPlayingSettings()
+    {
+        GUILayout.Label("CONDITIONS", m_titleStyle);
+        for (int i = 0; i < m_conditionsPair.Count; i++)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(m_conditionsPair[i].Key, GUILayout.MinWidth(150), GUILayout.MaxWidth(200));
+            m_conditionsPair[i].Value = GUILayout.Toggle(m_conditionsPair[i].Value, "Current Value");
+            GUILayout.EndHorizontal();
+        }
+        EditorGUILayout.HelpBox("Use this window to change the value of any condition", MessageType.Info); 
+
+        string _savedDatas = string.Empty;
+        for (int i = 0; i < m_conditionsPair.Count; i++)
+        {
+            _savedDatas += m_conditionsPair[i].Key + " = " + m_conditionsPair[i].Value.ToString().ToLower() + ";\n";
+        }
+        m_dialogsSettings.LuaConditions = _savedDatas;
+        GUILayout.Label("COLORS", m_titleStyle);
+        m_dialogsSettings.OverrideCharacterColor = EditorGUILayout.Toggle("Override Characters Color", m_dialogsSettings.OverrideCharacterColor);
+        GUILayout.Label("LOCALISATION KEYS", m_titleStyle);
+        m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_dialogsSettings.LocalisationKeys); 
+
+    }
+
+    private void LoadSettingsFiles()
     {
         if (!File.Exists(DialogsSettings.SettingsFilePath)) return; 
         string _jsonSettings = File.ReadAllText(DialogsSettings.SettingsFilePath); 
         m_dialogsSettings = JsonUtility.FromJson<DialogsSettings>(_jsonSettings); 
+    }
+
+    private void LoadSettingsForPlayMode(PlayModeStateChange _playmode)
+    {
+        switch (_playmode)
+        {
+            case PlayModeStateChange.EnteredEditMode:
+                if (!Directory.Exists(DialogsSettings.SettingsPath))
+                    Directory.CreateDirectory(DialogsSettings.SettingsPath);
+                if (!File.Exists(DialogsSettings.SettingsFilePath))
+                {
+                    m_dialogsSettings = new DialogsSettings();
+                    m_localisationKeys = m_dialogsSettings.LocalisationKeys; 
+                    SaveSettings(false);
+                }
+                else
+                {
+                    LoadSettingsFiles();
+                }
+                break;
+            case PlayModeStateChange.EnteredPlayMode:
+                m_dialogsSettings = DialogsSettingsManager.DialogsSettings; 
+                break;
+            case PlayModeStateChange.ExitingPlayMode:
+                break;
+            default:
+                break;
+        }
+        if (m_dialogsSettings == null) return;
+        m_conditionsPair = new List<ConditionPair>();
+        if (m_dialogsSettings.LuaConditions == string.Empty) return;
+        string[] _conditions = m_dialogsSettings.LuaConditions.Split('\n');
+        for (int i = 0; i < _conditions.Length; i++)
+        {
+            string[] _pair = _conditions[i].Split('=');
+            if (_pair[0].Trim() == string.Empty || _pair[1].Trim() == string.Empty) return;
+            m_conditionsPair.Add(new ConditionPair(_pair[0].Trim(), _pair[1].Trim()));
+        }
     }
 
     private void SaveSettings(bool _displayFeedback = true)
@@ -116,39 +214,31 @@ public class DialogSettingsEditorWindow : EditorWindow
     #region Unity Methods
     private void OnEnable()
     {
-
         m_titleStyle = new GUIStyle();
         m_titleStyle.fontStyle = FontStyle.Bold;
         m_titleStyle.fontSize = 20;
         m_titleStyle.alignment = TextAnchor.MiddleCenter;
 
-        if (!Directory.Exists(DialogsSettings.SettingsPath))
-            Directory.CreateDirectory(DialogsSettings.SettingsPath);
-        if (!File.Exists(DialogsSettings.SettingsFilePath))
-        {
-            m_dialogsSettings = new DialogsSettings();
-            SaveSettings(false); 
-        }
-        else
-        {
-            LoadSettings(); 
-        }
-        if (m_dialogsSettings == null) return;
-        m_conditionsPair = new List<ConditionPair>();
-        if (m_dialogsSettings.LuaConditions == string.Empty) return; 
-        string[] _conditions = m_dialogsSettings.LuaConditions.Split('\n'); 
-        for (int i = 0; i < _conditions.Length; i++)
-        {
-            string[] _pair = _conditions[i].Split('=');
-            if (_pair[0].Trim() == string.Empty || _pair[1].Trim() == string.Empty) return; 
-            m_conditionsPair.Add(new ConditionPair(_pair[0].Trim(), _pair[1].Trim())); 
-        }
+        LoadSettingsForPlayMode(Application.isPlaying ? PlayModeStateChange.EnteredPlayMode : PlayModeStateChange.EnteredEditMode); 
+
+        EditorApplication.playModeStateChanged += LoadSettingsForPlayMode; 
+    }
+
+    private void OnDisable()
+    {
+        EditorApplication.playModeStateChanged -= LoadSettingsForPlayMode;
     }
 
     private void OnGUI()
     {
+        if(Application.isPlaying)
+        {
+            DrawPlayingSettings();
+            return; 
+        }
         DrawConditions();
-        DrawColors(); 
+        DrawColors();
+        DrawLocalisationsKeys(); 
 
         if (GUILayout.Button("Save Settings"))
         {
@@ -158,22 +248,4 @@ public class DialogSettingsEditorWindow : EditorWindow
     #endregion
 
     #endregion
-}
-
-public class ConditionPair
-{
-    public string Key { get; private set; }
-    public bool Value { get; set; }
-
-    public ConditionPair(string _key, string _value)
-    {
-        Key = _key;
-        Value = (_value == "true;"); 
-    }
-
-    public ConditionPair(string _key, bool _value)
-    {
-        Key = _key;
-        Value = _value;
-    }
 }

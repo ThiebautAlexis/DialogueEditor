@@ -29,5 +29,10 @@
             }
         }
     ],
-    "m_overrideCharacterColor": false
+    "m_overrideCharacterColor": false,
+    "m_localisationKeys": [
+        "Text_En_en",
+        "Text_Fr_fr"
+    ],
+    "m_currentLocalisationKeyIndex": 1
 }

@@ -22,6 +22,7 @@ public class DialogLine
     public Rect PointRect { get { return m_pointRect;  } }
     
     public string Key { get { return m_key; } }
+    public string CharacterIdentifier { get { return m_key.Substring(0, 2); } }
     public int LinkedToken { get { return m_linkedToken; } set { m_linkedToken = value; } }
     public WaitingType WaitingType { get { return m_waitingType; } }
     public float WaitingTime { get { return m_waitingTime; } }

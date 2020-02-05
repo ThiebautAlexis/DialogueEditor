@@ -85,8 +85,16 @@ public class DialogReader : MonoBehaviour
                 DialogLine _line = null; 
                 for (int i = 0; i < _set.DialogLines.Count; i++)
                 {
-                    _line = _set.DialogLines[i]; 
-                    m_textDisplayer.text = GetDialogLineContent(_line.Key, "Text_En_en");
+                    _line = _set.DialogLines[i];
+                    if (!DialogsSettingsManager.DialogsSettings.OverrideCharacterColor)
+                    {
+                        if (DialogsSettingsManager.DialogsSettings.CharactersColor.Any(c => c.CharacterIdentifier == _line.CharacterIdentifier))
+                            m_textDisplayer.color = DialogsSettingsManager.DialogsSettings.CharactersColor.Where(c => c.CharacterIdentifier == _line.CharacterIdentifier).Select(c => c.CharacterColor).FirstOrDefault();
+                        else m_textDisplayer.color = m_fontColor;
+                    }
+                    else
+                        m_textDisplayer.color = m_fontColor; 
+                    m_textDisplayer.text = GetDialogLineContent(_line.Key, DialogsSettingsManager.DialogsSettings.CurrentLocalisationKey);
                     if (_line.WaitingType == WaitingType.WaitForClick)
                         yield return new WaitUntil(() => _displayNextLine);
                     else

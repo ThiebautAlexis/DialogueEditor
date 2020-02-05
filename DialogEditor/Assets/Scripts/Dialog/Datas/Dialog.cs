@@ -40,8 +40,8 @@ public class Dialog
     [SerializeField] private List<DialogSet> m_dialogSets = new List<DialogSet>();
     [SerializeField] private List<DialogCondition> m_dialogConditions = new List<DialogCondition>(); 
     private string m_lineDescriptor = "";
-    private DialogsSettings m_dialogSettings = null; 
-
+    private DialogsSettings m_dialogSettings = null;
+    private Script m_script;  
     public string DialogName { get { return m_dialogName; } }
     #endregion
 
@@ -251,11 +251,11 @@ end;
         string _conditionFuncString = "";
         _conditionFuncString = DialogsSettingsManager.DialogsSettings.LuaConditions; 
         _conditionFuncString += GetStringConditionMethod(_condition); 
-        Script _script = new Script();
-        _script.DoString(_conditionFuncString);
+        Script m_script = new Script();
+        m_script.DoString(_conditionFuncString);
 
-        DynValue _operation = _script.Globals.Get("check_condition"); 
-        return _script.Call(_operation).Boolean; 
+        DynValue _operation = m_script.Globals.Get("check_condition"); 
+        return m_script.Call(_operation).Boolean; 
     }
 
     /// <summary>
@@ -287,5 +287,10 @@ end;
         return m_dialogSets.Where(s => s.NodeToken == _nextToken).FirstOrDefault();
     }
 
-#endregion
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    private void CreateScript()
+    {
+        m_script = new Script();
+    }
+    #endregion
 }
