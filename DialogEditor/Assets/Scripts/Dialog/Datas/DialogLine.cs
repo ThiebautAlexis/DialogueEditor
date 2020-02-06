@@ -35,7 +35,7 @@ public class DialogLine
     #region Methods
 
 #if UNITY_EDITOR
-        /// <summary>
+    /// <summary>
         /// Get all the Ids of the dialog lines from the Line Descriptor
         /// </summary>
         /// <param name="_lineDescriptor"></param>

@@ -25,7 +25,7 @@ public class DialogsSettings
     public string[] LocalisationKeys { get { return m_localisationKeys; } set { m_localisationKeys = value; } }
     public int CurrentLocalisationKeyIndex { get { return m_currentLocalisationKeyIndex; } set { m_currentLocalisationKeyIndex = value; } }
     public string CurrentLocalisationKey { get { return m_localisationKeys[m_currentLocalisationKeyIndex]; } }
-    #endregion 
+    #endregion
 }
 
 [System.Serializable]
@@ -46,9 +46,8 @@ public class CharacterColorSettings
         m_characterName = _name;
         m_characterColor = Color.black; 
     }
-    #endregion 
+    #endregion
 }
-
 
 public class ConditionPair
 {

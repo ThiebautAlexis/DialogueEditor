@@ -26,6 +26,10 @@ public class DialogSettingsEditorWindow : EditorWindow
     #endregion
 
     #region Original Methods
+    /// <summary>
+    /// Draw the conditions of the Settings Template Profile
+    /// Allow the user to remove conditions, to add new conditions and set their default values 
+    /// </summary>
     private void DrawConditions()
     {
         GUILayout.Label("CONDITIONS", m_titleStyle);
@@ -64,6 +68,10 @@ public class DialogSettingsEditorWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// Draw the Character colors of the Settings Template Profile
+    /// Allow the user to remove, add or modify them 
+    /// </summary>
     private void DrawColors()
     {
         GUILayout.Label("COLORS", m_titleStyle);
@@ -95,6 +103,10 @@ public class DialogSettingsEditorWindow : EditorWindow
         GUILayout.EndHorizontal();
     }
 
+    /// <summary>
+    /// Draw the localisation keys of the Settings Template Profile
+    /// Allow the user to add, remove or edit them
+    /// </summary>
     private void DrawLocalisationsKeys()
     {
         GUILayout.Label("LOCALISATION KEYS", m_titleStyle);
@@ -126,6 +138,9 @@ public class DialogSettingsEditorWindow : EditorWindow
         m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_localisationKeys); 
     }
 
+    /// <summary>
+    /// Draw the Condiditions, Colors and Localisation Settings of <see cref="DialogsSettingsManager.DialogsSettings"/> during play mode
+    /// </summary>
     private void DrawPlayingSettings()
     {
         GUILayout.Label("CONDITIONS", m_titleStyle);
@@ -151,6 +166,9 @@ public class DialogSettingsEditorWindow : EditorWindow
 
     }
 
+    /// <summary>
+    /// Load the Settings Template stored in <see cref="DialogsSettings.SettingsFilePath"/>  
+    /// </summary>
     private void LoadSettingsFiles()
     {
         if (!File.Exists(DialogsSettings.SettingsFilePath)) return; 
@@ -158,6 +176,12 @@ public class DialogSettingsEditorWindow : EditorWindow
         m_dialogsSettings = JsonUtility.FromJson<DialogsSettings>(_jsonSettings); 
     }
 
+    /// <summary>
+    /// Load the DialogsSettings Profile according to the PlayMode
+    /// In <see cref="PlayModeStateChange.EnteredEditMode"/> load the stored Profile in <see cref="DialogsSettings.SettingsFilePath"/>
+    /// In <see cref="PlayModeStateChange.EnteredPlayMode"/> get the <see cref="DialogsSettingsManager.DialogsSettings"/> profile
+    /// </summary>
+    /// <param name="_playmode">PlayModeStateChange</param>
     private void LoadSettingsForPlayMode(PlayModeStateChange _playmode)
     {
         switch (_playmode)
@@ -168,13 +192,13 @@ public class DialogSettingsEditorWindow : EditorWindow
                 if (!File.Exists(DialogsSettings.SettingsFilePath))
                 {
                     m_dialogsSettings = new DialogsSettings();
-                    m_localisationKeys = m_dialogsSettings.LocalisationKeys; 
                     SaveSettings(false);
                 }
                 else
                 {
                     LoadSettingsFiles();
                 }
+                m_localisationKeys = m_dialogsSettings.LocalisationKeys;
                 break;
             case PlayModeStateChange.EnteredPlayMode:
                 m_dialogsSettings = DialogsSettingsManager.DialogsSettings; 
@@ -196,6 +220,10 @@ public class DialogSettingsEditorWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// Save the edited profile as <see cref="DialogsSettings.SettingsFilePath"/>
+    /// </summary>
+    /// <param name="_displayFeedback">Does a feedback has been to be displayed?</param>
     private void SaveSettings(bool _displayFeedback = true)
     {
         string _jsonSettings = JsonUtility.ToJson(m_dialogsSettings, true);
