@@ -33,11 +33,14 @@ public static class DialogsSettingsManager
     #region Methods
 
     #region Profile Methods
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     /// <summary>
     /// Create a new profile based on the Settings Template profile
     /// </summary>
     public static void CreateProfile()
     {
+        if (m_dialogsSettings != null)
+            return; 
         AsyncOperationHandle<TextAsset> _settingsAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(DialogsSettings.SettingsFileName);
         _settingsAssetAsyncHandler.Completed += OnSettingsAssetLoaded;
     }

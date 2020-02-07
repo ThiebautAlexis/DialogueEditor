@@ -16,13 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: f1a3bc38a670b3442a726e1c2cccefdd
-  m_SerializeEntries:
-  - m_GUID: 01d67023069036f42bd4172de791e439
-    m_Address: SettingsTemplate
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1b564be3ff95ed147bae8c85e6b26ea6, type: 2}
   m_SchemaSet:

@@ -232,6 +232,7 @@ public class DialogSettingsEditorWindow : EditorWindow
             Directory.CreateDirectory(DialogsSettings.SettingsPath);
         }
         File.WriteAllText(DialogsSettings.SettingsFilePath, _jsonSettings);
+        UnityEditor.AddressableAssets.Settings.AddressableAssetSettings.BuildPlayerContent();
         if(_displayFeedback)
         {
             EditorUtility.DisplayDialog("File saved", $"The Dialogs settings has been successfully saved", "Ok!");

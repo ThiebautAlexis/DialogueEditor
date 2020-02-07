@@ -223,6 +223,7 @@ public class Dialog
         string _name = m_dialogName.Replace(" ", string.Empty);
         Debug.Log("The Dialog Asset " + m_dialogName + " has been saved in " + DialogAssetPath); 
         File.WriteAllText(Path.Combine(DialogAssetPath, _name + DialogAssetExtension), _jsonDialog);
+        UnityEditor.AddressableAssets.Settings.AddressableAssetSettings.BuildPlayerContent();
         UnityEditor.EditorUtility.DisplayDialog("File saved", $"The {m_dialogName} dialog has been successfully saved", "Ok!"); 
     }
 #endif

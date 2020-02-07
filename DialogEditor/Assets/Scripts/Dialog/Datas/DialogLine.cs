@@ -28,10 +28,6 @@ public class DialogLine
     public float WaitingTime { get { return m_waitingTime; } }
     #endregion
 
-    #region Constructor 
-
-        #endregion
-
     #region Methods
 
 #if UNITY_EDITOR
@@ -80,7 +76,7 @@ public class DialogLine
         _r = new Rect(_r.position.x + DialogNode.POPUP_HEIGHT, _r.position.y, DialogNode.CONTENT_WIDTH - DialogNode.POPUP_HEIGHT, DialogNode.POPUP_HEIGHT);
 
         Color _originalColor = GUI.backgroundColor;
-        if(_colorSettings != null && _colorSettings.Any(s => s.CharacterIdentifier == m_key.Substring(0,2)))
+        if(_colorSettings != null && m_key != string.Empty && _colorSettings.Any(s => s.CharacterIdentifier == m_key.Substring(0,2)))
         {
             GUI.backgroundColor = _colorSettings.Where(s => s.CharacterIdentifier == m_key.Substring(0, 2)).First().CharacterColor; 
         }

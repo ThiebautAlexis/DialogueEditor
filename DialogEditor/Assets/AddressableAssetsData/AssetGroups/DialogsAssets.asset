@@ -17,6 +17,12 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: d3286690766087c4ba738f5a2f4bb72f
   m_SerializeEntries:
+  - m_GUID: 01d67023069036f42bd4172de791e439
+    m_Address: SettingsTemplate
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: a379d74d17ca5ee4da0bb98a4b71a174
     m_Address: 579439667_luaDescriptor
     m_ReadOnly: 0
