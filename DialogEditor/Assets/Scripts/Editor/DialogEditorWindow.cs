@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Linq; 
 
-public class DialogEditor : EditorWindow
+public class DialogEditorWindow : EditorWindow
 {
     #region Fields and Properties
 
@@ -60,7 +60,7 @@ public class DialogEditor : EditorWindow
     [MenuItem("Window/Dialog Editor/Open Editor")]
     public static void OpenWindow()
     {
-        DialogEditor _window = GetWindow<DialogEditor>();
+        DialogEditorWindow _window = GetWindow<DialogEditorWindow>();
         _window.titleContent = new GUIContent("Dialog Editor");
     }
     #endregion
