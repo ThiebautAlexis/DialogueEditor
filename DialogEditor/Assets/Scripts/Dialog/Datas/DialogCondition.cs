@@ -297,6 +297,7 @@ public class DialogCondition : DialogNode
     /// </summary>
     protected override void ProcessContextMenu()
     {
+        IsSelected = true; 
         GenericMenu _genericMenu = new GenericMenu();
         _genericMenu.AddItem(new GUIContent(m_displayLUACode ? " Switch to non-code" : "Switch to LUA code"), false, SwitchLUACode ); 
         _genericMenu.AddItem(new GUIContent("Remove Node"), false, OnClickRemoveNode);

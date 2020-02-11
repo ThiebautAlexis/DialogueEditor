@@ -125,14 +125,14 @@ public class DialogSet : DialogNode
         }
         _r = new Rect(m_nodeRect.x + 10, _r.y, CONTENT_WIDTH , TITLE_HEIGHT);
         GUI.Label(_r, m_type.ToString() + " " + m_NodeToken.ToString() );
-        _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT; 
+        _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT + SPACE_HEIGHT; 
         DialogLine _c; 
         for (int i = 0; i < m_dialogLines.Count; i++)
         {
             _c = m_dialogLines[i]; 
             _r.y = _c.Draw(_r.position, _lineDescriptor, RemoveContent, m_type , (m_type == DialogSetType.BasicType && i == m_dialogLines.Count - 1), m_pointIcon, m_connectionPointStyle,_onOutDialogLineSelected, _otherSets, _otherConditions, _colorSettings);
         }
-        _r = new Rect(_r.position.x, _r.y + SPACE_HEIGHT, _r.width, BUTTON_HEIGHT); 
+        _r = new Rect(_r.position.x, _r.y, _r.width, BUTTON_HEIGHT); 
         if(GUI.Button(_r,"Add new Dialog Line"))
         {
             AddNewContent(); 
@@ -159,6 +159,7 @@ public class DialogSet : DialogNode
     /// </summary>
     protected override void ProcessContextMenu()
     {
+        IsSelected = true;
         GenericMenu _genericMenu = new GenericMenu();
         switch (m_type)
         {

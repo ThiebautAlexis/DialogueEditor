@@ -67,7 +67,7 @@ public class DialogLine
 
             m_content = _content.String;
         }
-        Rect _r = new Rect(_startPos.x, _startPos.y + DialogNode.SPACE_HEIGHT, DialogNode.POPUP_HEIGHT, DialogNode.POPUP_HEIGHT);
+        Rect _r = new Rect(_startPos.x, _startPos.y, DialogNode.POPUP_HEIGHT, DialogNode.POPUP_HEIGHT);
         if (GUI.Button(_r, "-"))
         {
             _removeAction.Invoke(this);
@@ -112,8 +112,18 @@ public class DialogLine
         m_waitingTime = EditorGUI.Slider(_r, "Waiting Time (s): " ,m_waitingTime, 0, 10); 
         EditorGUI.EndDisabledGroup();
         EditorGUI.EndDisabledGroup();
-        _r.y += DialogNode.SPACE_HEIGHT;
-        
+        _r.y += DialogNode.POPUP_HEIGHT;
+
+        _r.y += DialogNode.SPACE_HEIGHT / 2;
+        Color _c = GUI.color;
+        GUI.color = Color.black;
+        _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, .5f);
+        GUI.Box(_r, "");
+        GUI.color = _c;        
+
+        _r.y += DialogNode.SPACE_HEIGHT/2;
+
+
         m_pointRect = new Rect(_startPos.x + DialogNode.CONTENT_WIDTH, (_startPos.y + _r.y) / 2, 25, 25);
         if (_isLastPoint || _dialogSetType == DialogSetType.PlayerAnswer)
         {

@@ -253,7 +253,15 @@ public class DialogEditorWindow : EditorWindow
         {
             case EventType.MouseDown:
                 if (_e.button == 1)
+                {
+                    if(m_inSelectedNode == null && (m_outSelectedLine != null || m_outSelectedCondition != null))
+                    {
+                        m_outSelectedLine = null;
+                        m_outSelectedCondition = null;
+                        break;
+                    }
                     ShowContextMenu(_e.mousePosition);
+                }
                 break;
             case EventType.MouseDrag:
                 if (_e.button == 0 && (CurrentDialog != null && !CurrentDialog.AnyPartIsSelected))
