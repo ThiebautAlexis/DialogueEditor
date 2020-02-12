@@ -251,7 +251,7 @@ end;
     {
         string _conditionFuncString = "";
         _conditionFuncString = DialogsSettingsManager.DialogsSettings.LuaConditions; 
-        _conditionFuncString += GetStringConditionMethod(_condition); 
+        _conditionFuncString += GetStringConditionMethod(_condition);
         Script m_script = new Script();
         m_script.DoString(_conditionFuncString);
 

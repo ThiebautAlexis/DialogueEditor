@@ -1,11 +1,11 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using MoonSharp.Interpreter;
 using System.Linq;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations; 
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.Events;
 
 public class DialogReader : MonoBehaviour
 {
@@ -23,104 +23,34 @@ public class DialogReader : MonoBehaviour
     private Script m_lineDescriptor = null;
 
     private System.Action m_onMouseClicked = null; 
+
+
+    public string DialogName
+    {
+        get
+        {
+            return m_dialogName;
+        }
+    }
+    public UnityEventString OnDialogLineRead { get; private set; } = new UnityEventString();
     #endregion
 
     #region Methods
 
     #region Original Methods
+
+    #region Load Dialog
     /// <summary>
     /// Initialize the settings of the text displayer
     /// </summary>
     private void InitReader()
     {
-        if(m_textDisplayer)
+        if (m_textDisplayer)
         {
             if (m_font) m_textDisplayer.font = m_font;
             m_textDisplayer.fontSize = m_fontSize;
-            m_textDisplayer.color = m_fontColor; 
-        }      
-    }
-
-    /// <summary>
-    /// Display the whole dialog
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator DisplayDialog()
-    {
-        while (!m_dialogAssetAsyncHandler.IsDone ||!m_lineDescriptorAsyncHandler.IsDone)
-        {
-            yield return new WaitForSeconds(.5f); 
+            m_textDisplayer.color = m_fontColor;
         }
-        if (m_dialog == null)
-        {
-            Debug.Log("Dialog is null"); 
-            yield break;
-        }
-        // Get the Starting Dialog Set //
-        DialogSet _set = m_dialog.GetFirstSet();
-        yield return StartCoroutine(DisplayDialogSet(_set)); 
-        while (true)
-        {
-            _set = m_dialog.GetNextSet(_set.DialogLines.Last().LinkedToken);
-            if (_set == null) break;
-            yield return StartCoroutine(DisplayDialogSet(_set));
-        }
-        yield return null;
-        m_textDisplayer.text = string.Empty; 
-    }
-
-    /// <summary>
-    /// Display all dialog lines of the dialog set
-    /// </summary>
-    /// <param name="_set">Displayed Dialog Set</param>
-    /// <returns></returns>
-    private IEnumerator DisplayDialogSet(DialogSet _set)
-    {
-        switch (_set.Type)
-        {
-            case DialogSetType.BasicType:
-                bool _displayNextLine = false;
-
-                m_onMouseClicked += () => _displayNextLine = true;
-                DialogLine _line = null; 
-                for (int i = 0; i < _set.DialogLines.Count; i++)
-                {
-                    _line = _set.DialogLines[i];
-                    if (!DialogsSettingsManager.DialogsSettings.OverrideCharacterColor)
-                    {
-                        if (DialogsSettingsManager.DialogsSettings.CharactersColor.Any(c => c.CharacterIdentifier == _line.CharacterIdentifier))
-                            m_textDisplayer.color = DialogsSettingsManager.DialogsSettings.CharactersColor.Where(c => c.CharacterIdentifier == _line.CharacterIdentifier).Select(c => c.CharacterColor).FirstOrDefault();
-                        else m_textDisplayer.color = m_fontColor;
-                    }
-                    else
-                        m_textDisplayer.color = m_fontColor; 
-                    m_textDisplayer.text = GetDialogLineContent(_line.Key, DialogsSettingsManager.DialogsSettings.CurrentLocalisationKey);
-                    if (_line.WaitingType == WaitingType.WaitForClick)
-                        yield return new WaitUntil(() => _displayNextLine);
-                    else
-                        yield return new WaitForSeconds(_line.WaitingTime); 
-                    _displayNextLine = false; 
-                }
-                m_onMouseClicked = null; 
-                break;
-            case DialogSetType.PlayerAnswer:
-                break;
-            default:
-                break;
-        }
-        
-    }
-
-    /// <summary>
-    /// Get the Content of the Dialog Line according to the localisationKey Selected
-    /// </summary>
-    /// <param name="_dialogLineID">ID of the Dialog Line</param>
-    /// <param name="_localisationKey">Localisation Key to use</param>
-    /// <returns></returns>
-    private string GetDialogLineContent(string _dialogLineID, string _localisationKey)
-    {
-        DynValue _content = m_lineDescriptor.Globals.Get(_dialogLineID).Table.Get(_localisationKey);
-        return _content.String;
     }
 
     /// <summary>
@@ -157,6 +87,116 @@ public class DialogReader : MonoBehaviour
         m_lineDescriptor.DoString(_loadedAsset.Result.ToString());
         Debug.Log("Line Descriptor is ready");
     }
+    #endregion
+
+    #region Display Dialogues lines
+    /// <summary>
+    /// Display the whole dialog
+    /// </summary>
+    /// <returns></returns>
+    public void StartDisplayingDialog()
+    {
+        if (m_dialog == null)
+        {
+            Debug.Log("Dialog is null");
+            return; 
+        }
+        // Get the Starting Dialog Set //
+        DialogSet _set = m_dialog.GetFirstSet();
+        DisplayDialogSet(_set);
+    }
+
+    /// <summary>
+    /// Display the dialog set according to its type
+    /// </summary>
+    /// <param name="_set"></param>
+    /// <param name="_index"></param>
+    private void DisplayDialogSet(DialogSet _set, int _index = 0)
+    {
+        if (_set == null)
+        {
+            m_textDisplayer.text = string.Empty;
+            return;
+        }
+        switch (_set.Type)
+        {
+            case DialogSetType.BasicType:
+                DisplayDialogLine(_set, _index);
+                break;
+            case DialogSetType.PlayerAnswer:
+                DisplayAnswerDialogSet(_set);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="_set"></param>
+    private void DisplayAnswerDialogSet(DialogSet _set)
+    {
+
+    }
+
+    /// <summary>
+    /// Display the dialog line of the dialog set at the selected index
+    /// </summary>
+    /// <param name="_set">Displayed Dialog Set</param>
+    /// <returns></returns>
+    private void DisplayDialogLine(DialogSet _set, int _index = 0)
+    {
+        m_onMouseClicked = null; 
+        DialogLine _line = _set.DialogLines[_index]; 
+        OnDialogLineRead?.Invoke(_line.Key); 
+        if (!DialogsSettingsManager.DialogsSettings.OverrideCharacterColor)
+        {
+            if (DialogsSettingsManager.DialogsSettings.CharactersColor.Any(c => c.CharacterIdentifier == _line.CharacterIdentifier))
+                m_textDisplayer.color = DialogsSettingsManager.DialogsSettings.CharactersColor.Where(c => c.CharacterIdentifier == _line.CharacterIdentifier).Select(c => c.CharacterColor).FirstOrDefault();
+            else m_textDisplayer.color = m_fontColor;
+        }
+        else
+            m_textDisplayer.color = m_fontColor; 
+        m_textDisplayer.text = GetDialogLineContent(_line.Key, DialogsSettingsManager.DialogsSettings.CurrentLocalisationKey);
+        _index++; 
+        if(_set.DialogLines.Count == _index)
+        {
+            _set = m_dialog.GetNextSet(_line.LinkedToken);
+            _index = 0; 
+        }
+        if (_line.WaitingType == WaitingType.WaitForClick)
+            m_onMouseClicked += () => DisplayDialogSet(_set, _index);
+        else
+            StartCoroutine(WaitBeforeDisplayDialogSet(_set, _index, _line.WaitingTime)); 
+    }
+
+    /// <summary>
+    /// Get the Content of the Dialog Line according to the localisationKey Selected
+    /// </summary>
+    /// <param name="_dialogLineID">ID of the Dialog Line</param>
+    /// <param name="_localisationKey">Localisation Key to use</param>
+    /// <returns></returns>
+    private string GetDialogLineContent(string _dialogLineID, string _localisationKey)
+    {
+        DynValue _content = m_lineDescriptor.Globals.Get(_dialogLineID).Table.Get(_localisationKey);
+        return _content.String;
+    }
+
+    /// <summary>
+    /// Wait <paramref name="_waitingTime"/> seconds.
+    /// Then Display the dialog line at the <paramref name="_index"/> Index of the <paramref name="_set"/>
+    /// </summary>
+    /// <param name="_set">Next set to display</param>
+    /// <param name="_index">Index of the dialog line to display</param>
+    /// <param name="_waitingTime">Time to wait before displaying</param>
+    /// <returns></returns>
+    private IEnumerator WaitBeforeDisplayDialogSet(DialogSet _set, int _index, float _waitingTime)
+    {
+        yield return new WaitForSeconds(_waitingTime);
+        DisplayDialogSet(_set, _index);
+    }
+    #endregion
+
+    #region Set Condition and Localisation Key
 
     /// <summary>
     /// Call the method <see cref="DialogsSettingsManager.SetConditionBoolValue(string, bool)"/> to Update the conditions on the current profile
@@ -169,7 +209,10 @@ public class DialogReader : MonoBehaviour
     /// Call the method <see cref="DialogsSettingsManager.SetLocalisationKeyIndex(int)"/> to update the localisation key of the current profile
     /// </summary>
     /// <param name="_index">Index of the new Localisation Key</param>
-    public void SetLocalisationKey(int _index) => DialogsSettingsManager.SetLocalisationKeyIndex(_index); 
+    public void SetLocalisationKey(int _index) => DialogsSettingsManager.SetLocalisationKeyIndex(_index);
+
+    #endregion
+
     #endregion
 
     #region Unity Methods
@@ -183,12 +226,10 @@ public class DialogReader : MonoBehaviour
         
         InitReader(); 
     }
-
     private void Start()
     {
-        StartCoroutine(DisplayDialog()); 
+        m_onMouseClicked += StartDisplayingDialog;
     }
-
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -198,3 +239,6 @@ public class DialogReader : MonoBehaviour
 
     #endregion
 }
+
+[System.Serializable]
+public class UnityEventString : UnityEvent<string>{}

@@ -144,6 +144,8 @@ public class DialogSettingsEditorWindow : EditorWindow
     private void DrawPlayingSettings()
     {
         GUILayout.Label("CONDITIONS", m_titleStyle);
+        EditorGUI.BeginChangeCheck(); 
+        EditorGUI.BeginChangeCheck(); 
         for (int i = 0; i < m_conditionsPair.Count; i++)
         {
             GUILayout.BeginHorizontal();
@@ -151,19 +153,27 @@ public class DialogSettingsEditorWindow : EditorWindow
             m_conditionsPair[i].Value = GUILayout.Toggle(m_conditionsPair[i].Value, "Current Value");
             GUILayout.EndHorizontal();
         }
-        EditorGUILayout.HelpBox("Use this window to change the value of any condition", MessageType.Info); 
-
-        string _savedDatas = string.Empty;
-        for (int i = 0; i < m_conditionsPair.Count; i++)
+        EditorGUILayout.HelpBox("Use this window to change the value of any condition", MessageType.Info);
+        if (EditorGUI.EndChangeCheck())
         {
-            _savedDatas += m_conditionsPair[i].Key + " = " + m_conditionsPair[i].Value.ToString().ToLower() + ";\n";
+            string _savedDatas = string.Empty;
+            for (int i = 0; i < m_conditionsPair.Count; i++)
+            {
+                _savedDatas += m_conditionsPair[i].Key + " = " + m_conditionsPair[i].Value.ToString().ToLower() + ";\n";
+            }
+            m_dialogsSettings.LuaConditions = _savedDatas;
         }
-        m_dialogsSettings.LuaConditions = _savedDatas;
+
         GUILayout.Label("COLORS", m_titleStyle);
         m_dialogsSettings.OverrideCharacterColor = EditorGUILayout.Toggle("Override Characters Color", m_dialogsSettings.OverrideCharacterColor);
         GUILayout.Label("LOCALISATION KEYS", m_titleStyle);
         m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_dialogsSettings.LocalisationKeys); 
-
+        if(EditorGUI.EndChangeCheck())
+        {
+            DialogsSettingsManager.DialogsSettings.LuaConditions = m_dialogsSettings.LuaConditions;
+            DialogsSettingsManager.DialogsSettings.OverrideCharacterColor = m_dialogsSettings.OverrideCharacterColor;
+            DialogsSettingsManager.DialogsSettings.CurrentLocalisationKeyIndex = m_dialogsSettings.CurrentLocalisationKeyIndex;
+        }
     }
 
     /// <summary>

@@ -32,9 +32,9 @@ public class DialogLine
 
 #if UNITY_EDITOR
     /// <summary>
-        /// Get all the Ids of the dialog lines from the Line Descriptor
-        /// </summary>
-        /// <param name="_lineDescriptor"></param>
+    /// Get all the Ids of the dialog lines from the Line Descriptor
+    /// </summary>
+    /// <param name="_lineDescriptor"></param>
     public void InitEditor(string _lineDescriptor)
     {
         Script _luaScript = new Script();
