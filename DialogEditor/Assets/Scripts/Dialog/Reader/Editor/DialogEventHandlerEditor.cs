@@ -30,6 +30,7 @@ public class DialogEventHandlerEditor : Editor
         if (m_dialogReader.objectReferenceValue != null)
         {
             Color _originalColor = GUI.color;
+            Color _originalBackgroundColor = GUI.backgroundColor; 
 
             GUILayout.Space(11);
             GUI.color = Color.blue;
@@ -51,21 +52,25 @@ public class DialogEventHandlerEditor : Editor
                     }
 
                     EditorGUILayout.PropertyField(_prop.FindPropertyRelative("m_dialogEvent"), new GUIContent("Dialog Event"));
+                    GUI.backgroundColor = Color.red;
                     if (GUILayout.Button("Remove DialogEvent"))
                     {
                         m_dialogEvents.DeleteArrayElementAtIndex(i);
                         m_currentIndexes.RemoveAt(i); 
                     }
+                    GUI.backgroundColor = _originalBackgroundColor;
                     GUI.color = Color.red; 
                     GUILayout.Box("", GUILayout.Height(3), GUILayout.Width(Screen.width - 20));
                     GUI.color = _originalColor; 
                 }
             }
+            GUI.backgroundColor = Color.green; 
             if(GUILayout.Button("Add DialogEvent"))
             {
                 m_dialogEvents.InsertArrayElementAtIndex(m_dialogEvents.arraySize);
                 m_currentIndexes.Add(-1); 
             }
+            GUI.backgroundColor = _originalBackgroundColor;
             
         }
         serializedObject.ApplyModifiedProperties(); 

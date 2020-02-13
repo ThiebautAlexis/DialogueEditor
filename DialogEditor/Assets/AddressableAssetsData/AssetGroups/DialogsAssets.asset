@@ -23,6 +23,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 232cb7a913e47df48a473e5781eae26d
+    m_Address: MultipleChoicesHandler
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: a379d74d17ca5ee4da0bb98a4b71a174
     m_Address: 579439667_luaDescriptor
     m_ReadOnly: 0
