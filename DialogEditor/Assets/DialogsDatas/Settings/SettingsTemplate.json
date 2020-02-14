@@ -1,5 +1,5 @@
 {
-    "m_luaConditions": "condition_1 = true;\ncondition_2 = false;\ncondition_3 = false;\ncondition_4 = false;\n",
+    "m_luaConditions": "condition_1 = false;\ncondition_2 = false;\ncondition_3 = false;\ncondition_4 = false;\n",
     "m_charactersColor": [
         {
             "m_characterName": "alexis",

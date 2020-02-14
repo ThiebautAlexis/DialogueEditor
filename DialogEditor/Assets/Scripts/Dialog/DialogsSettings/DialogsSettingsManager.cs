@@ -5,6 +5,12 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public static class DialogsSettingsManager 
 {
+
+    #region Events and Actions
+    public static event System.Action OnSettingsModified = null; 
+    #endregion
+
+    #region Fields and Properties
     private static DialogsSettings m_dialogsSettings = null; 
     public static DialogsSettings DialogsSettings
     {
@@ -28,7 +34,7 @@ public static class DialogsSettingsManager
             return m_dialogsSettings; 
         }
     }
-
+    #endregion 
 
     #region Methods
 
@@ -106,9 +112,9 @@ public static class DialogsSettingsManager
         {
             _variable = _conditions[i].Trim().Split('=');
             if (_variable[0].Trim() == _conditionName.Trim())
-            {
+            { 
                 _variable[1] = _value.ToString().ToLower();
-                _conditions[i] = _variable[0] + "=" + _variable[1];
+                _conditions[i] = _variable[0] + "=" + _variable[1]+";";
                 break;
             }
         }
@@ -118,7 +124,8 @@ public static class DialogsSettingsManager
             _temp += _conditions[i] + "\n";
         }
         m_dialogsSettings.LuaConditions = _temp;
-        SaveProfile(); 
+        SaveProfile();
+        OnSettingsModified?.Invoke(); 
     }
 
     /// <summary>

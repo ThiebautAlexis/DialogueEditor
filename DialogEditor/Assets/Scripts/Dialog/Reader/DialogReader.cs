@@ -240,15 +240,7 @@ public class DialogReader : MonoBehaviour
     }
     #endregion
 
-    #region Set Condition and Localisation Key
-
-    /// <summary>
-    /// Call the method <see cref="DialogsSettingsManager.SetConditionBoolValue(string, bool)"/> to Update the conditions on the current profile
-    /// </summary>
-    /// <param name="_conditionName">Name of the condition to update</param>
-    /// <param name="_value">New Value of the condition on the current profile</param>
-    public void SetConditionBool(string _conditionName, bool _value) => DialogsSettingsManager.SetConditionBoolValue(_conditionName, _value);
-
+    #region Set Localisation Key
     /// <summary>
     /// Call the method <see cref="DialogsSettingsManager.SetLocalisationKeyIndex(int)"/> to update the localisation key of the current profile
     /// </summary>

@@ -614,15 +614,12 @@ MonoBehaviour:
   - m_dialogEvent:
       m_PersistentCalls:
         m_Calls: []
-    m_activationKey: AL13STR
-  - m_dialogEvent:
-      m_PersistentCalls:
-        m_Calls: []
-    m_activationKey: AL13STR
-  - m_dialogEvent:
-      m_PersistentCalls:
-        m_Calls: []
-    m_activationKey: AL13STR
+    m_activationKey: EV15POL
+    m_changedConditions:
+    - m_conditionName: condition_1
+      m_conditionValue: 1
+    - m_conditionName: condition_2
+      m_conditionValue: 1
 --- !u!1 &2015950021
 GameObject:
   m_ObjectHideFlags: 0

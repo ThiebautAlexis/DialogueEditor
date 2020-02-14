@@ -5,8 +5,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 978.0,
-                "y": 245.0,
+                "x": 928.0,
+                "y": 148.0,
                 "width": 250.0,
                 "height": 292.0
             },
@@ -33,8 +33,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 132.0,
-                "y": 195.0,
+                "x": 97.0,
+                "y": 118.0,
                 "width": 250.0,
                 "height": 292.0
             },
@@ -43,7 +43,7 @@
                 {
                     "m_index": 1,
                     "m_key": "EV15POL",
-                    "m_linkedToken": 39801549,
+                    "m_linkedToken": -1,
                     "m_waitingType": 1,
                     "m_waitingTime": 0.5
                 },
@@ -55,14 +55,14 @@
                     "m_waitingTime": 10.0
                 }
             ],
-            "m_type": 1,
+            "m_type": 0,
             "m_isStartingSet": true
         },
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 983.0,
-                "y": 630.0,
+                "x": 912.0,
+                "y": 638.0,
                 "width": 250.0,
                 "height": 192.0
             },
@@ -84,14 +84,14 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 518.0,
-                "y": 371.0,
+                "x": 447.0,
+                "y": 379.0,
                 "width": 250.0,
                 "height": 152.0
             },
             "m_NodeToken": 1496495172,
             "m_condition": "(condition_2 ~= false)\nor(condition_1 ~= false)",
-            "m_linkedTokenTrue": -1,
+            "m_linkedTokenTrue": 39801549,
             "m_linkedTokenFalse": 1111069342
         }
     ]

@@ -248,6 +248,19 @@ public class DialogSettingsEditorWindow : EditorWindow
             EditorUtility.DisplayDialog("File saved", $"The Dialogs settings has been successfully saved", "Ok!");
         }
     }
+
+    private void UpdateConditions()
+    {
+        m_conditionsPair = new List<ConditionPair>();
+        string[] _conditions = DialogsSettingsManager.DialogsSettings.LuaConditions.Split('\n');
+        for (int i = 0; i < _conditions.Length; i++)
+        {
+            string[] _pair = _conditions[i].Split('=');
+            if (_pair[0].Trim() == string.Empty || _pair[1].Trim() == string.Empty) return;
+            m_conditionsPair.Add(new ConditionPair(_pair[0].Trim(), _pair[1].Trim()));
+        }
+        Repaint(); 
+    }
     #endregion
 
     #region Unity Methods
@@ -260,12 +273,14 @@ public class DialogSettingsEditorWindow : EditorWindow
 
         LoadSettingsForPlayMode(Application.isPlaying ? PlayModeStateChange.EnteredPlayMode : PlayModeStateChange.EnteredEditMode); 
 
-        EditorApplication.playModeStateChanged += LoadSettingsForPlayMode; 
+        EditorApplication.playModeStateChanged += LoadSettingsForPlayMode;
+        DialogsSettingsManager.OnSettingsModified += UpdateConditions;
     }
 
     private void OnDisable()
     {
         EditorApplication.playModeStateChanged -= LoadSettingsForPlayMode;
+        DialogsSettingsManager.OnSettingsModified -= UpdateConditions;
     }
 
     private void OnGUI()
