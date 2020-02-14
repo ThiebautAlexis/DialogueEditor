@@ -138,8 +138,8 @@ public class DialogLine
                     m_linkedToken = -1;
                 if (_linkedRect != Rect.zero)
                 {
-                    Handles.DrawBezier(m_pointRect.center, _linkedRect.center, m_pointRect.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.black, null, 2.0f);
-                    Handles.color = Color.black;
+                    Handles.DrawBezier(m_pointRect.center, _linkedRect.center + Vector2.left * _linkedRect.width / 2, m_pointRect.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                    Handles.color = Color.white;
                     if (Handles.Button((m_pointRect.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                     {
                         m_linkedToken = -1;

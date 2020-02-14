@@ -13,7 +13,9 @@ public class DialogEditorWindow : EditorWindow
 
     #region GUIStyles
     private GUIStyle m_defaultNodeStyle = null;
-    private GUIStyle m_conditionNodeStyle = null; 
+    private GUIStyle m_defaultNodeStyleHighLighted = null; 
+    private GUIStyle m_conditionNodeStyle = null;
+    private GUIStyle m_conditionNodeStyleHighLighted = null;
     private GUIStyle m_defaultPointStyle = null;
     private GUIStyle m_conditionPointStyle = null;
     private GUIContent m_dialogPartIcon = null;
@@ -42,7 +44,7 @@ public class DialogEditorWindow : EditorWindow
         {
             m_currentDialog = value;
             if (m_defaultNodeStyle == null) LoadStyles();
-            CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_conditionNodeStyle, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
+            CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
         }
     }
 
@@ -221,9 +223,18 @@ public class DialogEditorWindow : EditorWindow
         m_defaultNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
         m_defaultNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
+        m_defaultNodeStyleHighLighted = new GUIStyle();
+        m_defaultNodeStyleHighLighted.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+        m_defaultNodeStyleHighLighted.border = new RectOffset(12, 12, 12, 12);
+
+
         m_conditionNodeStyle = new GUIStyle();
         m_conditionNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
         m_conditionNodeStyle.border = new RectOffset(12, 12, 12, 12);
+
+        m_conditionNodeStyleHighLighted = new GUIStyle();
+        m_conditionNodeStyleHighLighted.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6 on.png") as Texture2D;
+        m_conditionNodeStyleHighLighted.border = new RectOffset(12, 12, 12, 12);
 
         m_defaultPointStyle = new GUIStyle();
         m_defaultPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
@@ -377,13 +388,17 @@ public class DialogEditorWindow : EditorWindow
     protected virtual void OnEnable()
     {
         LoadStyles(); 
-        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_conditionNodeStyle, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
+        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
     } 
     protected virtual void OnGUI()
     {
-       
-        DrawGrid(20, 0.2f, Color.black);
-        DrawGrid(100, 0.4f, Color.black);
+        Color _originalColor = GUI.color;
+        GUI.color = new Color(.05f, .05f, .05f);
+        GUI.Box(new Rect(0,0,maxSize.x, maxSize.y), "");
+        GUI.color = _originalColor; 
+
+        DrawGrid(20, 0.2f, Color.white);
+        DrawGrid(100, 0.4f, Color.white);
 
         ProcessEditorEvents(Event.current);
         if(CurrentDialog != null) CurrentDialog.Draw(SelectOutLine, SelectInPart, SelectOutCondition);
@@ -391,17 +406,17 @@ public class DialogEditorWindow : EditorWindow
         {
             if (m_outSelectedLine != null && m_outSelectedLine.PointRect != Rect.zero)
             {
-                Handles.DrawBezier(m_outSelectedLine.PointRect.center, Event.current.mousePosition, m_outSelectedLine.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                Handles.DrawBezier(m_outSelectedLine.PointRect.center, Event.current.mousePosition, m_outSelectedLine.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 GUI.changed = true;
             }
             else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRectTrue != Rect.zero && m_outConditionValue)
             {
-                Handles.DrawBezier(m_outSelectedCondition.OutPointRectTrue.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectTrue.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                Handles.DrawBezier(m_outSelectedCondition.OutPointRectTrue.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectTrue.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 GUI.changed = true;
             }
             else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRectFalse != Rect.zero && !m_outConditionValue)
             {
-                Handles.DrawBezier(m_outSelectedCondition.OutPointRectFalse.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectFalse.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                Handles.DrawBezier(m_outSelectedCondition.OutPointRectFalse.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectFalse.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 GUI.changed = true;
             }
         }

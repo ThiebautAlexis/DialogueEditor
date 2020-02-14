@@ -11,6 +11,7 @@ public abstract class DialogNode
 
 #if UNITY_EDITOR
     protected GUIStyle m_nodeStyle = null;
+    protected GUIStyle m_selectedNodeStyle = null; 
     protected GUIStyle m_connectionPointStyle = null;
     protected GUIContent m_pointIcon = null;
     protected GUIContent m_currentIcon = null;

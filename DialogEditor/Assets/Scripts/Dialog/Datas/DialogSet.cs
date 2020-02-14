@@ -117,7 +117,7 @@ public class DialogSet : DialogNode
         }
         
         // --- Draw the Set and its Lines --- //
-        GUI.Box(m_nodeRect, "", m_nodeStyle);
+        GUI.Box(m_nodeRect, "", IsSelected ? m_selectedNodeStyle : m_nodeStyle);
         Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + MARGIN_HEIGHT, 25, 25);
         if(GUI.Button(_r, m_currentIcon, m_nodeStyle))
         {
@@ -212,9 +212,10 @@ public class DialogSet : DialogNode
     /// <param name="_pointIcon">Icon of the in/out points</param>
     /// <param name="_onRemoveSet">Action Called to remove the Set from the Dialog</param>
     /// <param name="_setStartingSet">Action called when the set is switch as the starting set</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogSetIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemoveSet, Action<DialogSet> _setStartingSet)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _selectedNodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogSetIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemoveSet, Action<DialogSet> _setStartingSet)
     {
         m_nodeStyle = _nodeStyle;
+        m_selectedNodeStyle = _selectedNodeStyle;
         m_onRemoveDialogPart = _onRemoveSet;
         m_onSetStartingSet = _setStartingSet; 
         m_basicSetIcon = _dialogSetIcon;

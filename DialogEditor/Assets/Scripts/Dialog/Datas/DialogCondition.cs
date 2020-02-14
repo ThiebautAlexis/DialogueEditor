@@ -84,7 +84,7 @@ public class DialogCondition : DialogNode
     /// <param name="_onOutDialogNodeSelected">Action called when one of the out point is selected</param>
     public void Draw(List<DialogSet> _otherSets, List<DialogCondition> _otherConditions, Action<DialogNode> _onInDialogNodeSelected, Action<DialogCondition, bool> _onOutDialogNodeSelected)
     {
-        GUI.Box(m_nodeRect, "", m_nodeStyle);
+        GUI.Box(m_nodeRect, "", IsSelected ? m_selectedNodeStyle : m_nodeStyle);
         Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + MARGIN_HEIGHT, 25, 25);
         if (GUI.Button(_r, m_currentIcon, m_nodeStyle))
         {
@@ -147,8 +147,8 @@ public class DialogCondition : DialogNode
             }
             if(_linkedRect != Rect.zero)
             {
-                Handles.DrawBezier(OutPointRectTrue.center, _linkedRect.center, OutPointRectTrue.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.black, null, 2.0f);
-                Handles.color = Color.black;
+                Handles.DrawBezier(OutPointRectTrue.center, _linkedRect.center + Vector2.left * _linkedRect.width / 2, OutPointRectTrue.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                Handles.color = Color.white;
                 if (Handles.Button((OutPointRectTrue.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                 {
                     m_linkedTokenTrue = -1;
@@ -174,8 +174,8 @@ public class DialogCondition : DialogNode
             }
             if (_linkedRect != Rect.zero)
             {
-                Handles.DrawBezier(OutPointRectFalse.center, _linkedRect.center, OutPointRectFalse.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.black, null, 2.0f);
-                Handles.color = Color.black;
+                Handles.DrawBezier(OutPointRectFalse.center, _linkedRect.center + Vector2.left*_linkedRect.width/2, OutPointRectFalse.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                Handles.color = Color.white;
                 if (Handles.Button((OutPointRectFalse.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                 {
                     m_linkedTokenTrue = -1;
@@ -270,9 +270,10 @@ public class DialogCondition : DialogNode
     /// <param name="_conditionIcon">Icon of the Condition Node</param>
     /// <param name="_pointIcon">Icon of the connection points</param>
     /// <param name="_onRemoveCondition">Event called when the Icon is removed</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon, Action<DialogCondition> _onRemoveCondition, DialogsSettings _dialogSettings)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _selectedNodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon, Action<DialogCondition> _onRemoveCondition, DialogsSettings _dialogSettings)
     {
         m_nodeStyle = _nodeStyle;
+        m_selectedNodeStyle = _selectedNodeStyle;
         m_connectionPointStyle = _connectionPointStyle;
         m_connectionPointStyle.alignment = TextAnchor.UpperCenter; 
         m_currentIcon = _conditionIcon; 

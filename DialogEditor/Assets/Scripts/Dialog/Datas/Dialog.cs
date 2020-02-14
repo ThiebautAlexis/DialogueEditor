@@ -21,7 +21,9 @@ public class Dialog
     #region Editor
 #if UNITY_EDITOR
     private GUIStyle m_defaultNodeStyle = null;
-    private GUIStyle m_conditionNodeStyle = null; 
+    private GUIStyle m_defaultNodeStyleSelected = null; 
+    private GUIStyle m_conditionNodeStyle = null;
+    private GUIStyle m_conditionNodeStyleSelected = null; 
     private GUIStyle m_defaultConnectionPointStyle = null;
     private GUIStyle m_conditionConnectionPointStyle = null;
     private GUIContent m_icon = null;
@@ -125,10 +127,12 @@ public class Dialog
     /// <param name="_answerIcon">Icon of the Answer Node Type</param>
     /// <param name="_startingSetIcon">Icon of the starting set</param>
     /// <param name="_pointIcon">Connection Point Icon</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _conditionStyle, GUIStyle _connectionPointStyle, GUIStyle _conditionConnectionPointStyle, GUIContent _basicIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon, GUIContent _conditionIcon)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _selectedNodeStyle, GUIStyle _conditionStyle, GUIStyle _selectedConditionStyle, GUIStyle _connectionPointStyle, GUIStyle _conditionConnectionPointStyle, GUIContent _basicIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon, GUIContent _conditionIcon)
     {
         m_defaultNodeStyle = _nodeStyle;
+        m_defaultNodeStyleSelected = _selectedNodeStyle; 
         m_conditionNodeStyle = _conditionStyle;
+        m_conditionNodeStyleSelected = _selectedConditionStyle;
         m_defaultConnectionPointStyle = _connectionPointStyle;
         m_conditionConnectionPointStyle = _conditionConnectionPointStyle; 
         m_icon = _basicIcon;
@@ -148,11 +152,11 @@ public class Dialog
         if (m_dialogConditions == null) m_dialogConditions = new List<DialogCondition>(); 
         for(int i = 0; i < m_dialogSets.Count; i++)
         {
-            m_dialogSets[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, _startingSetIcon, m_pointIcon, RemoveSet, SetStartingDialogSet); 
+            m_dialogSets[i].InitEditorSettings(_nodeStyle, _selectedNodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, _startingSetIcon, m_pointIcon, RemoveSet, SetStartingDialogSet); 
         }
         for (int i = 0; i < m_dialogConditions.Count; i++)
         {
-            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition, m_dialogSettings) ; 
+            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _selectedConditionStyle ,_conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition, m_dialogSettings) ; 
         }
     }
 
