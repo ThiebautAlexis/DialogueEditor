@@ -91,7 +91,7 @@ public class DialogCondition : DialogNode
             ProcessContextMenu();
         }
         _r = new Rect(m_nodeRect.x + 10, _r.y, CONTENT_WIDTH, TITLE_HEIGHT);
-        GUI.Label(_r, "Condition : " + m_NodeToken.ToString());
+        GUI.Label(_r, "Condition");
         _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT + SPACE_HEIGHT;
         // --- Draw the conditions --- //
         if (m_displayLUACode)

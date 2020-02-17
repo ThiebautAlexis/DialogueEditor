@@ -31,7 +31,8 @@ public class DialogEditorWindow : EditorWindow
     private bool m_isCreationPopupOpen = false;
     private bool m_isSelectingPopupOpen = false;
     private int m_DialogIndex = -1;
-    private float m_zoomScale = 1.0f; 
+    private float m_zoomScale = 1.0f;
+    private Vector2 m_zoomCoordOrigine = Vector2.zero; 
 
     private string m_dialogName = ""; 
     private string m_spreadsheetId = "";
@@ -133,13 +134,19 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_gridColor">Color</param>
     private void DrawGrid(float _gridSpacing, float _gridOpacity, Color _gridColor)
     {
+        _gridSpacing *= m_zoomScale;
+        if (_gridSpacing < 10)
+        {
+            _gridSpacing *= 25;
+            _gridOpacity += .4f; 
+        }
         int widthDivs = Mathf.CeilToInt(position.width / _gridSpacing);
         int heightDivs = Mathf.CeilToInt(position.height / _gridSpacing);
 
         Handles.BeginGUI();
         Handles.color = new Color(_gridColor.r, _gridColor.g, _gridColor.b, _gridOpacity);
 
-        m_offset += m_drag * 0.5f;
+        m_offset += m_drag * 0.5f * m_zoomScale;
         Vector3 newOffset = new Vector3(m_offset.x % _gridSpacing, m_offset.y % _gridSpacing, 0);
 
         for (int i = 0; i < widthDivs; i++)
@@ -209,8 +216,8 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_delta"></param>
     private void OnDrag(Vector2 _delta)
     {
-        m_drag = _delta;
-        if (CurrentDialog != null) CurrentDialog.DragAll(_delta); 
+        m_drag = _delta/m_zoomScale;
+        if (CurrentDialog != null) CurrentDialog.DragAll(_delta/m_zoomScale); 
         GUI.changed = true;
     }
 
@@ -280,9 +287,29 @@ public class DialogEditorWindow : EditorWindow
                     OnDrag(_e.delta);
                 }
                 break;
+            case EventType.ScrollWheel:
+                if (m_zoomScale == .25f && _e.delta.y > 0) break;
+
+                Vector2 screenCoordsMousePos = Event.current.mousePosition;
+                Vector2 zoomCoordsMousePos = ConvertScreenCoordsToZoomCoords(screenCoordsMousePos);
+                float _oldZoomScale = m_zoomScale;
+                m_zoomScale = Mathf.Clamp(m_zoomScale - (_e.delta.y * .05f), .25f, 1.0f);
+                m_zoomCoordOrigine += (zoomCoordsMousePos - m_zoomCoordOrigine) - (_oldZoomScale / m_zoomScale) * (zoomCoordsMousePos - m_zoomCoordOrigine);
+                Repaint(); 
+                break; 
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Convert the screen coordinates into zommed Coordinates according to the zoom scale
+    /// </summary>
+    /// <param name="screenCoords">Screen coordinates to convert</param>
+    /// <returns></returns>
+    private Vector2 ConvertScreenCoordsToZoomCoords(Vector2 screenCoords)
+    {
+        return (screenCoords - position.GetTopLeft()) / m_zoomScale + m_zoomCoordOrigine;
     }
 
     /// <summary>
@@ -392,15 +419,20 @@ public class DialogEditorWindow : EditorWindow
     } 
     protected virtual void OnGUI()
     {
+
         Color _originalColor = GUI.color;
-        GUI.color = new Color(.05f, .05f, .05f);
+        GUI.color = new Color(.12f, .12f, .12f);
         GUI.Box(new Rect(0,0,maxSize.x, maxSize.y), "");
-        GUI.color = _originalColor; 
+        GUI.color = _originalColor;
+        GUI.Box(new Rect(0, 0, 50, 25), m_zoomScale.ToString());
 
         DrawGrid(20, 0.2f, Color.white);
         DrawGrid(100, 0.4f, Color.white);
 
         ProcessEditorEvents(Event.current);
+
+        ZoomAreaEditor.Begin(m_zoomScale, new Rect(0, 0, maxSize.x, maxSize.y));
+
         if(CurrentDialog != null) CurrentDialog.Draw(SelectOutLine, SelectInPart, SelectOutCondition);
         if(m_inSelectedNode == null)
         {
@@ -421,6 +453,7 @@ public class DialogEditorWindow : EditorWindow
             }
         }
 
+        ZoomAreaEditor.End(); 
 
         if (m_isCreationPopupOpen)
         {
@@ -436,7 +469,7 @@ public class DialogEditorWindow : EditorWindow
             windowRectBis = GUILayout.Window(1, windowRectBis, DrawSelectingPopup, "Open Dialog");
             EndWindows();
         }
-        if (GUI.changed) Repaint(); 
+        if (GUI.changed) Repaint();
     }
     #endregion
 

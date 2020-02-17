@@ -5,8 +5,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 945.0,
-                "y": 243.0,
+                "x": 958.1162109375,
+                "y": 255.611328125,
                 "width": 250.0,
                 "height": 292.0
             },
@@ -27,16 +27,16 @@
                     "m_waitingTime": 2.5
                 }
             ],
-            "m_type": 0,
+            "m_type": 1,
             "m_isStartingSet": false
         },
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 79.0,
-                "y": 205.0,
+                "x": 59.11962890625,
+                "y": 130.6112060546875,
                 "width": 250.0,
-                "height": 292.0
+                "height": 392.0
             },
             "m_NodeToken": 942570906,
             "m_dialogLines": [
@@ -50,9 +50,16 @@
                 {
                     "m_index": 0,
                     "m_key": "AL13STR",
-                    "m_linkedToken": 1496495172,
+                    "m_linkedToken": -1,
                     "m_waitingType": 0,
                     "m_waitingTime": 10.0
+                },
+                {
+                    "m_index": -1,
+                    "m_key": "",
+                    "m_linkedToken": 1496495172,
+                    "m_waitingType": 1,
+                    "m_waitingTime": 0.0
                 }
             ],
             "m_type": 0,
@@ -61,8 +68,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 946.0,
-                "y": 610.0,
+                "x": 934.1162109375,
+                "y": 683.611083984375,
                 "width": 250.0,
                 "height": 192.0
             },
@@ -84,8 +91,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 472.0,
-                "y": 447.0,
+                "x": 468.11962890625,
+                "y": 483.612060546875,
                 "width": 250.0,
                 "height": 152.0
             },

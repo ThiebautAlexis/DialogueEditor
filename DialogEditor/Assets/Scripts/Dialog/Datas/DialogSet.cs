@@ -124,7 +124,7 @@ public class DialogSet : DialogNode
             ProcessContextMenu();  
         }
         _r = new Rect(m_nodeRect.x + 10, _r.y, CONTENT_WIDTH , TITLE_HEIGHT);
-        GUI.Label(_r, m_type.ToString() + " " + m_NodeToken.ToString() );
+        GUI.Label(_r, m_type.ToString());
         _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT + SPACE_HEIGHT; 
         DialogLine _c; 
         for (int i = 0; i < m_dialogLines.Count; i++)
