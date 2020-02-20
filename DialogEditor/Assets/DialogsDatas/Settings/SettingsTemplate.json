@@ -34,5 +34,10 @@
         "Text_En_en",
         "Text_Fr_fr"
     ],
-    "m_currentLocalisationKeyIndex": 1
+    "m_currentLocalisationKeyIndex": 1,
+    "m_audioLocalisationKeys": [
+        "Fr_fr",
+        "En_en"
+    ],
+    "m_currentAudioLocalisationKeyIndex": 0
 }

@@ -37,13 +37,14 @@ public class DialogSet : DialogNode
 
     #region Constructor
 #if UNITY_EDITOR
-    public DialogSet(Vector2 _nodePosition, Action<DialogSet> _onRemovePart, Action<DialogSet> _onSetStartingSet, GUIStyle _normalStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon)
+    public DialogSet(Vector2 _nodePosition, Action<DialogSet> _onRemovePart, Action<DialogSet> _onSetStartingSet, GUIStyle _normalStyle, GUIStyle _selectedStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon)
     {
         m_NodeToken = UnityEngine.Random.Range(0, int.MaxValue); 
         m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, INITIAL_NODE_WIDTH, 0);
         m_onRemoveDialogPart = _onRemovePart;
         m_onSetStartingSet = _onSetStartingSet;
         m_nodeStyle = _normalStyle;
+        m_selectedNodeStyle = _selectedStyle; 
         m_connectionPointStyle = _connectionPointStyle;
         m_dialogLines = new List<DialogLine>();
         m_basicSetIcon = _dialogPartIcon;

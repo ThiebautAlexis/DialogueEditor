@@ -66,6 +66,8 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - LineDescriptors
+    - AudioClips
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: cb441fa814102774582ef33388ceb7df, type: 2}

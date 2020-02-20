@@ -10,7 +10,9 @@ public class DialogSettingsEditorWindow : EditorWindow
     private string m_addedCondition = "";
     private string m_addedCharacterName = "";
     private string m_addedKey = "";
-    private string[] m_localisationKeys = new string[] { }; 
+    private string m_addedAudioKey = ""; 
+    private string[] m_localisationKeys = new string[] { };
+    private string[] m_audioLocalisationKeys = new string[] { }; 
     private GUIStyle m_titleStyle;
 
     private DialogsSettings m_dialogsSettings = null; 
@@ -109,7 +111,7 @@ public class DialogSettingsEditorWindow : EditorWindow
     /// </summary>
     private void DrawLocalisationsKeys()
     {
-        GUILayout.Label("LOCALISATION KEYS", m_titleStyle);
+        GUILayout.Label("LOCALISATION KEYS - Text", m_titleStyle);
         for (int i = 0; i < m_localisationKeys.Length; i++)
         {
             GUILayout.BeginHorizontal();
@@ -135,7 +137,35 @@ public class DialogSettingsEditorWindow : EditorWindow
             m_addedKey = "";
         }
         GUILayout.EndHorizontal();
-        m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_localisationKeys); 
+        m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_localisationKeys);
+
+        GUILayout.Label("LOCALISATION KEYS - Audio", m_titleStyle);
+        for (int i = 0; i < m_audioLocalisationKeys.Length; i++)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(m_audioLocalisationKeys[i]);
+            if (GUILayout.Button("-", GUILayout.Width(15), GUILayout.Height(15)))
+            {
+                List<string> _temp = m_audioLocalisationKeys.ToList();
+                _temp.RemoveAt(i);
+                m_audioLocalisationKeys = _temp.ToArray();
+                m_dialogsSettings.AudioLocalisationKeys = m_audioLocalisationKeys;
+            }
+            GUILayout.EndHorizontal();
+        }
+        GUILayout.BeginHorizontal();
+        m_addedAudioKey = GUILayout.TextField(m_addedAudioKey, GUILayout.MinWidth(200));
+        if (GUILayout.Button("Add Key to database") && m_addedAudioKey.Trim() != string.Empty)
+        {
+            m_addedAudioKey = m_addedAudioKey.Trim().Replace(' ', '_');
+            List<string> _temp = m_audioLocalisationKeys.ToList();
+            _temp.Add(m_addedAudioKey);
+            m_audioLocalisationKeys = _temp.ToArray();
+            m_dialogsSettings.AudioLocalisationKeys = m_audioLocalisationKeys;
+            m_addedAudioKey = "";
+        }
+        GUILayout.EndHorizontal();
+        m_dialogsSettings.CurrentAudioLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentAudioLocalisationKeyIndex, m_audioLocalisationKeys);
     }
 
     /// <summary>
@@ -163,16 +193,21 @@ public class DialogSettingsEditorWindow : EditorWindow
             }
             m_dialogsSettings.LuaConditions = _savedDatas;
         }
-
+        GUILayout.Space(15);
         GUILayout.Label("COLORS", m_titleStyle);
         m_dialogsSettings.OverrideCharacterColor = EditorGUILayout.Toggle("Override Characters Color", m_dialogsSettings.OverrideCharacterColor);
-        GUILayout.Label("LOCALISATION KEYS", m_titleStyle);
-        m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_dialogsSettings.LocalisationKeys); 
-        if(EditorGUI.EndChangeCheck())
+        GUILayout.Space(15);
+        GUILayout.Label("LOCALISATION KEYS - Text", m_titleStyle);
+        m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_dialogsSettings.LocalisationKeys);
+        GUILayout.Space(15);
+        GUILayout.Label("LOCALISATION KEYS - Audio", m_titleStyle);
+        m_dialogsSettings.CurrentAudioLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentAudioLocalisationKeyIndex, m_dialogsSettings.AudioLocalisationKeys);
+        if (EditorGUI.EndChangeCheck())
         {
             DialogsSettingsManager.DialogsSettings.LuaConditions = m_dialogsSettings.LuaConditions;
             DialogsSettingsManager.DialogsSettings.OverrideCharacterColor = m_dialogsSettings.OverrideCharacterColor;
             DialogsSettingsManager.DialogsSettings.CurrentLocalisationKeyIndex = m_dialogsSettings.CurrentLocalisationKeyIndex;
+            DialogsSettingsManager.DialogsSettings.CurrentAudioLocalisationKeyIndex = m_dialogsSettings.CurrentAudioLocalisationKeyIndex;
         }
     }
 
@@ -209,6 +244,7 @@ public class DialogSettingsEditorWindow : EditorWindow
                     LoadSettingsFiles();
                 }
                 m_localisationKeys = m_dialogsSettings.LocalisationKeys;
+                m_audioLocalisationKeys = m_dialogsSettings.AudioLocalisationKeys; 
                 break;
             case PlayModeStateChange.EnteredPlayMode:
                 m_dialogsSettings = DialogsSettingsManager.DialogsSettings; 

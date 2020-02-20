@@ -62,7 +62,7 @@ public class Dialog
 #if UNITY_EDITOR
     public void AddCondition(Vector2 _pos)
     {
-        m_dialogConditions.Add(new DialogCondition(_pos, RemoveCondition, m_conditionNodeStyle, m_conditionConnectionPointStyle, m_conditionIcon, m_pointIcon)) ; 
+        m_dialogConditions.Add(new DialogCondition(_pos, RemoveCondition, m_conditionNodeStyle, m_conditionNodeStyleSelected, m_conditionConnectionPointStyle, m_conditionIcon, m_pointIcon)) ; 
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public class Dialog
     /// <param name="_pos"></param>
     public void AddSet(Vector2 _pos)
     {
-        m_dialogSets.Add(new DialogSet(_pos, RemoveSet, SetStartingDialogSet, m_defaultNodeStyle, m_defaultConnectionPointStyle, m_icon, m_answerIcon, m_startingSetIcon, m_pointIcon)); 
+        m_dialogSets.Add(new DialogSet(_pos, RemoveSet, SetStartingDialogSet, m_defaultNodeStyle, m_defaultNodeStyleSelected, m_defaultConnectionPointStyle, m_icon, m_answerIcon, m_startingSetIcon, m_pointIcon)); 
     }
 
     /// <summary>

@@ -424,7 +424,6 @@ public class DialogEditorWindow : EditorWindow
         GUI.color = new Color(.12f, .12f, .12f);
         GUI.Box(new Rect(0,0,maxSize.x, maxSize.y), "");
         GUI.color = _originalColor;
-        GUI.Box(new Rect(0, 0, 50, 25), m_zoomScale.ToString());
 
         DrawGrid(20, 0.2f, Color.white);
         DrawGrid(100, 0.4f, Color.white);
@@ -469,6 +468,7 @@ public class DialogEditorWindow : EditorWindow
             windowRectBis = GUILayout.Window(1, windowRectBis, DrawSelectingPopup, "Open Dialog");
             EndWindows();
         }
+        GUI.Box(new Rect(10, 10, 100, 20), " Zoom = " + (m_zoomScale * 100).ToString("0") + "%");
         if (GUI.changed) Repaint();
     }
     #endregion

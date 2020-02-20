@@ -49,12 +49,13 @@ public class DialogCondition : DialogNode
 
     #region Constructor 
 #if UNITY_EDITOR
-    public DialogCondition(Vector2 _nodePosition, Action<DialogCondition> _onRemoveCondition, GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon)
+    public DialogCondition(Vector2 _nodePosition, Action<DialogCondition> _onRemoveCondition, GUIStyle _nodeStyle, GUIStyle _selectedStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon)
     {
         m_NodeToken = UnityEngine.Random.Range(0, int.MaxValue);
         m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, INITIAL_NODE_WIDTH, INITIAL_NODE_HEIGHT + SPACE_HEIGHT + SPACE_HEIGHT + BUTTON_HEIGHT * 2);
         m_onRemoveDialogCondition = _onRemoveCondition;
         m_nodeStyle = _nodeStyle;
+        m_selectedNodeStyle = _selectedStyle; 
         m_currentIcon = _conditionIcon;
         m_pointIcon = _pointIcon;
         m_connectionPointStyle = _connectionPointStyle; 
@@ -70,6 +71,7 @@ public class DialogCondition : DialogNode
     /// </summary>
     private void AddCondition()
     {
+        if (m_conditionsConverted == null) m_conditionsConverted = new List<Condition>(); 
         string _conditionString = $"{(m_conditionsConverted.Count > 0 ? "and" : string.Empty)}({m_conditionsDescriptor[0]} == false)";
         m_conditionsConverted.Add(new Condition(_conditionString, m_conditionsDescriptor)); 
         m_nodeRect.height += POPUP_HEIGHT; 
@@ -343,6 +345,7 @@ public class Condition
     public Condition(string _stringCondition, string[] _conditionDescriptor)
     {
         string[] _condition = _stringCondition.Split('(');
+        if (_condition.Length <= 1) return;
         StartStatement = _condition[0].Trim();
         _condition = _condition[1].Split(' ');
         ConditionName = _condition[0];
