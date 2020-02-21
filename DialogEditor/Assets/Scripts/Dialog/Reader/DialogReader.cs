@@ -121,6 +121,7 @@ public class DialogReader : MonoBehaviour
         switch (_set.Type)
         {
             case DialogSetType.BasicType:
+                if (_set.PlayRandomly) _index = _set.GetNextRandomIndex(); 
                 DisplayDialogLineAtIndex(_set, _index);
                 break;
             case DialogSetType.PlayerAnswer:
@@ -202,13 +203,21 @@ public class DialogReader : MonoBehaviour
         {
             m_audioSource.PlayOneShot(DialogAssetsManager.DialogLinesAudioClips[_line.Key + "_" + DialogsSettingsManager.DialogsSettings.CurrentAudioLocalisationKey]);
         }
-        // Go to the next set
-        _index++; 
-        if(_set.DialogLines.Count == _index)
+        // Increase Index
+        _index++;
+        //Check if we reach the end of the set and go to the next set
+        if (_set.DialogLines.Count == _index && !_set.PlayRandomly)
         {
             _set = m_dialog.GetNextSet(_line.LinkedToken);
             _index = 0; 
         }
+        else if (_set.PlayOnlyOneLine || (_set.PlayRandomly && _set.RemainingIndexesCount == 0))
+        {
+            _set = m_dialog.GetNextSet(_set.DialogLines.Last().LinkedToken);
+            _index = 0; 
+        }
+
+
         if (_line.WaitingType == WaitingType.WaitForClick)
             m_onMouseClicked += () => DisplayDialogSet(_set, _index);
         else

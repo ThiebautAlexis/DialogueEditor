@@ -16,7 +16,7 @@ public abstract class DialogNode
     protected GUIContent m_pointIcon = null;
     protected GUIContent m_currentIcon = null;
     public const float INITIAL_NODE_WIDTH = 250;
-    public const float INITIAL_NODE_HEIGHT = MARGIN_HEIGHT + TITLE_HEIGHT;
+    public const float INITIAL_NODE_HEIGHT = MARGIN_HEIGHT + TITLE_HEIGHT ;
     public const float CONTENT_WIDTH = 230;
     public const float MARGIN_HEIGHT = 12;
     public const float TITLE_HEIGHT = 20;

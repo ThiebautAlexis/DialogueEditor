@@ -11,7 +11,10 @@ public class DialogSet : DialogNode
     #region Fields and Properties
     [SerializeField] private List<DialogLine> m_dialogLines = new List<DialogLine>(); 
     [SerializeField] private DialogSetType m_type = DialogSetType.BasicType;
-    [SerializeField] private bool m_isStartingSet = false; 
+    [SerializeField] private bool m_isStartingSet = false;
+    [SerializeField] private bool m_playOnlyOneLine = false;
+    [SerializeField] private bool m_playRandomly = false;
+    private int[] m_unusedIndexes = null; 
 
     public List<DialogLine> DialogLines { get { return m_dialogLines; }}
     public DialogSetType Type { get { return m_type; } }
@@ -26,12 +29,26 @@ public class DialogSet : DialogNode
             m_isStartingSet = value; 
         }
     }
+    public bool PlayOnlyOneLine { get { return m_playOnlyOneLine; } }
+    public bool PlayRandomly { get { return m_playRandomly; } }
+    public int RemainingIndexesCount
+    {
+        get
+        {
+            if (m_unusedIndexes == null) return 0;
+            return m_unusedIndexes.Length;
+        } 
+    }
 
+
+
+#if UNITY_EDITOR
     private Action<DialogSet> m_onRemoveDialogPart = null;
     private Action<DialogSet> m_onSetStartingSet = null; 
     private GUIContent m_basicSetIcon = null;
     private GUIContent m_answerIcon = null;
-    private GUIContent m_startingSetIcon = null; 
+    private GUIContent m_startingSetIcon = null;
+#endif
     #endregion
 
 
@@ -74,7 +91,7 @@ public class DialogSet : DialogNode
         m_nodeRect = new Rect(m_nodeRect.position.x,
             m_nodeRect.position.y,
             INITIAL_NODE_WIDTH, 
-            INITIAL_NODE_HEIGHT + SPACE_HEIGHT + (DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (SPACE_HEIGHT * (m_dialogLines.Count+1)) + BUTTON_HEIGHT); 
+            INITIAL_NODE_HEIGHT + (TITLE_HEIGHT*2) + SPACE_HEIGHT + (DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (SPACE_HEIGHT * (m_dialogLines.Count+1)) + BUTTON_HEIGHT); 
     }
 
     /// <summary>
@@ -126,7 +143,19 @@ public class DialogSet : DialogNode
         }
         _r = new Rect(m_nodeRect.x + 10, _r.y, CONTENT_WIDTH , TITLE_HEIGHT);
         GUI.Label(_r, m_type.ToString());
-        _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT + SPACE_HEIGHT; 
+        _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT + SPACE_HEIGHT/2;
+        EditorGUI.BeginDisabledGroup(m_type == DialogSetType.PlayerAnswer);
+        m_playOnlyOneLine = EditorGUI.ToggleLeft(_r, "Play only one line of the set.", m_playOnlyOneLine);
+        _r.y += TITLE_HEIGHT;
+        m_playRandomly = EditorGUI.ToggleLeft(_r, "Play the set Randomly?", m_playRandomly);
+        _r.y += TITLE_HEIGHT; 
+        EditorGUI.EndDisabledGroup();
+        Color _color = GUI.color;
+        GUI.color = Color.black;
+        GUI.Box(new Rect(_r.x, _r.y, _r.width, .5f), "");
+        GUI.color = _color;
+        _r.y += SPACE_HEIGHT/2;
+
         DialogLine _c; 
         for (int i = 0; i < m_dialogLines.Count; i++)
         {
@@ -199,7 +228,10 @@ public class DialogSet : DialogNode
     private void RemoveContent(DialogLine _content)
     {
         m_dialogLines.Remove(_content);
-        m_nodeRect = new Rect(m_nodeRect.position.x, m_nodeRect.position.y, INITIAL_NODE_WIDTH, INITIAL_NODE_HEIGHT + SPACE_HEIGHT + (DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (SPACE_HEIGHT * (m_dialogLines.Count + 1)) + BUTTON_HEIGHT);
+        m_nodeRect = new Rect(m_nodeRect.position.x, m_nodeRect.position.y,
+            INITIAL_NODE_WIDTH,
+            INITIAL_NODE_HEIGHT + (TITLE_HEIGHT * 2) + SPACE_HEIGHT + (DIALOGLINE_SETTINGS_HEIGHT * m_dialogLines.Count) + (SPACE_HEIGHT * (m_dialogLines.Count + 1)) + BUTTON_HEIGHT);
+
     }
 
     /// <summary>
@@ -228,6 +260,29 @@ public class DialogSet : DialogNode
     }
 #endif
 
+    public int GetNextRandomIndex()
+    {
+        if(m_unusedIndexes == null)
+        {
+            m_unusedIndexes = new int[m_dialogLines.Count];
+            for (int i = 0; i < m_dialogLines.Count; i++)
+            {
+                m_unusedIndexes[i] = i; 
+            }
+        }
+        if(m_unusedIndexes.Length == 0)
+        {
+            m_unusedIndexes = null; 
+            return -1; 
+        }
+        int _index = UnityEngine.Random.Range(0, m_unusedIndexes.Length);
+        int _returnedValue = m_unusedIndexes[_index];
+
+        List<int> _temp = m_unusedIndexes.ToList();
+        _temp.RemoveAt(_index);
+        m_unusedIndexes = _temp.ToArray(); 
+        return _returnedValue;
+    }
     #endregion
 }
 
