@@ -174,40 +174,37 @@ public class DialogSettingsEditorWindow : EditorWindow
     private void DrawPlayingSettings()
     {
         GUILayout.Label("CONDITIONS", m_titleStyle);
-        EditorGUI.BeginChangeCheck(); 
-        EditorGUI.BeginChangeCheck(); 
         for (int i = 0; i < m_conditionsPair.Count; i++)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(m_conditionsPair[i].Key, GUILayout.MinWidth(150), GUILayout.MaxWidth(200));
+            EditorGUI.BeginChangeCheck();
             m_conditionsPair[i].Value = GUILayout.Toggle(m_conditionsPair[i].Value, "Current Value");
+            if (EditorGUI.EndChangeCheck())
+            {
+                string _savedDatas = string.Empty;
+                DialogsSettingsManager.SetConditionBoolValue(m_conditionsPair[i].Key, m_conditionsPair[i].Value);
+                m_dialogsSettings.LuaConditions = DialogsSettingsManager.DialogsSettings.LuaConditions;
+            }
             GUILayout.EndHorizontal();
         }
         EditorGUILayout.HelpBox("Use this window to change the value of any condition", MessageType.Info);
-        if (EditorGUI.EndChangeCheck())
-        {
-            string _savedDatas = string.Empty;
-            for (int i = 0; i < m_conditionsPair.Count; i++)
-            {
-                _savedDatas += m_conditionsPair[i].Key + " = " + m_conditionsPair[i].Value.ToString().ToLower() + ";\n";
-            }
-            m_dialogsSettings.LuaConditions = _savedDatas;
-        }
-        GUILayout.Space(15);
-        GUILayout.Label("COLORS", m_titleStyle);
-        m_dialogsSettings.OverrideCharacterColor = EditorGUILayout.Toggle("Override Characters Color", m_dialogsSettings.OverrideCharacterColor);
+
         GUILayout.Space(15);
         GUILayout.Label("LOCALISATION KEYS - Text", m_titleStyle);
+        EditorGUI.BeginChangeCheck();
         m_dialogsSettings.CurrentLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentLocalisationKeyIndex, m_dialogsSettings.LocalisationKeys);
+        if (EditorGUI.EndChangeCheck())
+        {
+            DialogsSettingsManager.SetTextLocalisationKeyIndex(m_dialogsSettings.CurrentLocalisationKeyIndex);
+        }
         GUILayout.Space(15);
         GUILayout.Label("LOCALISATION KEYS - Audio", m_titleStyle);
+        EditorGUI.BeginChangeCheck();
         m_dialogsSettings.CurrentAudioLocalisationKeyIndex = EditorGUILayout.Popup("Current Localisation Key", m_dialogsSettings.CurrentAudioLocalisationKeyIndex, m_dialogsSettings.AudioLocalisationKeys);
         if (EditorGUI.EndChangeCheck())
         {
-            DialogsSettingsManager.DialogsSettings.LuaConditions = m_dialogsSettings.LuaConditions;
-            DialogsSettingsManager.DialogsSettings.OverrideCharacterColor = m_dialogsSettings.OverrideCharacterColor;
-            DialogsSettingsManager.DialogsSettings.CurrentLocalisationKeyIndex = m_dialogsSettings.CurrentLocalisationKeyIndex;
-            DialogsSettingsManager.DialogsSettings.CurrentAudioLocalisationKeyIndex = m_dialogsSettings.CurrentAudioLocalisationKeyIndex;
+            DialogsSettingsManager.SetAudioLocalisationKeyIndex(m_dialogsSettings.CurrentAudioLocalisationKeyIndex);
         }
     }
 

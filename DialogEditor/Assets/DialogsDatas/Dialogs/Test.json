@@ -5,26 +5,28 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1326.8150634765625,
-                "y": 308.5596008300781,
+                "x": 902.1412353515625,
+                "y": 92.41110229492188,
                 "width": 250.0,
-                "height": 332.0
+                "height": 362.0
             },
             "m_NodeToken": 39801549,
             "m_dialogLines": [
                 {
                     "m_index": 2,
                     "m_key": "WIL21STR",
-                    "m_linkedToken": -1,
+                    "m_linkedToken": 1255118738,
+                    "m_initalWaitingTime": 1.0,
                     "m_waitingType": 0,
-                    "m_waitingTime": 0.0
+                    "m_extraWaitingTime": 0.0
                 },
                 {
                     "m_index": 0,
                     "m_key": "AL13STR",
-                    "m_linkedToken": -1,
+                    "m_linkedToken": 1409974374,
+                    "m_initalWaitingTime": 1.0,
                     "m_waitingType": 1,
-                    "m_waitingTime": 2.5
+                    "m_extraWaitingTime": 0.0
                 }
             ],
             "m_type": 1,
@@ -35,10 +37,10 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 200.24871826171876,
-                "y": 127.84526062011719,
+                "x": 125.57586669921875,
+                "y": -21.16033935546875,
                 "width": 250.0,
-                "height": 432.0
+                "height": 362.0
             },
             "m_NodeToken": 942570906,
             "m_dialogLines": [
@@ -46,36 +48,31 @@
                     "m_index": 1,
                     "m_key": "EV15POL",
                     "m_linkedToken": -1,
-                    "m_waitingType": 0,
-                    "m_waitingTime": 0.5
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 1.5
                 },
                 {
                     "m_index": 0,
                     "m_key": "AL13STR",
-                    "m_linkedToken": -1,
+                    "m_linkedToken": 1496495172,
+                    "m_initalWaitingTime": 10.0,
                     "m_waitingType": 0,
-                    "m_waitingTime": 10.0
-                },
-                {
-                    "m_index": 2,
-                    "m_key": "WIL21STR",
-                    "m_linkedToken": -1,
-                    "m_waitingType": 0,
-                    "m_waitingTime": 0.0
+                    "m_extraWaitingTime": 1.5
                 }
             ],
             "m_type": 0,
             "m_isStartingSet": true,
             "m_playOnlyOneLine": false,
-            "m_playRandomly": true
+            "m_playRandomly": false
         },
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1028.3858642578125,
-                "y": 773.9873657226563,
+                "x": 820.2849731445313,
+                "y": 504.69549560546877,
                 "width": 250.0,
-                "height": 332.0
+                "height": 362.0
             },
             "m_NodeToken": 1111069342,
             "m_dialogLines": [
@@ -83,15 +80,41 @@
                     "m_index": 1,
                     "m_key": "EV15POL",
                     "m_linkedToken": -1,
-                    "m_waitingType": 0,
-                    "m_waitingTime": 10.0
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
                 },
                 {
                     "m_index": 0,
                     "m_key": "AL13STR",
-                    "m_linkedToken": 1255118738,
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
                     "m_waitingType": 1,
-                    "m_waitingTime": 0.0
+                    "m_extraWaitingTime": 0.0
+                }
+            ],
+            "m_type": 0,
+            "m_isStartingSet": false,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 1245.7803955078125,
+                "y": 44.011566162109378,
+                "width": 250.0,
+                "height": 247.0
+            },
+            "m_NodeToken": 1255118738,
+            "m_dialogLines": [
+                {
+                    "m_index": 1,
+                    "m_key": "EV15POL",
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
                 }
             ],
             "m_type": 0,
@@ -102,40 +125,34 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1537.5972900390625,
-                "y": 837.3032836914063,
+                "x": 1249.8568115234375,
+                "y": 366.14263916015627,
                 "width": 250.0,
-                "height": 332.0
+                "height": 247.0
             },
-            "m_NodeToken": 1255118738,
+            "m_NodeToken": 1409974374,
             "m_dialogLines": [
                 {
-                    "m_index": 0,
-                    "m_key": "AL13STR",
+                    "m_index": 2,
+                    "m_key": "WIL21STR",
                     "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
                     "m_waitingType": 1,
-                    "m_waitingTime": 0.0
-                },
-                {
-                    "m_index": 1,
-                    "m_key": "EV15POL",
-                    "m_linkedToken": -1,
-                    "m_waitingType": 1,
-                    "m_waitingTime": 0.0
+                    "m_extraWaitingTime": 0.0
                 }
             ],
             "m_type": 0,
             "m_isStartingSet": false,
-            "m_playOnlyOneLine": true,
-            "m_playRandomly": true
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
         }
     ],
     "m_dialogConditions": [
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 610.3987426757813,
-                "y": 539.510009765625,
+                "x": 445.72564697265627,
+                "y": 353.36175537109377,
                 "width": 250.0,
                 "height": 152.0
             },

@@ -25,6 +25,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7b56b14e3b3aee6499999df268cf8346, type: 2}
   - {fileID: 11400000, guid: dbc8c6cc3499bb04098f61cc3990b111, type: 2}
   - {fileID: 11400000, guid: 08156750f4eeef044a9720883deee3f0, type: 2}
+  - {fileID: 11400000, guid: 35c4df93575ff4044a7965d233549b26, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -68,6 +69,8 @@ MonoBehaviour:
     - default
     - LineDescriptors
     - AudioClips
+    - AudioClips/Fr_fr/SampleScene
+    - AudioClips/En_en/SampleScene
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: cb441fa814102774582ef33388ceb7df, type: 2}

@@ -14,8 +14,9 @@ public class DialogLine
     [SerializeField] private string m_key = "";
     private string m_content = "";
     [SerializeField] private int m_linkedToken = -1;
+    [SerializeField] private float m_initalWaitingTime = 1.0f;
     [SerializeField] private WaitingType m_waitingType = WaitingType.WaitForTime;
-    [SerializeField] private float m_waitingTime = 0.0f;
+    [SerializeField] private float m_extraWaitingTime = 0.0f;
     private Rect m_pointRect;
 
     private string[] m_ids = null; 
@@ -24,8 +25,9 @@ public class DialogLine
     public string Key { get { return m_key; } }
     public string CharacterIdentifier { get { return m_key.Substring(0, 2); } }
     public int LinkedToken { get { return m_linkedToken; } set { m_linkedToken = value; } }
+    public float InitialWaitingTime { get { return m_initalWaitingTime; } }
     public WaitingType WaitingType { get { return m_waitingType; } }
-    public float WaitingTime { get { return m_waitingTime; } }
+    public float ExtraWaitingTime { get { return m_extraWaitingTime; } }
     #endregion
 
     #region Methods
@@ -100,16 +102,20 @@ public class DialogLine
         GUI.TextArea(_r, m_content);
         _r.y += DialogNode.BASIC_CONTENT_HEIGHT;
 
+        _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.POPUP_HEIGHT);
+        m_initalWaitingTime = EditorGUI.Slider(_r, "Inital Waiting Time (s): ", m_initalWaitingTime, 0, 10);
+        _r.y += DialogNode.POPUP_HEIGHT;
+
         EditorGUI.BeginDisabledGroup(_dialogSetType == DialogSetType.PlayerAnswer);
         // -- Draw the Dialog Line Waiting Type -- // 
         _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.POPUP_HEIGHT);
-        m_waitingType = (WaitingType)EditorGUI.EnumPopup(_r, "Waiting Type: ", m_waitingType);
+        m_waitingType = (WaitingType)EditorGUI.EnumPopup(_r, "Extra Waiting Type: ", m_waitingType);
         _r.y += DialogNode.POPUP_HEIGHT;
 
         EditorGUI.BeginDisabledGroup(m_waitingType == WaitingType.WaitForClick); 
         // -- Draw the Dialog Waiting Time Value -- //
         _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.POPUP_HEIGHT);
-        m_waitingTime = EditorGUI.Slider(_r, "Waiting Time (s): " ,m_waitingTime, 0, 10); 
+        m_extraWaitingTime = EditorGUI.Slider(_r, "Extra Waiting Time (s): " ,m_extraWaitingTime, 0, 10); 
         EditorGUI.EndDisabledGroup();
         EditorGUI.EndDisabledGroup();
         _r.y += DialogNode.POPUP_HEIGHT;

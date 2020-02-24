@@ -1,4 +1,5 @@
-﻿using System.IO; 
+﻿using System;
+using System.IO; 
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -7,7 +8,8 @@ public static class DialogsSettingsManager
 {
 
     #region Events and Actions
-    public static event System.Action OnSettingsModified = null; 
+    public static event Action OnSettingsModified = null;
+    public static event Action OnAudioLocalisationKeyChanged = null; 
     #endregion
 
     #region Fields and Properties
@@ -112,7 +114,7 @@ public static class DialogsSettingsManager
         {
             _variable = _conditions[i].Trim().Split('=');
             if (_variable[0].Trim() == _conditionName.Trim())
-            { 
+            {
                 _variable[1] = _value.ToString().ToLower();
                 _conditions[i] = _variable[0] + "=" + _variable[1]+";";
                 break;
@@ -132,13 +134,24 @@ public static class DialogsSettingsManager
     /// Set the Localisation Key to the selected Localisation Key with the index in <paramref name="_newIndex"/> in the current Profile
     /// </summary>
     /// <param name="_newIndex">Localisation Key Index</param>
-    public static void SetLocalisationKeyIndex(int _newIndex)
+    public static void SetTextLocalisationKeyIndex(int _newIndex)
     {
         m_dialogsSettings.CurrentLocalisationKeyIndex = _newIndex;
         SaveProfile(); 
     }
-    #endregion 
+
+    /// <summary>
+    /// Set the Localisation Key to the selected Localisation Key with the index in <paramref name="_newIndex"/> in the current Profile
+    /// </summary>
+    /// <param name="_newIndex">Localisation Key Index</param>
+    public static void SetAudioLocalisationKeyIndex(int _newIndex)
+    {
+        m_dialogsSettings.CurrentAudioLocalisationKeyIndex = _newIndex;
+        OnAudioLocalisationKeyChanged?.Invoke();
+        SaveProfile();
+    }
+    #endregion
 
     #endregion
-   
+
 }

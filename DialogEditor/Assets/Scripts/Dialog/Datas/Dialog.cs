@@ -254,12 +254,13 @@ end;
     private bool CheckCondition(string _condition)
     {
         string _conditionFuncString = "";
+        Debug.Log(DialogsSettingsManager.DialogsSettings.LuaConditions);
         _conditionFuncString = DialogsSettingsManager.DialogsSettings.LuaConditions; 
         _conditionFuncString += GetStringConditionMethod(_condition);
-        Script m_script = new Script();
+        m_script = new Script();
         m_script.DoString(_conditionFuncString);
 
-        DynValue _operation = m_script.Globals.Get("check_condition"); 
+        DynValue _operation = m_script.Globals.Get("check_condition");
         return m_script.Call(_operation).Boolean; 
     }
 
@@ -292,10 +293,5 @@ end;
         return m_dialogSets.Where(s => s.NodeToken == _nextToken).FirstOrDefault();
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private void CreateScript()
-    {
-        m_script = new Script();
-    }
     #endregion
 }

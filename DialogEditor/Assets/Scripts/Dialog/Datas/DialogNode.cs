@@ -23,7 +23,7 @@ public abstract class DialogNode
     public const float SPACE_HEIGHT = 15;
     public const float POPUP_HEIGHT = 15;
     public const float BUTTON_HEIGHT = 30;
-    public const float DIALOGLINE_SETTINGS_HEIGHT = BASIC_CONTENT_HEIGHT + (POPUP_HEIGHT * 2) + SPACE_HEIGHT;
+    public const float DIALOGLINE_SETTINGS_HEIGHT = BASIC_CONTENT_HEIGHT + (POPUP_HEIGHT * 3) + SPACE_HEIGHT;
     public const float BASIC_CONTENT_HEIGHT = 40;
 #endif
     public bool IsSelected { get; set; }

@@ -371,7 +371,6 @@ MonoBehaviour:
   m_font: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSize: 50
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
-  m_dialogAnswerHandlerName: MultipleChoicesHandler
   m_audioSource: {fileID: 202039722}
 --- !u!4 &202039721
 Transform:
