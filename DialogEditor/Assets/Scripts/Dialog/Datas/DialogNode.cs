@@ -28,7 +28,7 @@ public abstract class DialogNode
 #endif
     public bool IsSelected { get; set; }
     public int NodeToken { get { return m_NodeToken; } }
-    public Rect InPointRect { get { return new Rect(m_nodeRect.position.x - 15.5f, m_nodeRect.position.y + 6.0f, 25, 25); } }
+    public Rect InPointRect { get { return new Rect(m_nodeRect.position.x - 38/4*3 + 1, m_nodeRect.position.y + 2 , 38, 38); } }
 
 
     #region Methods

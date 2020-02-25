@@ -22,14 +22,34 @@ public static class DialogAssetsManager
         DialogsSettingsManager.OnAudioLocalisationKeyChanged += OnAudioLocalisationKeyChanged;  
     }
 
+    /// <summary>
+    /// Called when the scene changed
+    /// Load the audio assets according to the loaded scene if they exists in the Adressables
+    /// </summary>
+    /// <param name="_loadedScene">The scene Loaded</param>
+    /// <param name="_loadSceneMode">Loading mode of the scene</param>
     private static void OnSceneLoaded(Scene _loadedScene, LoadSceneMode _loadSceneMode)
     {
-        Addressables.LoadAssetsAsync<AudioClip>($"AudioClips/{DialogsSettingsManager.DialogsSettings.CurrentAudioLocalisationKey}/{_loadedScene.name}", null).Completed += OnAudioClipsLoaded;
+        string _keyName = $"AudioClips/{DialogsSettingsManager.DialogsSettings.CurrentAudioLocalisationKey}/{_loadedScene.name}";
+        Addressables.LoadResourceLocationsAsync(_keyName).Completed += (location) => 
+        {
+            if(location.Result.Count > 0)
+                Addressables.LoadAssetsAsync<AudioClip>(_keyName, null).Completed += OnAudioClipsLoaded;
+        };
     }
 
+    /// <summary>
+    /// Call when the audio location key changed
+    /// Load the new audio assets according to the new selected language in the current scene
+    /// </summary>
     private static void OnAudioLocalisationKeyChanged()
     {
-        Addressables.LoadAssetsAsync<AudioClip>($"AudioClips/{DialogsSettingsManager.DialogsSettings.CurrentAudioLocalisationKey}/{SceneManager.GetActiveScene().name}", null).Completed += OnAudioClipsLoaded;
+        string _keyName = $"AudioClips/{DialogsSettingsManager.DialogsSettings.CurrentAudioLocalisationKey}/{SceneManager.GetActiveScene().name}";
+        Addressables.LoadResourceLocationsAsync(_keyName).Completed += (location) =>
+        {
+            if (location.Result.Count > 0)
+                Addressables.LoadAssetsAsync<AudioClip>(_keyName, null).Completed += OnAudioClipsLoaded;
+        };
     }
 
     /// <summary>
@@ -47,7 +67,6 @@ public static class DialogAssetsManager
             DialogLinesAudioClips.Add(_loadedAssets.Result[i].name, _loadedAssets.Result[i]); 
         }
     }
-
 
     /// <summary>
     /// Called when the line descriptors are completly loaded 

@@ -11,24 +11,12 @@ public class DialogSet : DialogNode
     #region Fields and Properties
     [SerializeField] private List<DialogLine> m_dialogLines = new List<DialogLine>(); 
     [SerializeField] private DialogSetType m_type = DialogSetType.BasicType;
-    [SerializeField] private bool m_isStartingSet = false;
     [SerializeField] private bool m_playOnlyOneLine = false;
     [SerializeField] private bool m_playRandomly = false;
     private int[] m_unusedIndexes = null; 
 
     public List<DialogLine> DialogLines { get { return m_dialogLines; }}
     public DialogSetType Type { get { return m_type; } }
-    public bool IsStartingSet
-    {
-        get
-        {
-            return m_isStartingSet;
-        }
-        set
-        {
-            m_isStartingSet = value; 
-        }
-    }
     public bool PlayOnlyOneLine { get { return m_playOnlyOneLine; } }
     public bool PlayRandomly { get { return m_playRandomly; } }
     public int RemainingIndexesCount
@@ -44,29 +32,25 @@ public class DialogSet : DialogNode
 
 #if UNITY_EDITOR
     private Action<DialogSet> m_onRemoveDialogPart = null;
-    private Action<DialogSet> m_onSetStartingSet = null; 
     private GUIContent m_basicSetIcon = null;
     private GUIContent m_answerIcon = null;
-    private GUIContent m_startingSetIcon = null;
 #endif
     #endregion
 
 
     #region Constructor
 #if UNITY_EDITOR
-    public DialogSet(Vector2 _nodePosition, Action<DialogSet> _onRemovePart, Action<DialogSet> _onSetStartingSet, GUIStyle _normalStyle, GUIStyle _selectedStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon)
+    public DialogSet(Vector2 _nodePosition, Action<DialogSet> _onRemovePart, GUIStyle _normalStyle, GUIStyle _selectedStyle, GUIStyle _connectionPointStyle, GUIContent _dialogPartIcon, GUIContent _answerIcon, GUIContent _pointIcon)
     {
         m_NodeToken = UnityEngine.Random.Range(0, int.MaxValue); 
         m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, INITIAL_NODE_WIDTH, 0);
         m_onRemoveDialogPart = _onRemovePart;
-        m_onSetStartingSet = _onSetStartingSet;
         m_nodeStyle = _normalStyle;
         m_selectedNodeStyle = _selectedStyle; 
         m_connectionPointStyle = _connectionPointStyle;
         m_dialogLines = new List<DialogLine>();
         m_basicSetIcon = _dialogPartIcon;
         m_answerIcon = _answerIcon;
-        m_startingSetIcon = _startingSetIcon;
         m_currentIcon = m_type == DialogSetType.BasicType ? m_basicSetIcon : m_answerIcon;
         m_pointIcon = _pointIcon;
         AddNewContent();
@@ -167,12 +151,6 @@ public class DialogSet : DialogNode
         {
             AddNewContent(); 
         }
-        // --- Draw the starting Icon if this set is the Starting Set --- //
-        if (m_isStartingSet)
-        {
-            _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35 - 25 , m_nodeRect.position.y + MARGIN_HEIGHT, 25, 25);
-            GUI.Box(_r, m_startingSetIcon, m_nodeStyle);
-        }
     }
 
     /// <summary>
@@ -204,23 +182,11 @@ public class DialogSet : DialogNode
             default:
                 break;
         }
-        if(m_isStartingSet)
-            _genericMenu.AddDisabledItem(new GUIContent("Set as Starting Dialog Set"));
-        else 
-            _genericMenu.AddItem(new GUIContent("Set as Starting Dialog Set"), false, SetStartingSet);
         _genericMenu.AddSeparator("");
         _genericMenu.AddItem(new GUIContent("Remove Node"), false, OnClickRemoveNode);
         _genericMenu.ShowAsContext();
     }
     
-    /// <summary>
-    /// Set this set as the starting one in the Dialog
-    /// </summary>
-    private void SetStartingSet()
-    {
-        m_onSetStartingSet?.Invoke(this); 
-    }
-
     /// <summary>
     /// Remove the selected Content and rescale the Rect
     /// </summary>
@@ -245,15 +211,13 @@ public class DialogSet : DialogNode
     /// <param name="_pointIcon">Icon of the in/out points</param>
     /// <param name="_onRemoveSet">Action Called to remove the Set from the Dialog</param>
     /// <param name="_setStartingSet">Action called when the set is switch as the starting set</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _selectedNodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogSetIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemoveSet, Action<DialogSet> _setStartingSet)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _selectedNodeStyle, GUIStyle _connectionPointStyle, GUIContent _dialogSetIcon, GUIContent _answerIcon, GUIContent _pointIcon ,Action<DialogSet> _onRemoveSet)
     {
         m_nodeStyle = _nodeStyle;
         m_selectedNodeStyle = _selectedNodeStyle;
         m_onRemoveDialogPart = _onRemoveSet;
-        m_onSetStartingSet = _setStartingSet; 
         m_basicSetIcon = _dialogSetIcon;
         m_answerIcon = _answerIcon;
-        m_startingSetIcon = _startingSetIcon;
         m_currentIcon = m_type == DialogSetType.BasicType ? m_basicSetIcon : m_answerIcon;
         m_connectionPointStyle = _connectionPointStyle;
         m_pointIcon = _pointIcon; 
@@ -284,10 +248,4 @@ public class DialogSet : DialogNode
         return _returnedValue;
     }
     #endregion
-}
-
-public enum DialogSetType
-{
-    BasicType, 
-    PlayerAnswer
 }

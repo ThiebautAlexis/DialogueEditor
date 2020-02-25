@@ -6,7 +6,6 @@ using System.Linq;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Events;
-
 public class DialogReader : MonoBehaviour
 {
     #region Fields and Property 
@@ -15,7 +14,7 @@ public class DialogReader : MonoBehaviour
     [SerializeField] private TMP_FontAsset m_font = null;
     [SerializeField] private float m_fontSize = 12;
     [SerializeField] private Color m_fontColor = Color.black;
-    [SerializeField] private AudioSource m_audioSource = null; 
+    [SerializeField] private AudioSource m_audioSource = null;
 
     private AsyncOperationHandle<TextAsset> m_dialogAssetAsyncHandler;
 
@@ -96,7 +95,7 @@ public class DialogReader : MonoBehaviour
     /// Display the whole dialog
     /// </summary>
     /// <returns></returns>
-    public void StartDisplayingDialog()
+    public void StartDisplayingDialog(SituationsEnum _situation)
     {
         if (m_dialog == null)
         {
@@ -104,8 +103,16 @@ public class DialogReader : MonoBehaviour
             return; 
         }
         // Get the Starting Dialog Set //
-        DialogSet _set = m_dialog.GetFirstSet();
+        DialogSet _set = m_dialog.GetFirstSet(_situation);
         DisplayDialogSet(_set);
+    }
+
+    /// <summary>
+    /// Call the method with the Situation Default
+    /// </summary>
+    public void StartDisplayingDialog()
+    {
+        StartDisplayingDialog(SituationsEnum.Default); 
     }
 
     /// <summary>

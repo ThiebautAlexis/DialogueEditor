@@ -14,10 +14,17 @@ public class DialogEditorWindow : EditorWindow
     #region GUIStyles
     private GUIStyle m_defaultNodeStyle = null;
     private GUIStyle m_defaultNodeStyleHighLighted = null; 
+
     private GUIStyle m_conditionNodeStyle = null;
     private GUIStyle m_conditionNodeStyleHighLighted = null;
+
+    private GUIStyle m_startingNodeStyle = null;
+    private GUIStyle m_startingNodeStyleHighLighted = null;
+
     private GUIStyle m_defaultPointStyle = null;
     private GUIStyle m_conditionPointStyle = null;
+    private GUIStyle m_startingPointStyle = null;
+
     private GUIContent m_dialogPartIcon = null;
     private GUIContent m_answerPartIcon = null;
     private GUIContent m_startingSetIcon = null; 
@@ -45,12 +52,13 @@ public class DialogEditorWindow : EditorWindow
         {
             m_currentDialog = value;
             if (m_defaultNodeStyle == null) LoadStyles();
-            CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
+            CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_startingNodeStyle, m_startingNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_startingPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
         }
     }
 
     private DialogNode m_inSelectedNode = null;
     private DialogLine m_outSelectedLine = null;
+    private SituationPair m_outSituation = null; 
     private DialogCondition m_outSelectedCondition = null;
     private bool m_outConditionValue = true;
     #endregion
@@ -243,15 +251,31 @@ public class DialogEditorWindow : EditorWindow
         m_conditionNodeStyleHighLighted.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6 on.png") as Texture2D;
         m_conditionNodeStyleHighLighted.border = new RectOffset(12, 12, 12, 12);
 
+        m_startingNodeStyle = new GUIStyle();
+        m_startingNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3.png") as Texture2D;
+        m_startingNodeStyle.border = new RectOffset(12, 12, 12, 12);
+
+        m_startingNodeStyleHighLighted = new GUIStyle();
+        m_startingNodeStyleHighLighted.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3 on.png") as Texture2D;
+        m_startingNodeStyleHighLighted.border = new RectOffset(12, 12, 12, 12);
+
         m_defaultPointStyle = new GUIStyle();
         m_defaultPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
         m_defaultPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
-        m_defaultPointStyle.border = new RectOffset(-10, -4, -4, 0);
+        m_defaultPointStyle.border = new RectOffset(0, 0, 0, 0);
+        m_defaultPointStyle.alignment = TextAnchor.MiddleCenter; 
 
         m_conditionPointStyle = new GUIStyle();
         m_conditionPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
         m_conditionPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6 on.png") as Texture2D;
-        m_conditionPointStyle.border = new RectOffset(-10, -4, -4, 0);
+        m_conditionPointStyle.border = new RectOffset(0, 0, 0, 0);
+        m_conditionPointStyle.alignment = TextAnchor.MiddleCenter;
+
+        m_startingPointStyle = new GUIStyle();
+        m_startingPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3.png") as Texture2D;
+        m_startingPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3 on.png") as Texture2D;
+        m_startingPointStyle.border = new RectOffset(0, 0, 0, 0);
+        m_startingPointStyle.alignment = TextAnchor.MiddleCenter; 
 
         m_dialogPartIcon = EditorGUIUtility.IconContent("sv_icon_dot9_pix16_gizmo");
         m_answerPartIcon = EditorGUIUtility.IconContent("sv_icon_dot14_pix16_gizmo");
@@ -367,7 +391,8 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_line">Content linked to the out point selected</param>
     private void SelectOutLine(DialogLine _line)
     {
-        if (m_outSelectedCondition != null) m_outSelectedCondition = null; 
+        if (m_outSelectedCondition != null) m_outSelectedCondition = null;
+        if (m_outSituation != null) m_outSituation = null; 
         m_outSelectedLine = _line;
         if (m_inSelectedNode != null && m_outSelectedLine != null)
         {
@@ -381,12 +406,26 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_condition">Content linked to the out point selected</param>
     private void SelectOutCondition(DialogCondition _condition, bool _valueCondition)
     {
-        if (m_outSelectedLine != null) m_outSelectedLine = null; 
+        if (m_outSelectedLine != null) m_outSelectedLine = null;
+        if (m_outSituation != null) m_outSituation = null;
         m_outSelectedCondition = _condition;
         m_outConditionValue = _valueCondition; 
         if (m_inSelectedNode != null && m_outSelectedCondition != null)
         {
             LinkDialogSet();
+        }
+    }
+
+    private void SelectOutStarter(SituationPair _startingPair)
+    {
+        if (m_outSelectedCondition != null) m_outSelectedCondition = null;
+        if (m_outSelectedLine != null) m_outSelectedLine = null;
+
+        m_outSituation = _startingPair;
+
+        if (m_inSelectedNode != null && m_outSituation != null)
+        {
+            LinkDialogSet(); 
         }
     }
 
@@ -397,16 +436,20 @@ public class DialogEditorWindow : EditorWindow
     {
         if (m_outSelectedCondition != null)
         {
-            if(m_outConditionValue)
+            if (m_outConditionValue)
                 m_outSelectedCondition.LinkedTokenTrue = m_inSelectedNode.NodeToken;
             else
                 m_outSelectedCondition.LinkedTokenFalse = m_inSelectedNode.NodeToken;
         }
         else if (m_outSelectedLine != null)
-            m_outSelectedLine.LinkedToken = m_inSelectedNode.NodeToken; 
+            m_outSelectedLine.LinkedToken = m_inSelectedNode.NodeToken;
+        else if (m_outSituation != null)
+            m_outSituation.LinkedToken = m_inSelectedNode.NodeToken; 
+
         m_inSelectedNode = null;
         m_outSelectedLine = null;
-        m_outSelectedCondition = null; 
+        m_outSelectedCondition = null;
+        m_outSituation = null; 
     }
     #endif
     #endregion
@@ -415,8 +458,8 @@ public class DialogEditorWindow : EditorWindow
     protected virtual void OnEnable()
     {
         LoadStyles(); 
-        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
-    } 
+        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_startingNodeStyle, m_startingNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_startingPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
+    }
     protected virtual void OnGUI()
     {
 
@@ -432,7 +475,7 @@ public class DialogEditorWindow : EditorWindow
 
         ZoomAreaEditor.Begin(m_zoomScale, new Rect(0, 0, maxSize.x, maxSize.y));
 
-        if(CurrentDialog != null) CurrentDialog.Draw(SelectOutLine, SelectInPart, SelectOutCondition);
+        if(CurrentDialog != null) CurrentDialog.Draw(SelectOutLine, SelectInPart, SelectOutCondition, SelectOutStarter);
         if(m_inSelectedNode == null)
         {
             if (m_outSelectedLine != null && m_outSelectedLine.PointRect != Rect.zero)

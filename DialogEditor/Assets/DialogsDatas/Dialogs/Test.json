@@ -1,12 +1,40 @@
 {
     "m_dialogName": "Test",
     "m_spreadSheetID": "15zUWaJyK8YBBAKbx9x_uvrRAT_sBNRSmL5fDfmvOzH0",
+    "m_dialogStarter": {
+        "m_nodeRect": {
+            "serializedVersion": "2",
+            "x": 541.9263305664063,
+            "y": 660.9827880859375,
+            "width": 250.0,
+            "height": 207.0
+        },
+        "m_NodeToken": 0,
+        "m_situationPairs": [
+            {
+                "m_situation": 0,
+                "m_linkedToken": 942570906
+            },
+            {
+                "m_situation": 1,
+                "m_linkedToken": 1361914428
+            },
+            {
+                "m_situation": 2,
+                "m_linkedToken": -1
+            },
+            {
+                "m_situation": 3,
+                "m_linkedToken": -1
+            }
+        ]
+    },
     "m_dialogSets": [
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 902.1412353515625,
-                "y": 92.41110229492188,
+                "x": 2257.8046875,
+                "y": 980.97314453125,
                 "width": 250.0,
                 "height": 362.0
             },
@@ -30,15 +58,14 @@
                 }
             ],
             "m_type": 1,
-            "m_isStartingSet": false,
             "m_playOnlyOneLine": false,
             "m_playRandomly": false
         },
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 125.57586669921875,
-                "y": -21.16033935546875,
+                "x": 1418.1278076171875,
+                "y": 835.3052978515625,
                 "width": 250.0,
                 "height": 362.0
             },
@@ -62,15 +89,14 @@
                 }
             ],
             "m_type": 0,
-            "m_isStartingSet": true,
             "m_playOnlyOneLine": false,
             "m_playRandomly": false
         },
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 820.2849731445313,
-                "y": 504.69549560546877,
+                "x": 2195.947998046875,
+                "y": 1468.8294677734375,
                 "width": 250.0,
                 "height": 362.0
             },
@@ -94,15 +120,14 @@
                 }
             ],
             "m_type": 0,
-            "m_isStartingSet": false,
             "m_playOnlyOneLine": false,
             "m_playRandomly": false
         },
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1245.7803955078125,
-                "y": 44.011566162109378,
+                "x": 2609.241455078125,
+                "y": 899.506591796875,
                 "width": 250.0,
                 "height": 247.0
             },
@@ -118,15 +143,14 @@
                 }
             ],
             "m_type": 0,
-            "m_isStartingSet": false,
-            "m_playOnlyOneLine": true,
+            "m_playOnlyOneLine": false,
             "m_playRandomly": false
         },
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1249.8568115234375,
-                "y": 366.14263916015627,
+                "x": 2655.12451171875,
+                "y": 1280.9329833984375,
                 "width": 250.0,
                 "height": 247.0
             },
@@ -142,8 +166,30 @@
                 }
             ],
             "m_type": 0,
-            "m_isStartingSet": false,
             "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 1011.8381958007813,
+                "y": 1081.923828125,
+                "width": 250.0,
+                "height": 247.0
+            },
+            "m_NodeToken": 1361914428,
+            "m_dialogLines": [
+                {
+                    "m_index": -1,
+                    "m_key": "",
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
+                }
+            ],
+            "m_type": 0,
+            "m_playOnlyOneLine": true,
             "m_playRandomly": false
         }
     ],
@@ -151,8 +197,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 445.72564697265627,
-                "y": 353.36175537109377,
+                "x": 1817.5302734375,
+                "y": 1116.5672607421875,
                 "width": 250.0,
                 "height": 152.0
             },

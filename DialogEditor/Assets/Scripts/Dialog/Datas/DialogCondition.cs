@@ -33,7 +33,7 @@ public class DialogCondition : DialogNode
         get
         {
             if (m_nodeRect == Rect.zero) return m_nodeRect; 
-            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 22.5f, m_nodeRect.position.y + 12.5f, 80, 25); 
+            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 20, m_nodeRect.position.y + 12.5f, 80, 38); 
         }
     }
     public Rect OutPointRectFalse
@@ -41,7 +41,7 @@ public class DialogCondition : DialogNode
         get
         {
             if (m_nodeRect == Rect.zero) return m_nodeRect;
-            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 22.5f, m_nodeRect.position.y + 37.5f, 80, 25);
+            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 20, m_nodeRect.position.y + 51, 80, 38);
         }
     }
 #endif
@@ -149,7 +149,7 @@ public class DialogCondition : DialogNode
             }
             if(_linkedRect != Rect.zero)
             {
-                Handles.DrawBezier(OutPointRectTrue.center, _linkedRect.center + Vector2.left * _linkedRect.width / 2, OutPointRectTrue.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                Handles.DrawBezier(OutPointRectTrue.center, _linkedRect.center + Vector2.left * (_linkedRect.width / 2 - 5), OutPointRectTrue.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 Handles.color = Color.white;
                 if (Handles.Button((OutPointRectTrue.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                 {
@@ -176,7 +176,7 @@ public class DialogCondition : DialogNode
             }
             if (_linkedRect != Rect.zero)
             {
-                Handles.DrawBezier(OutPointRectFalse.center, _linkedRect.center + Vector2.left*_linkedRect.width/2, OutPointRectFalse.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                Handles.DrawBezier(OutPointRectFalse.center, _linkedRect.center + Vector2.left*(_linkedRect.width/2 - 5), OutPointRectFalse.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 Handles.color = Color.white;
                 if (Handles.Button((OutPointRectFalse.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                 {
@@ -277,7 +277,6 @@ public class DialogCondition : DialogNode
         m_nodeStyle = _nodeStyle;
         m_selectedNodeStyle = _selectedNodeStyle;
         m_connectionPointStyle = _connectionPointStyle;
-        m_connectionPointStyle.alignment = TextAnchor.UpperCenter; 
         m_currentIcon = _conditionIcon; 
         m_pointIcon = _pointIcon;
         m_onRemoveDialogCondition = _onRemoveCondition;
