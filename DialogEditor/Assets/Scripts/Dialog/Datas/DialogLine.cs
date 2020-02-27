@@ -103,7 +103,7 @@ public class DialogLine
         _r.y += DialogNode.BASIC_CONTENT_HEIGHT;
 
         _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.POPUP_HEIGHT);
-        m_initalWaitingTime = EditorGUI.Slider(_r, "Inital Waiting Time (s): ", m_initalWaitingTime, 0, 10);
+        m_initalWaitingTime = EditorGUI.Slider(_r, new GUIContent("Inital Waiting Time (s): ", "Used if there is no audioclip linked to this line"), m_initalWaitingTime, 0, 10);
         _r.y += DialogNode.POPUP_HEIGHT;
 
         EditorGUI.BeginDisabledGroup(_dialogSetType == DialogSetType.PlayerAnswer);
@@ -115,7 +115,7 @@ public class DialogLine
         EditorGUI.BeginDisabledGroup(m_waitingType == WaitingType.WaitForClick); 
         // -- Draw the Dialog Waiting Time Value -- //
         _r = new Rect(_startPos.x, _r.position.y, DialogNode.CONTENT_WIDTH, DialogNode.POPUP_HEIGHT);
-        m_extraWaitingTime = EditorGUI.Slider(_r, "Extra Waiting Time (s): " ,m_extraWaitingTime, 0, 10); 
+        m_extraWaitingTime = EditorGUI.Slider(_r, new GUIContent("Extra Waiting Time (s): ", "Duration to wait after the end of the inital waiting time") ,m_extraWaitingTime, 0, 10); 
         EditorGUI.EndDisabledGroup();
         EditorGUI.EndDisabledGroup();
         _r.y += DialogNode.POPUP_HEIGHT;
