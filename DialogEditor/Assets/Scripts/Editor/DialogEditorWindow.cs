@@ -58,7 +58,7 @@ public class DialogEditorWindow : EditorWindow
 
     private DialogNode m_inSelectedNode = null;
     private DialogLine m_outSelectedLine = null;
-    private SituationPair m_outSituation = null; 
+    private StarterPair m_outSelectedStart = null; 
     private DialogCondition m_outSelectedCondition = null;
     private bool m_outConditionValue = true;
     #endregion
@@ -379,7 +379,7 @@ public class DialogEditorWindow : EditorWindow
     private void SelectInPart(DialogNode _node)
     {
         m_inSelectedNode = _node; 
-        if(m_inSelectedNode != null && m_outSelectedLine != null)
+        if(m_inSelectedNode != null && (m_outSelectedLine != null || m_outSelectedStart != null || m_outSelectedCondition != null))
         {
             LinkDialogSet(); 
         }
@@ -392,7 +392,7 @@ public class DialogEditorWindow : EditorWindow
     private void SelectOutLine(DialogLine _line)
     {
         if (m_outSelectedCondition != null) m_outSelectedCondition = null;
-        if (m_outSituation != null) m_outSituation = null; 
+        if (m_outSelectedStart != null) m_outSelectedStart = null; 
         m_outSelectedLine = _line;
         if (m_inSelectedNode != null && m_outSelectedLine != null)
         {
@@ -407,7 +407,7 @@ public class DialogEditorWindow : EditorWindow
     private void SelectOutCondition(DialogCondition _condition, bool _valueCondition)
     {
         if (m_outSelectedLine != null) m_outSelectedLine = null;
-        if (m_outSituation != null) m_outSituation = null;
+        if (m_outSelectedStart != null) m_outSelectedStart = null;
         m_outSelectedCondition = _condition;
         m_outConditionValue = _valueCondition; 
         if (m_inSelectedNode != null && m_outSelectedCondition != null)
@@ -416,14 +416,14 @@ public class DialogEditorWindow : EditorWindow
         }
     }
 
-    private void SelectOutStarter(SituationPair _startingPair)
+    private void SelectOutStarter(StarterPair _startingPair)
     {
         if (m_outSelectedCondition != null) m_outSelectedCondition = null;
         if (m_outSelectedLine != null) m_outSelectedLine = null;
 
-        m_outSituation = _startingPair;
+        m_outSelectedStart = _startingPair;
 
-        if (m_inSelectedNode != null && m_outSituation != null)
+        if (m_inSelectedNode != null && m_outSelectedStart != null)
         {
             LinkDialogSet(); 
         }
@@ -443,13 +443,13 @@ public class DialogEditorWindow : EditorWindow
         }
         else if (m_outSelectedLine != null)
             m_outSelectedLine.LinkedToken = m_inSelectedNode.NodeToken;
-        else if (m_outSituation != null)
-            m_outSituation.LinkedToken = m_inSelectedNode.NodeToken; 
+        else if (m_outSelectedStart != null)
+            m_outSelectedStart.LinkedToken = m_inSelectedNode.NodeToken; 
 
         m_inSelectedNode = null;
         m_outSelectedLine = null;
         m_outSelectedCondition = null;
-        m_outSituation = null; 
+        m_outSelectedStart = null; 
     }
     #endif
     #endregion
@@ -491,6 +491,11 @@ public class DialogEditorWindow : EditorWindow
             else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRectFalse != Rect.zero && !m_outConditionValue)
             {
                 Handles.DrawBezier(m_outSelectedCondition.OutPointRectFalse.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectFalse.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                GUI.changed = true;
+            }
+            else if(m_outSelectedStart != null && m_outSelectedStart.OutPointRect != Rect.zero)
+            {
+                Handles.DrawBezier(m_outSelectedStart.OutPointRect.center, Event.current.mousePosition, m_outSelectedStart.OutPointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 GUI.changed = true;
             }
         }

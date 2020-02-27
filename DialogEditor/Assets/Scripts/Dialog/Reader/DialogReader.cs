@@ -95,7 +95,7 @@ public class DialogReader : MonoBehaviour
     /// Display the whole dialog
     /// </summary>
     /// <returns></returns>
-    public void StartDisplayingDialog(SituationsEnum _situation)
+    public void StartDisplayingDialog(DialogStarterEnum _starter)
     {
         if (m_dialog == null)
         {
@@ -103,7 +103,7 @@ public class DialogReader : MonoBehaviour
             return; 
         }
         // Get the Starting Dialog Set //
-        DialogSet _set = m_dialog.GetFirstSet(_situation);
+        DialogSet _set = m_dialog.GetFirstSet(_starter);
         DisplayDialogSet(_set);
     }
 
@@ -112,7 +112,7 @@ public class DialogReader : MonoBehaviour
     /// </summary>
     public void StartDisplayingDialog()
     {
-        StartDisplayingDialog(SituationsEnum.Default); 
+        StartDisplayingDialog(DialogStarterEnum.Default); 
     }
 
     /// <summary>

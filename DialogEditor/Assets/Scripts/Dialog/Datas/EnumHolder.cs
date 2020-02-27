@@ -18,10 +18,10 @@ public enum WaitingType
 
 
 /// <summary>
-/// Enum used in Dialog Picker 
+/// Enum used in Dialog Starter 
 /// Create an exit for the node for each entry of the enum
 /// </summary>
-public enum SituationsEnum
+public enum DialogStarterEnum
 {
     Default, // Default 
 }

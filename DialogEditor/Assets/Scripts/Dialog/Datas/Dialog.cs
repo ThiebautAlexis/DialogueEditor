@@ -99,7 +99,7 @@ public class Dialog
     /// <summary>
     /// Draw the dialog
     /// </summary>
-    public void Draw(Action<DialogLine> _onOutLineSelected, Action<DialogNode> _onInNodeSelected, Action<DialogCondition, bool> _onOutConditionSelected, Action<SituationPair> _onOutSituationPairSelected)
+    public void Draw(Action<DialogLine> _onOutLineSelected, Action<DialogNode> _onInNodeSelected, Action<DialogCondition, bool> _onOutConditionSelected, Action<StarterPair> _onOutSituationPairSelected)
     {
         if (m_dialogSets == null) m_dialogSets = new List<DialogSet>();
         bool _change = false;
@@ -285,13 +285,18 @@ end;
         return m_dialogSets.Where(s => s.NodeToken == _nextToken).FirstOrDefault();
     }
 
-    public DialogSet GetFirstSet(SituationsEnum _situation)
+    /// <summary>
+    /// Get the First Set according to the Enum <paramref name="_situation"/>
+    /// </summary>
+    /// <param name="_situation"></param>
+    /// <returns></returns>
+    public DialogSet GetFirstSet(DialogStarterEnum _situation)
     {
         int _nodeToken = -1; 
 
-        if (m_dialogStarter.SituationPairs.Any(s => s.Situation == _situation))
+        if (m_dialogStarter.StarterEnums.Any(s => s.Starter == _situation))
         {
-            _nodeToken = m_dialogStarter.SituationPairs.Where(s => s.Situation == _situation).First().LinkedToken; 
+            _nodeToken = m_dialogStarter.StarterEnums.Where(s => s.Starter == _situation).First().LinkedToken; 
         }
         if(_nodeToken == -1)
             return null;
