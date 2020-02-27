@@ -13,9 +13,18 @@ public class DialogEditorWindow : EditorWindow
 
     #region GUIStyles
     private GUIStyle m_defaultNodeStyle = null;
-    private GUIStyle m_conditionNodeStyle = null; 
+    private GUIStyle m_defaultNodeStyleHighLighted = null; 
+
+    private GUIStyle m_conditionNodeStyle = null;
+    private GUIStyle m_conditionNodeStyleHighLighted = null;
+
+    private GUIStyle m_startingNodeStyle = null;
+    private GUIStyle m_startingNodeStyleHighLighted = null;
+
     private GUIStyle m_defaultPointStyle = null;
     private GUIStyle m_conditionPointStyle = null;
+    private GUIStyle m_startingPointStyle = null;
+
     private GUIContent m_dialogPartIcon = null;
     private GUIContent m_answerPartIcon = null;
     private GUIContent m_startingSetIcon = null; 
@@ -29,7 +38,8 @@ public class DialogEditorWindow : EditorWindow
     private bool m_isCreationPopupOpen = false;
     private bool m_isSelectingPopupOpen = false;
     private int m_DialogIndex = -1;
-    private float m_zoomScale = 1.0f; 
+    private float m_zoomScale = 1.0f;
+    private Vector2 m_zoomCoordOrigine = Vector2.zero; 
 
     private string m_dialogName = ""; 
     private string m_spreadsheetId = "";
@@ -42,12 +52,13 @@ public class DialogEditorWindow : EditorWindow
         {
             m_currentDialog = value;
             if (m_defaultNodeStyle == null) LoadStyles();
-            CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_conditionNodeStyle, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
+            CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_startingNodeStyle, m_startingNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_startingPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
         }
     }
 
     private DialogNode m_inSelectedNode = null;
     private DialogLine m_outSelectedLine = null;
+    private StarterPair m_outSelectedStart = null; 
     private DialogCondition m_outSelectedCondition = null;
     private bool m_outConditionValue = true;
     #endregion
@@ -131,13 +142,19 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_gridColor">Color</param>
     private void DrawGrid(float _gridSpacing, float _gridOpacity, Color _gridColor)
     {
+        _gridSpacing *= m_zoomScale;
+        if (_gridSpacing < 10)
+        {
+            _gridSpacing *= 25;
+            _gridOpacity += .4f; 
+        }
         int widthDivs = Mathf.CeilToInt(position.width / _gridSpacing);
         int heightDivs = Mathf.CeilToInt(position.height / _gridSpacing);
 
         Handles.BeginGUI();
         Handles.color = new Color(_gridColor.r, _gridColor.g, _gridColor.b, _gridOpacity);
 
-        m_offset += m_drag * 0.5f;
+        m_offset += m_drag * 0.5f * m_zoomScale;
         Vector3 newOffset = new Vector3(m_offset.x % _gridSpacing, m_offset.y % _gridSpacing, 0);
 
         for (int i = 0; i < widthDivs; i++)
@@ -207,8 +224,8 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_delta"></param>
     private void OnDrag(Vector2 _delta)
     {
-        m_drag = _delta;
-        if (CurrentDialog != null) CurrentDialog.DragAll(_delta); 
+        m_drag = _delta/m_zoomScale;
+        if (CurrentDialog != null) CurrentDialog.DragAll(_delta/m_zoomScale); 
         GUI.changed = true;
     }
 
@@ -221,19 +238,44 @@ public class DialogEditorWindow : EditorWindow
         m_defaultNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
         m_defaultNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
+        m_defaultNodeStyleHighLighted = new GUIStyle();
+        m_defaultNodeStyleHighLighted.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+        m_defaultNodeStyleHighLighted.border = new RectOffset(12, 12, 12, 12);
+
+
         m_conditionNodeStyle = new GUIStyle();
         m_conditionNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
         m_conditionNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
+        m_conditionNodeStyleHighLighted = new GUIStyle();
+        m_conditionNodeStyleHighLighted.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6 on.png") as Texture2D;
+        m_conditionNodeStyleHighLighted.border = new RectOffset(12, 12, 12, 12);
+
+        m_startingNodeStyle = new GUIStyle();
+        m_startingNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3.png") as Texture2D;
+        m_startingNodeStyle.border = new RectOffset(12, 12, 12, 12);
+
+        m_startingNodeStyleHighLighted = new GUIStyle();
+        m_startingNodeStyleHighLighted.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3 on.png") as Texture2D;
+        m_startingNodeStyleHighLighted.border = new RectOffset(12, 12, 12, 12);
+
         m_defaultPointStyle = new GUIStyle();
         m_defaultPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
         m_defaultPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
-        m_defaultPointStyle.border = new RectOffset(-10, -4, -4, 0);
+        m_defaultPointStyle.border = new RectOffset(0, 0, 0, 0);
+        m_defaultPointStyle.alignment = TextAnchor.MiddleCenter; 
 
         m_conditionPointStyle = new GUIStyle();
         m_conditionPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
         m_conditionPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6 on.png") as Texture2D;
-        m_conditionPointStyle.border = new RectOffset(-10, -4, -4, 0);
+        m_conditionPointStyle.border = new RectOffset(0, 0, 0, 0);
+        m_conditionPointStyle.alignment = TextAnchor.MiddleCenter;
+
+        m_startingPointStyle = new GUIStyle();
+        m_startingPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3.png") as Texture2D;
+        m_startingPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3 on.png") as Texture2D;
+        m_startingPointStyle.border = new RectOffset(0, 0, 0, 0);
+        m_startingPointStyle.alignment = TextAnchor.MiddleCenter; 
 
         m_dialogPartIcon = EditorGUIUtility.IconContent("sv_icon_dot9_pix16_gizmo");
         m_answerPartIcon = EditorGUIUtility.IconContent("sv_icon_dot14_pix16_gizmo");
@@ -269,9 +311,29 @@ public class DialogEditorWindow : EditorWindow
                     OnDrag(_e.delta);
                 }
                 break;
+            case EventType.ScrollWheel:
+                if (m_zoomScale == .25f && _e.delta.y > 0) break;
+
+                Vector2 screenCoordsMousePos = Event.current.mousePosition;
+                Vector2 zoomCoordsMousePos = ConvertScreenCoordsToZoomCoords(screenCoordsMousePos);
+                float _oldZoomScale = m_zoomScale;
+                m_zoomScale = Mathf.Clamp(m_zoomScale - (_e.delta.y * .05f), .25f, 1.0f);
+                m_zoomCoordOrigine += (zoomCoordsMousePos - m_zoomCoordOrigine) - (_oldZoomScale / m_zoomScale) * (zoomCoordsMousePos - m_zoomCoordOrigine);
+                Repaint(); 
+                break; 
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Convert the screen coordinates into zommed Coordinates according to the zoom scale
+    /// </summary>
+    /// <param name="screenCoords">Screen coordinates to convert</param>
+    /// <returns></returns>
+    private Vector2 ConvertScreenCoordsToZoomCoords(Vector2 screenCoords)
+    {
+        return (screenCoords - position.GetTopLeft()) / m_zoomScale + m_zoomCoordOrigine;
     }
 
     /// <summary>
@@ -317,7 +379,7 @@ public class DialogEditorWindow : EditorWindow
     private void SelectInPart(DialogNode _node)
     {
         m_inSelectedNode = _node; 
-        if(m_inSelectedNode != null && m_outSelectedLine != null)
+        if(m_inSelectedNode != null && (m_outSelectedLine != null || m_outSelectedStart != null || m_outSelectedCondition != null))
         {
             LinkDialogSet(); 
         }
@@ -329,7 +391,8 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_line">Content linked to the out point selected</param>
     private void SelectOutLine(DialogLine _line)
     {
-        if (m_outSelectedCondition != null) m_outSelectedCondition = null; 
+        if (m_outSelectedCondition != null) m_outSelectedCondition = null;
+        if (m_outSelectedStart != null) m_outSelectedStart = null; 
         m_outSelectedLine = _line;
         if (m_inSelectedNode != null && m_outSelectedLine != null)
         {
@@ -343,12 +406,26 @@ public class DialogEditorWindow : EditorWindow
     /// <param name="_condition">Content linked to the out point selected</param>
     private void SelectOutCondition(DialogCondition _condition, bool _valueCondition)
     {
-        if (m_outSelectedLine != null) m_outSelectedLine = null; 
+        if (m_outSelectedLine != null) m_outSelectedLine = null;
+        if (m_outSelectedStart != null) m_outSelectedStart = null;
         m_outSelectedCondition = _condition;
         m_outConditionValue = _valueCondition; 
         if (m_inSelectedNode != null && m_outSelectedCondition != null)
         {
             LinkDialogSet();
+        }
+    }
+
+    private void SelectOutStarter(StarterPair _startingPair)
+    {
+        if (m_outSelectedCondition != null) m_outSelectedCondition = null;
+        if (m_outSelectedLine != null) m_outSelectedLine = null;
+
+        m_outSelectedStart = _startingPair;
+
+        if (m_inSelectedNode != null && m_outSelectedStart != null)
+        {
+            LinkDialogSet(); 
         }
     }
 
@@ -359,16 +436,20 @@ public class DialogEditorWindow : EditorWindow
     {
         if (m_outSelectedCondition != null)
         {
-            if(m_outConditionValue)
+            if (m_outConditionValue)
                 m_outSelectedCondition.LinkedTokenTrue = m_inSelectedNode.NodeToken;
             else
                 m_outSelectedCondition.LinkedTokenFalse = m_inSelectedNode.NodeToken;
         }
         else if (m_outSelectedLine != null)
-            m_outSelectedLine.LinkedToken = m_inSelectedNode.NodeToken; 
+            m_outSelectedLine.LinkedToken = m_inSelectedNode.NodeToken;
+        else if (m_outSelectedStart != null)
+            m_outSelectedStart.LinkedToken = m_inSelectedNode.NodeToken; 
+
         m_inSelectedNode = null;
         m_outSelectedLine = null;
-        m_outSelectedCondition = null; 
+        m_outSelectedCondition = null;
+        m_outSelectedStart = null; 
     }
     #endif
     #endregion
@@ -377,35 +458,49 @@ public class DialogEditorWindow : EditorWindow
     protected virtual void OnEnable()
     {
         LoadStyles(); 
-        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_conditionNodeStyle, m_defaultPointStyle, m_conditionPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
-    } 
+        if (CurrentDialog != null) CurrentDialog.InitEditorSettings(m_defaultNodeStyle, m_defaultNodeStyleHighLighted, m_conditionNodeStyle, m_conditionNodeStyleHighLighted, m_startingNodeStyle, m_startingNodeStyleHighLighted, m_defaultPointStyle, m_conditionPointStyle, m_startingPointStyle, m_dialogPartIcon, m_answerPartIcon, m_startingSetIcon, m_pointIcon, m_conditionIcon);
+    }
     protected virtual void OnGUI()
     {
-       
-        DrawGrid(20, 0.2f, Color.black);
-        DrawGrid(100, 0.4f, Color.black);
+
+        Color _originalColor = GUI.color;
+        GUI.color = new Color(.12f, .12f, .12f);
+        GUI.Box(new Rect(0,0,maxSize.x, maxSize.y), "");
+        GUI.color = _originalColor;
+
+        DrawGrid(20, 0.2f, Color.white);
+        DrawGrid(100, 0.4f, Color.white);
 
         ProcessEditorEvents(Event.current);
-        if(CurrentDialog != null) CurrentDialog.Draw(SelectOutLine, SelectInPart, SelectOutCondition);
+
+        ZoomAreaEditor.Begin(m_zoomScale, new Rect(0, 0, maxSize.x, maxSize.y));
+
+        if(CurrentDialog != null) CurrentDialog.Draw(SelectOutLine, SelectInPart, SelectOutCondition, SelectOutStarter);
         if(m_inSelectedNode == null)
         {
             if (m_outSelectedLine != null && m_outSelectedLine.PointRect != Rect.zero)
             {
-                Handles.DrawBezier(m_outSelectedLine.PointRect.center, Event.current.mousePosition, m_outSelectedLine.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                Handles.DrawBezier(m_outSelectedLine.PointRect.center, Event.current.mousePosition, m_outSelectedLine.PointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 GUI.changed = true;
             }
             else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRectTrue != Rect.zero && m_outConditionValue)
             {
-                Handles.DrawBezier(m_outSelectedCondition.OutPointRectTrue.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectTrue.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                Handles.DrawBezier(m_outSelectedCondition.OutPointRectTrue.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectTrue.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 GUI.changed = true;
             }
             else if (m_outSelectedCondition != null && m_outSelectedCondition.OutPointRectFalse != Rect.zero && !m_outConditionValue)
             {
-                Handles.DrawBezier(m_outSelectedCondition.OutPointRectFalse.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectFalse.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.black, null, 2.0f);
+                Handles.DrawBezier(m_outSelectedCondition.OutPointRectFalse.center, Event.current.mousePosition, m_outSelectedCondition.OutPointRectFalse.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                GUI.changed = true;
+            }
+            else if(m_outSelectedStart != null && m_outSelectedStart.OutPointRect != Rect.zero)
+            {
+                Handles.DrawBezier(m_outSelectedStart.OutPointRect.center, Event.current.mousePosition, m_outSelectedStart.OutPointRect.center + Vector2.right * 100.0f, Event.current.mousePosition + Vector2.left * 100.0f, Color.white, null, 2.0f);
                 GUI.changed = true;
             }
         }
 
+        ZoomAreaEditor.End(); 
 
         if (m_isCreationPopupOpen)
         {
@@ -421,7 +516,8 @@ public class DialogEditorWindow : EditorWindow
             windowRectBis = GUILayout.Window(1, windowRectBis, DrawSelectingPopup, "Open Dialog");
             EndWindows();
         }
-        if (GUI.changed) Repaint(); 
+        GUI.Box(new Rect(10, 10, 100, 20), " Zoom = " + (m_zoomScale * 100).ToString("0") + "%");
+        if (GUI.changed) Repaint();
     }
     #endregion
 

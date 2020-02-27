@@ -17,14 +17,26 @@ public class DialogsSettings
     [SerializeField] private List<CharacterColorSettings> m_charactersColor = new List<CharacterColorSettings>();
     [SerializeField] private bool m_overrideCharacterColor = false;
     [SerializeField] private string[] m_localisationKeys = new string[] { };
-    [SerializeField] private int m_currentLocalisationKeyIndex = 0; 
+    [SerializeField] private int m_currentLocalisationKeyIndex = 0;
+    [SerializeField] private string[] m_audioLocalisationKeys = new string[] { };
+    [SerializeField] private int m_currentAudioLocalisationKeyIndex = 0;
 
     public string LuaConditions { get { return m_luaConditions; } set { m_luaConditions = value; } }
     public List<CharacterColorSettings> CharactersColor { get { return m_charactersColor; } }
     public bool OverrideCharacterColor { get { return m_overrideCharacterColor; } set { m_overrideCharacterColor = value; } }
+
+    #region Localisation Keys
     public string[] LocalisationKeys { get { return m_localisationKeys; } set { m_localisationKeys = value; } }
     public int CurrentLocalisationKeyIndex { get { return m_currentLocalisationKeyIndex; } set { m_currentLocalisationKeyIndex = value; } }
     public string CurrentLocalisationKey { get { return m_localisationKeys[m_currentLocalisationKeyIndex]; } }
+    #endregion
+
+    #region AudioLocalisation Key 
+    public string[] AudioLocalisationKeys { get { return m_audioLocalisationKeys; } set { m_audioLocalisationKeys = value; } }
+    public int CurrentAudioLocalisationKeyIndex { get { return m_currentAudioLocalisationKeyIndex; } set { m_currentAudioLocalisationKeyIndex = value; } }
+    public string CurrentAudioLocalisationKey { get { return m_audioLocalisationKeys[m_currentAudioLocalisationKeyIndex]; } }
+    #endregion 
+
     #endregion
 }
 

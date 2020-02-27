@@ -33,7 +33,7 @@ public class DialogCondition : DialogNode
         get
         {
             if (m_nodeRect == Rect.zero) return m_nodeRect; 
-            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 22.5f, m_nodeRect.position.y + 12.5f, 80, 25); 
+            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 20, m_nodeRect.position.y + 12.5f, 80, 38); 
         }
     }
     public Rect OutPointRectFalse
@@ -41,7 +41,7 @@ public class DialogCondition : DialogNode
         get
         {
             if (m_nodeRect == Rect.zero) return m_nodeRect;
-            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 22.5f, m_nodeRect.position.y + 37.5f, 80, 25);
+            return new Rect(m_nodeRect.position.x + m_nodeRect.width - 20, m_nodeRect.position.y + 51, 80, 38);
         }
     }
 #endif
@@ -49,12 +49,13 @@ public class DialogCondition : DialogNode
 
     #region Constructor 
 #if UNITY_EDITOR
-    public DialogCondition(Vector2 _nodePosition, Action<DialogCondition> _onRemoveCondition, GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon)
+    public DialogCondition(Vector2 _nodePosition, Action<DialogCondition> _onRemoveCondition, GUIStyle _nodeStyle, GUIStyle _selectedStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon)
     {
         m_NodeToken = UnityEngine.Random.Range(0, int.MaxValue);
         m_nodeRect = new Rect(_nodePosition.x, _nodePosition.y, INITIAL_NODE_WIDTH, INITIAL_NODE_HEIGHT + SPACE_HEIGHT + SPACE_HEIGHT + BUTTON_HEIGHT * 2);
         m_onRemoveDialogCondition = _onRemoveCondition;
         m_nodeStyle = _nodeStyle;
+        m_selectedNodeStyle = _selectedStyle; 
         m_currentIcon = _conditionIcon;
         m_pointIcon = _pointIcon;
         m_connectionPointStyle = _connectionPointStyle; 
@@ -70,6 +71,7 @@ public class DialogCondition : DialogNode
     /// </summary>
     private void AddCondition()
     {
+        if (m_conditionsConverted == null) m_conditionsConverted = new List<Condition>(); 
         string _conditionString = $"{(m_conditionsConverted.Count > 0 ? "and" : string.Empty)}({m_conditionsDescriptor[0]} == false)";
         m_conditionsConverted.Add(new Condition(_conditionString, m_conditionsDescriptor)); 
         m_nodeRect.height += POPUP_HEIGHT; 
@@ -84,14 +86,14 @@ public class DialogCondition : DialogNode
     /// <param name="_onOutDialogNodeSelected">Action called when one of the out point is selected</param>
     public void Draw(List<DialogSet> _otherSets, List<DialogCondition> _otherConditions, Action<DialogNode> _onInDialogNodeSelected, Action<DialogCondition, bool> _onOutDialogNodeSelected)
     {
-        GUI.Box(m_nodeRect, "", m_nodeStyle);
+        GUI.Box(m_nodeRect, "", IsSelected ? m_selectedNodeStyle : m_nodeStyle);
         Rect _r = new Rect(m_nodeRect.position.x + m_nodeRect.width - 35, m_nodeRect.position.y + MARGIN_HEIGHT, 25, 25);
         if (GUI.Button(_r, m_currentIcon, m_nodeStyle))
         {
             ProcessContextMenu();
         }
         _r = new Rect(m_nodeRect.x + 10, _r.y, CONTENT_WIDTH, TITLE_HEIGHT);
-        GUI.Label(_r, "Condition : " + m_NodeToken.ToString());
+        GUI.Label(_r, "Condition");
         _r.y = m_nodeRect.y + INITIAL_NODE_HEIGHT + SPACE_HEIGHT;
         // --- Draw the conditions --- //
         if (m_displayLUACode)
@@ -147,8 +149,8 @@ public class DialogCondition : DialogNode
             }
             if(_linkedRect != Rect.zero)
             {
-                Handles.DrawBezier(OutPointRectTrue.center, _linkedRect.center, OutPointRectTrue.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.black, null, 2.0f);
-                Handles.color = Color.black;
+                Handles.DrawBezier(OutPointRectTrue.center, _linkedRect.center + Vector2.left * (_linkedRect.width / 2 - 5), OutPointRectTrue.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                Handles.color = Color.white;
                 if (Handles.Button((OutPointRectTrue.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                 {
                     m_linkedTokenTrue = -1;
@@ -174,8 +176,8 @@ public class DialogCondition : DialogNode
             }
             if (_linkedRect != Rect.zero)
             {
-                Handles.DrawBezier(OutPointRectFalse.center, _linkedRect.center, OutPointRectFalse.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.black, null, 2.0f);
-                Handles.color = Color.black;
+                Handles.DrawBezier(OutPointRectFalse.center, _linkedRect.center + Vector2.left*(_linkedRect.width/2 - 5), OutPointRectFalse.center + Vector2.right * 100.0f, _linkedRect.center + Vector2.left * 100.0f, Color.white, null, 2.0f);
+                Handles.color = Color.white;
                 if (Handles.Button((OutPointRectFalse.center + _linkedRect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
                 {
                     m_linkedTokenTrue = -1;
@@ -270,11 +272,11 @@ public class DialogCondition : DialogNode
     /// <param name="_conditionIcon">Icon of the Condition Node</param>
     /// <param name="_pointIcon">Icon of the connection points</param>
     /// <param name="_onRemoveCondition">Event called when the Icon is removed</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon, Action<DialogCondition> _onRemoveCondition, DialogsSettings _dialogSettings)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _selectedNodeStyle, GUIStyle _connectionPointStyle, GUIContent _conditionIcon, GUIContent _pointIcon, Action<DialogCondition> _onRemoveCondition, DialogsSettings _dialogSettings)
     {
         m_nodeStyle = _nodeStyle;
+        m_selectedNodeStyle = _selectedNodeStyle;
         m_connectionPointStyle = _connectionPointStyle;
-        m_connectionPointStyle.alignment = TextAnchor.UpperCenter; 
         m_currentIcon = _conditionIcon; 
         m_pointIcon = _pointIcon;
         m_onRemoveDialogCondition = _onRemoveCondition;
@@ -342,6 +344,7 @@ public class Condition
     public Condition(string _stringCondition, string[] _conditionDescriptor)
     {
         string[] _condition = _stringCondition.Split('(');
+        if (_condition.Length <= 1) return;
         StartStatement = _condition[0].Trim();
         _condition = _condition[1].Split(' ');
         ConditionName = _condition[0];

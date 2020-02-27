@@ -32,7 +32,8 @@ MonoBehaviour:
   - m_GUID: a379d74d17ca5ee4da0bb98a4b71a174
     m_Address: 579439667_luaDescriptor
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - LineDescriptors
     m_mainAssetType: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: ca63dcdfc067be34d99741ee7cc72284

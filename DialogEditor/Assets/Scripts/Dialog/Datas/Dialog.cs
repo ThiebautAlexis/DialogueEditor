@@ -21,15 +21,20 @@ public class Dialog
     #region Editor
 #if UNITY_EDITOR
     private GUIStyle m_defaultNodeStyle = null;
-    private GUIStyle m_conditionNodeStyle = null; 
+    private GUIStyle m_defaultNodeStyleSelected = null; 
+    private GUIStyle m_conditionNodeStyle = null;
+    private GUIStyle m_conditionNodeStyleSelected = null;
+    private GUIStyle m_starterNodeStyle = null;
+    private GUIStyle m_starterNodeStyleSelected = null;
     private GUIStyle m_defaultConnectionPointStyle = null;
     private GUIStyle m_conditionConnectionPointStyle = null;
+    private GUIStyle m_startConnectionPointStyle = null; 
     private GUIContent m_icon = null;
     private GUIContent m_answerIcon = null;
     private GUIContent m_pointIcon = null;
     private GUIContent m_startingSetIcon = null;
     private GUIContent m_conditionIcon = null;
-    public bool AnyPartIsSelected { get { return m_dialogSets.Any(p => p.IsSelected) || m_dialogConditions.Any(c => c.IsSelected); } }
+    public bool AnyPartIsSelected { get { return m_dialogSets.Any(p => p.IsSelected) || m_dialogConditions.Any(c => c.IsSelected) || m_dialogStarter.IsSelected; } }
 #endif
     #endregion 
 
@@ -37,6 +42,7 @@ public class Dialog
     [SerializeField]private string m_spreadSheetID = "";
     public string SpreadSheetID { get { return m_spreadSheetID; } }
 
+    [SerializeField] private DialogStarter m_dialogStarter; 
     [SerializeField] private List<DialogSet> m_dialogSets = new List<DialogSet>();
     [SerializeField] private List<DialogCondition> m_dialogConditions = new List<DialogCondition>(); 
     private string m_lineDescriptor = "";
@@ -60,7 +66,7 @@ public class Dialog
 #if UNITY_EDITOR
     public void AddCondition(Vector2 _pos)
     {
-        m_dialogConditions.Add(new DialogCondition(_pos, RemoveCondition, m_conditionNodeStyle, m_conditionConnectionPointStyle, m_conditionIcon, m_pointIcon)) ; 
+        m_dialogConditions.Add(new DialogCondition(_pos, RemoveCondition, m_conditionNodeStyle, m_conditionNodeStyleSelected, m_conditionConnectionPointStyle, m_conditionIcon, m_pointIcon)) ; 
     }
 
     /// <summary>
@@ -69,7 +75,7 @@ public class Dialog
     /// <param name="_pos"></param>
     public void AddSet(Vector2 _pos)
     {
-        m_dialogSets.Add(new DialogSet(_pos, RemoveSet, SetStartingDialogSet, m_defaultNodeStyle, m_defaultConnectionPointStyle, m_icon, m_answerIcon, m_startingSetIcon, m_pointIcon)); 
+        m_dialogSets.Add(new DialogSet(_pos, RemoveSet, m_defaultNodeStyle, m_defaultNodeStyleSelected, m_defaultConnectionPointStyle, m_icon, m_answerIcon, m_pointIcon)); 
     }
 
     /// <summary>
@@ -78,7 +84,8 @@ public class Dialog
     /// <param name="_delta"></param>
     public void DragAll(Vector2 _delta)
     {
-        if (m_dialogSets == null && m_dialogConditions == null) return; 
+        if (m_dialogSets == null && m_dialogConditions == null) return;
+        m_dialogStarter.Drag(_delta); 
         for(int i = 0; i < m_dialogSets.Count; i++)
         {
             m_dialogSets[i].Drag(_delta); 
@@ -92,10 +99,15 @@ public class Dialog
     /// <summary>
     /// Draw the dialog
     /// </summary>
-    public void Draw(Action<DialogLine> _onOutLineSelected, Action<DialogNode> _onInNodeSelected, Action<DialogCondition, bool> _onOutConditionSelected)
+    public void Draw(Action<DialogLine> _onOutLineSelected, Action<DialogNode> _onInNodeSelected, Action<DialogCondition, bool> _onOutConditionSelected, Action<StarterPair> _onOutSituationPairSelected)
     {
         if (m_dialogSets == null) m_dialogSets = new List<DialogSet>();
         bool _change = false;
+        m_dialogStarter.Draw(m_dialogSets, m_dialogConditions, _onOutSituationPairSelected);
+        if(m_dialogStarter.ProcessEvent(Event.current))
+        {
+            _change = true; 
+        }
         for(int i = 0; i < m_dialogSets.Count; i++)
         {
             m_dialogSets[i].Draw(m_lineDescriptor, m_dialogSets, m_dialogConditions, _onOutLineSelected, _onInNodeSelected, m_dialogSettings.CharactersColor);
@@ -125,12 +137,17 @@ public class Dialog
     /// <param name="_answerIcon">Icon of the Answer Node Type</param>
     /// <param name="_startingSetIcon">Icon of the starting set</param>
     /// <param name="_pointIcon">Connection Point Icon</param>
-    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _conditionStyle, GUIStyle _connectionPointStyle, GUIStyle _conditionConnectionPointStyle, GUIContent _basicIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon, GUIContent _conditionIcon)
+    public void InitEditorSettings(GUIStyle _nodeStyle, GUIStyle _selectedNodeStyle, GUIStyle _conditionStyle, GUIStyle _selectedConditionStyle, GUIStyle _starterNodeStyle, GUIStyle _starterNodeStyleSelected, GUIStyle _connectionPointStyle, GUIStyle _conditionConnectionPointStyle, GUIStyle _starterConnectionPointStyle, GUIContent _basicIcon, GUIContent _answerIcon, GUIContent _startingSetIcon, GUIContent _pointIcon, GUIContent _conditionIcon)
     {
         m_defaultNodeStyle = _nodeStyle;
+        m_defaultNodeStyleSelected = _selectedNodeStyle; 
         m_conditionNodeStyle = _conditionStyle;
+        m_conditionNodeStyleSelected = _selectedConditionStyle;
         m_defaultConnectionPointStyle = _connectionPointStyle;
-        m_conditionConnectionPointStyle = _conditionConnectionPointStyle; 
+        m_conditionConnectionPointStyle = _conditionConnectionPointStyle;
+        m_starterNodeStyle = _starterNodeStyle;
+        m_starterNodeStyleSelected = _starterNodeStyleSelected;
+        m_startConnectionPointStyle = _starterConnectionPointStyle;
         m_icon = _basicIcon;
         m_answerIcon = _answerIcon;
         m_startingSetIcon = _startingSetIcon; 
@@ -144,15 +161,17 @@ public class Dialog
         {
             m_dialogSettings = JsonUtility.FromJson<DialogsSettings>(File.ReadAllText(DialogsSettings.SettingsFilePath)); 
         }
+        if (m_dialogStarter == null) m_dialogStarter = new DialogStarter(Vector2.zero, m_starterNodeStyle, m_starterNodeStyleSelected, m_startConnectionPointStyle, m_startingSetIcon, m_pointIcon); 
+        else m_dialogStarter.InitEditorSettings(m_starterNodeStyle, m_starterNodeStyleSelected, m_startConnectionPointStyle, m_startingSetIcon, m_pointIcon); 
         if (m_dialogSets == null) m_dialogSets = new List<DialogSet>();
         if (m_dialogConditions == null) m_dialogConditions = new List<DialogCondition>(); 
         for(int i = 0; i < m_dialogSets.Count; i++)
         {
-            m_dialogSets[i].InitEditorSettings(_nodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, _startingSetIcon, m_pointIcon, RemoveSet, SetStartingDialogSet); 
+            m_dialogSets[i].InitEditorSettings(_nodeStyle, _selectedNodeStyle, _connectionPointStyle, _basicIcon, _answerIcon, m_pointIcon, RemoveSet); 
         }
         for (int i = 0; i < m_dialogConditions.Count; i++)
         {
-            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition, m_dialogSettings) ; 
+            m_dialogConditions[i].InitEditorSettings(_conditionStyle, _selectedConditionStyle ,_conditionConnectionPointStyle, _conditionIcon, _pointIcon, RemoveCondition, m_dialogSettings) ; 
         }
     }
 
@@ -203,18 +222,6 @@ public class Dialog
     }
 
     /// <summary>
-    /// Set the Dialog Set as the starting set in this dialog
-    /// </summary>
-    /// <param name="_startingSet"></param>
-    private void SetStartingDialogSet(DialogSet _startingSet)
-    {
-        for (int i = 0; i < m_dialogSets.Count; i++)
-        {
-            m_dialogSets[i].IsStartingSet = m_dialogSets[i] == _startingSet; 
-        }
-    }
-
-    /// <summary>
     /// Save the dialog as a Json File
     /// </summary>
     private void SaveDialog()
@@ -250,24 +257,14 @@ end;
     private bool CheckCondition(string _condition)
     {
         string _conditionFuncString = "";
+        Debug.Log(DialogsSettingsManager.DialogsSettings.LuaConditions);
         _conditionFuncString = DialogsSettingsManager.DialogsSettings.LuaConditions; 
         _conditionFuncString += GetStringConditionMethod(_condition);
-        Script m_script = new Script();
+        m_script = new Script();
         m_script.DoString(_conditionFuncString);
 
-        DynValue _operation = m_script.Globals.Get("check_condition"); 
+        DynValue _operation = m_script.Globals.Get("check_condition");
         return m_script.Call(_operation).Boolean; 
-    }
-
-    /// <summary>
-    /// Get the first Set od this Dialog
-    /// </summary>
-    /// <returns></returns>
-    public DialogSet GetFirstSet()
-    {
-        if (!m_dialogSets.Any(s => s.IsStartingSet))
-            return m_dialogSets[0]; 
-        return m_dialogSets.Where(s => s.IsStartingSet).FirstOrDefault(); 
     }
 
     /// <summary>
@@ -288,10 +285,23 @@ end;
         return m_dialogSets.Where(s => s.NodeToken == _nextToken).FirstOrDefault();
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private void CreateScript()
+    /// <summary>
+    /// Get the First Set according to the Enum <paramref name="_situation"/>
+    /// </summary>
+    /// <param name="_situation"></param>
+    /// <returns></returns>
+    public DialogSet GetFirstSet(DialogStarterEnum _situation)
     {
-        m_script = new Script();
+        int _nodeToken = -1; 
+
+        if (m_dialogStarter.StarterEnums.Any(s => s.Starter == _situation))
+        {
+            _nodeToken = m_dialogStarter.StarterEnums.Where(s => s.Starter == _situation).First().LinkedToken; 
+        }
+        if(_nodeToken == -1)
+            return null;
+        return GetNextSet(_nodeToken); 
     }
+
     #endregion
 }

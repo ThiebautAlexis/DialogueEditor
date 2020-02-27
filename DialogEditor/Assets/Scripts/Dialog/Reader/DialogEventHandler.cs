@@ -15,10 +15,7 @@ public class DialogEventHandler : MonoBehaviour
     #region Original Methods
     private void CallEvent(string _key)
     {
-        if(m_dialogEvents.Any(e => e.ActivationKey == _key))
-        {
-            m_dialogEvents.Where(e => e.ActivationKey == _key).ToList().ForEach(e => e.DialogEventCallBack?.Invoke());
-        }
+        m_dialogEvents.ToList().ForEach(e => e.CallEvents(_key));
     }
     #endregion
 
@@ -40,6 +37,7 @@ public class DialogEvent
 {
     [SerializeField] private UnityEvent m_dialogEvent = null;
     [SerializeField] private string m_activationKey = string.Empty;
+    [SerializeField] private ConditionEvent[] m_changedConditions = new ConditionEvent[] { };   
 
     public UnityEvent DialogEventCallBack
     {
@@ -49,4 +47,23 @@ public class DialogEvent
     {
         get { return m_activationKey; }
     }
+
+    public void CallEvents(string _key)
+    {
+        if(m_activationKey == _key)
+        {
+            m_dialogEvent?.Invoke();
+            m_changedConditions.ToList().ForEach(e => DialogsSettingsManager.SetConditionBoolValue(e.ConditionName, e.ConditionValue));
+        }
+    }
+}
+
+[System.Serializable]
+public class ConditionEvent
+{
+    [SerializeField] private string m_conditionName = string.Empty;
+    [SerializeField] private bool m_conditionValue = false; 
+
+    public string ConditionName { get { return m_conditionName;  } }
+    public bool ConditionValue { get { return m_conditionValue; } }
 }

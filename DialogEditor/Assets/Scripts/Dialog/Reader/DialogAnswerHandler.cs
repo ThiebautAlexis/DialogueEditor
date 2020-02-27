@@ -25,7 +25,7 @@ public class DialogAnswerHandler : MonoBehaviour
             GameObject _buttonObj = Instantiate(m_buttonPrefab, transform);
             DialogLine _line = _lines[i]; 
             _buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = _owner.GetDialogLineContent(_lines[i].Key, DialogsSettingsManager.DialogsSettings.CurrentLocalisationKey);
-            _buttonObj.GetComponent<Button>().onClick.AddListener(() => _owner.DisplayDialogLine(_line));
+            _buttonObj.GetComponent<Button>().onClick.AddListener(() => _owner.StartCoroutine(_owner.DisplayDialogLine(_line)));
             _buttonObj.GetComponent<Button>().onClick.AddListener(() => Destroy(gameObject)); 
         }
     }

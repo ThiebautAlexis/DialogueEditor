@@ -1,10 +1,23 @@
-﻿using System.IO; 
+﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 public static class DialogsSettingsManager 
 {
+    #region Const 
+    private const string PROFILE_KEY = "LAST_KEY_USED";
+    #endregion 
+    
+    #region Events and Actions
+    public static event Action OnSettingsModified = null;
+    public static event Action OnAudioLocalisationKeyChanged = null;
+    #endregion
+
+    #region Fields and Properties
+    public static string CurrentProfileName = ""; 
     private static DialogsSettings m_dialogsSettings = null; 
     public static DialogsSettings DialogsSettings
     {
@@ -28,7 +41,7 @@ public static class DialogsSettingsManager
             return m_dialogsSettings; 
         }
     }
-
+    #endregion 
 
     #region Methods
 
@@ -37,12 +50,23 @@ public static class DialogsSettingsManager
     /// <summary>
     /// Create a new profile based on the Settings Template profile
     /// </summary>
-    public static void CreateProfile()
+    public static void CreateOrLoadProfile()
     {
-        if (m_dialogsSettings != null)
-            return; 
+#if UNITY_EDITOR
         AsyncOperationHandle<TextAsset> _settingsAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(DialogsSettings.SettingsFileName);
         _settingsAssetAsyncHandler.Completed += OnSettingsAssetLoaded;
+#else
+        if (PlayerPrefs.HasKey(PROFILE_KEY))
+        {
+            CurrentProfileName = PlayerPrefs.GetString(PROFILE_KEY);
+            m_dialogsSettings = LoadProfile(CurrentProfileName);
+            if (m_dialogsSettings != null) return; 
+        }
+        AsyncOperationHandle<TextAsset> _settingsAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(DialogsSettings.SettingsFileName);
+        _settingsAssetAsyncHandler.Completed += OnSettingsAssetLoaded;
+#endif
+
+
     }
 
     /// <summary>
@@ -69,12 +93,18 @@ public static class DialogsSettingsManager
     /// <returns></returns>
     public static DialogsSettings LoadProfile(string _profileName = "defaultProfile")
     {
-        if (!File.Exists(Path.Combine(Application.persistentDataPath, _profileName + ".json")))
+        string _path = Path.Combine(Application.persistentDataPath, _profileName + ".sav"); 
+        if (!File.Exists(_path))
         {
-            CreateProfile();
+            CreateOrLoadProfile();
             return null;
         }
-        DialogsSettings _settings = JsonUtility.FromJson<DialogsSettings>(File.ReadAllText(Path.Combine(Application.persistentDataPath, _profileName + ".json")));
+        BinaryFormatter _formatter = new BinaryFormatter();
+        FileStream _stream = new FileStream(_path, FileMode.Open);
+        string _jsonSettings = _formatter.Deserialize(_stream) as string; 
+
+        DialogsSettings _settings = JsonUtility.FromJson<DialogsSettings>(_jsonSettings);
+        _stream.Close(); 
         return _settings;
     }
 
@@ -84,14 +114,25 @@ public static class DialogsSettingsManager
     /// <param name="_profileName">Name of the current profile</param>
     public static void SaveProfile(string _profileName = "defaultProfile")
     {
+#if UNITY_STANDALONE
         if (!Directory.Exists(Application.persistentDataPath))
             Directory.CreateDirectory(Application.persistentDataPath);
         string _jsonSettings = JsonUtility.ToJson(m_dialogsSettings);
-        File.WriteAllText(Path.Combine(Application.persistentDataPath, _profileName + ".json"), _jsonSettings);
-    }
-    #endregion
 
-    #region Other Methods
+        BinaryFormatter _formatter = new BinaryFormatter();
+        string _path = Path.Combine(Application.persistentDataPath, _profileName + ".sav");
+        FileStream _stream = new FileStream(_path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+
+        _formatter.Serialize(_stream, _jsonSettings);
+        _stream.Close();
+
+        PlayerPrefs.SetString(PROFILE_KEY, _profileName); 
+        //System.Diagnostics.Process.Start(Application.persistentDataPath); 
+#endif
+    }
+#endregion
+
+#region Other Methods
     /// <summary>
     /// Set the condition named <paramref name="_conditionName"/> to the bool <paramref name="_value"/> in the current profile
     /// Then save it.
@@ -108,7 +149,7 @@ public static class DialogsSettingsManager
             if (_variable[0].Trim() == _conditionName.Trim())
             {
                 _variable[1] = _value.ToString().ToLower();
-                _conditions[i] = _variable[0] + "=" + _variable[1];
+                _conditions[i] = _variable[0] + "=" + _variable[1]+";";
                 break;
             }
         }
@@ -118,6 +159,17 @@ public static class DialogsSettingsManager
             _temp += _conditions[i] + "\n";
         }
         m_dialogsSettings.LuaConditions = _temp;
+        SaveProfile();
+        OnSettingsModified?.Invoke(); 
+    }
+
+    /// <summary>
+    /// Set the Localisation Key to the selected Localisation Key with the index in <paramref name="_newIndex"/> in the current Profile
+    /// </summary>
+    /// <param name="_newIndex">Localisation Key Index</param>
+    public static void SetTextLocalisationKeyIndex(int _newIndex)
+    {
+        m_dialogsSettings.CurrentLocalisationKeyIndex = _newIndex;
         SaveProfile(); 
     }
 
@@ -125,13 +177,14 @@ public static class DialogsSettingsManager
     /// Set the Localisation Key to the selected Localisation Key with the index in <paramref name="_newIndex"/> in the current Profile
     /// </summary>
     /// <param name="_newIndex">Localisation Key Index</param>
-    public static void SetLocalisationKeyIndex(int _newIndex)
+    public static void SetAudioLocalisationKeyIndex(int _newIndex)
     {
-        m_dialogsSettings.CurrentLocalisationKeyIndex = _newIndex;
-        SaveProfile(); 
+        m_dialogsSettings.CurrentAudioLocalisationKeyIndex = _newIndex;
+        OnAudioLocalisationKeyChanged?.Invoke();
+        SaveProfile();
     }
-    #endregion 
+#endregion
 
-    #endregion
-   
+#endregion
+
 }
