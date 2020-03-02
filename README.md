@@ -37,16 +37,18 @@ Vous pouvez ensuite ajouter autant de langues que vous le souhaitez, mais il fau
 Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'éditer. Pour cela vous pouvez créer des nœuds en faisant un clic droit, il en existe 4 sortes:
 
 1. <u>Starting Node</u>
-   ![StartingNode](./ReadMe_Images/StartingNode.png)
-
-   Le Start Node est utilisé pour savoir où le dialogue va commencer, il est présent par défaut et ne peut pas être supprimé. Vous pouvez ajouter des sorties à ce nœud en ajoutant des entrées à l'enum DialogStarterEnum dans le script EnumHolder.cs. 
-   ![StartingNodeEnum](./ReadMe_Images/StartingNodeEnum.png)
-
-   Vous pourrez ensuite préciser vers quels nœuds poursuivre en fonction de l'enum choisi au moment de la lecture du dialogue (Cette partie sera expliquée plus en détail plus tard).
    
+![StartingNode](./ReadMe_Images/StartingNode.png)
+
+Le Start Node est utilisé pour savoir où le dialogue va commencer, il est présent par défaut et ne peut pas être supprimé. Vous pouvez ajouter des sorties à ce nœud en ajoutant des entrées à l'enum DialogStarterEnum dans le script EnumHolder.cs. 
+
+![StartingNodeEnum](./ReadMe_Images/StartingNodeEnum.png)
+
+Vous pourrez ensuite préciser vers quels nœuds poursuivre en fonction de l'enum choisi au moment de la lecture du dialogue (Cette partie sera expliquée plus en détail plus tard).
 
 2. <u>Basic Node</u>
-   ![BasicNode_1](./ReadMe_Images/BasicNode_1.png) ![BasicNode_2](./ReadMe_Images/BasicNode_2.png)
+   
+2. ![BasicNode_1](./ReadMe_Images/BasicNode_1.png) ![BasicNode_2](./ReadMe_Images/BasicNode_2.png)
 
    Le Basic Node est le nœud de base des dialogues, il peut prendre une ou plusieurs lignes de dialogues.
    Chaque ligne de dialogue possède plusieurs paramètres:
@@ -66,12 +68,14 @@ Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'
    ![AnswerNode_1](./ReadMe_Images/AnswerNode_1.png)
 
    Une fois converti, on obtient un nœud qui prend cette forme:
+
    ![AnswerNode_2](./ReadMe_Images/AnswerNode_2.png)  
 
    On a donc un nœud qui a plusieurs sorties qui peuvent nous diriger vers d'autres nœuds dans ce dialogue. De la même manière que le Basic Node, on peut choisir quelles seront les lignes de dialogues affichées en sélectionnant les IDs des lignes de dialogues correspondantes. Le joueur aura donc le choix de cliquer sur l'une des lignes de dialogues proposées, nous verrons son fonctionnement dans une partie ultérieure.   
 
 4. <u>Condition Node</u> 
-   ![ConditionNode](./ReadMe_Images/ConditionNode)
+
+5. ![ConditionNode](./ReadMe_Images/ConditionNode)
 
    Le dernier type de nœud est un Condition Node, il permet de vérifier une condition et de continuer la lecture d'un dialogue vers un certain nœud si la condition est vérifiée et vers un autre si elle ne l'est pas.  Ces conditions sont écrites en LUA et sont définies dans les Settings du Dialogue Editor, nous y reviendront juste après.
    L'écriture de conditions en LUA est différente de l'écriture en C#:
@@ -89,9 +93,11 @@ Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'
 ## III. Régler les settings de l'éditeur de dialogues.
 
 Pour ouvrir la fenêtre d'édition des settings, il suffit d'aller de nouveau dans le menu déroulant sous Window, puis dans la section Dialogue Editor puis dans Edit Settings.
+
 ![WindowMenuImage](./ReadMe_Images/WindowMenuImage.png)
 
 Cela ouvrira une fenêtre comme celle-ci:
+
 ![Settings](./ReadMe_Images/Settings)
 
 1. <u>Conditions</u>
