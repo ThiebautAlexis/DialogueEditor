@@ -5,7 +5,7 @@
 Bonjour à tous! 
 J'ai créé un outil  d'édition de dialogues inspiré de cette conférence animée par Anna Kipnis de Double Fine Productions à la GDC 2015. Il est fortement recommandé de la regarder puisque j'utilise beaucoup de mécanismes présentés dans cette conférence (et en plus, elle est très intéressante!).
 
-![Youtube Vidéo](https://www.youtube.com/watch?v=0hMiPBe_VRc)
+[![Dialogue Systems in Double Fine Games](https://img.youtube.com/vi/0hMiPBe_VRc/0.jpg)](https://www.youtube.com/watch?v=0hMiPBe_VRc "Dialogue Systems in Double Fine Games")
 
 Passons maintenant aux choses sérieuses! 
 
