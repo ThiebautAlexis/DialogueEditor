@@ -1,0 +1,22 @@
+{
+    "m_dialogName": "Read_me",
+    "m_spreadSheetID": "15zUWaJyK8YBBAKbx9x_uvrRAT_sBNRSmL5fDfmvOzH0",
+    "m_dialogStarter": {
+        "m_nodeRect": {
+            "serializedVersion": "2",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 250.0,
+            "height": 87.0
+        },
+        "m_NodeToken": 466488419,
+        "m_startersEnum": [
+            {
+                "m_starter": 0,
+                "m_linkedToken": -1
+            }
+        ]
+    },
+    "m_dialogSets": [],
+    "m_dialogConditions": []
+}

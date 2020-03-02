@@ -1,0 +1,43 @@
+{
+    "m_luaConditions": "condition_1 = false;\ncondition_2 = false;\ncondition_3 = false;\ncondition_4 = false;\n",
+    "m_charactersColor": [
+        {
+            "m_characterName": "alexis",
+            "m_characterColor": {
+                "r": 1.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "m_characterName": "eva",
+            "m_characterColor": {
+                "r": 0.6199374198913574,
+                "g": 0.0,
+                "b": 1.0,
+                "a": 1.0
+            }
+        },
+        {
+            "m_characterName": "william",
+            "m_characterColor": {
+                "r": 0.0,
+                "g": 0.3396226167678833,
+                "b": 0.08139331638813019,
+                "a": 1.0
+            }
+        }
+    ],
+    "m_overrideCharacterColor": false,
+    "m_localisationKeys": [
+        "Text_En_en",
+        "Text_Fr_fr"
+    ],
+    "m_currentLocalisationKeyIndex": 1,
+    "m_audioLocalisationKeys": [
+        "Fr_fr",
+        "En_en"
+    ],
+    "m_currentAudioLocalisationKeyIndex": 0
+}

@@ -12,6 +12,7 @@ public enum DialogSetType
 /// </summary>
 public enum WaitingType
 {
+    None,
     WaitForClick,
     WaitForTime
 }
