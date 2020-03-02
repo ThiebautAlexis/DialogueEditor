@@ -5,7 +5,7 @@
 Bonjour à tous! 
 J'ai créé un outil  d'édition de dialogues inspiré de cette conférence animée par Anna Kipnis de Double Fine Productions à la GDC 2015. Il est fortement recommandé de la regarder puisque j'utilise beaucoup de mécanismes présentés dans cette conférence (et en plus, elle est très intéressante!).
 
-https://www.youtube.com/watch?v=0hMiPBe_VRc
+![Youtube Vidéo](https://www.youtube.com/watch?v=0hMiPBe_VRc)
 
 Passons maintenant aux choses sérieuses! 
 
@@ -46,7 +46,7 @@ Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'
    
 
 2. <u>Basic Node</u>
-   ![image-20200302112524804](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302112524804.png)
+   ![image-20200302115544681](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302115544681.png) ![image-20200302115732881](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302115732881.png)
 
    Le Basic Node est le nœud de base des dialogues, il peut prendre une ou plusieurs lignes de dialogues.
    Chaque ligne de dialogue possède plusieurs paramètres:
@@ -64,5 +64,10 @@ Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'
 3. <u>Answer Node</u>
    L'Answer Node est une variante du Basic Node, on peut l'ajouter en faisant un clic droit sur un Basic Node ou en cliquant sur l'icône en haut à droite du nœud.
    ![image-20200302114608984](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302114608984.png)
+
+   Une fois converti, on obtient un nœud qui prend cette forme:
+   ![image-20200302114933223](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302114933223.png)  
+
+   On a donc un nœud qui a plusieurs sorties qui peuvent nous diriger vers d'autres nœuds dans ce dialogue. De la même manière que le Basic Node, on peut choisir quelles seront les lignes de dialogues affichées en sélectionnant les IDs des lignes de dialogues correspondantes. Le joueur aura donc le choix de cliquer sur l'une des lignes de dialogues proposées, nous verrons son fonctionnement dans une partie ultérieure.   
 
 4. <u>Condition Node</u> 
