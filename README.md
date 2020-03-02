@@ -11,15 +11,15 @@ Passons maintenant aux choses sérieuses!
 
 Avant tout pour commencer, comment ouvrir la fenêtre d'édition des dialogues ? Simplement, vous pouvez trouver dans le menu déroulant une section "Dialog Editor" et en cliquant sur Open Editor vous ouvrirez donc la fenêtre d'édition de dialogues.
 
-![image-20200302102349351](ReadMe_Images\WindowMenuImage.png)
+![WindowMenuImage](ReadMe_Images\WindowMenuImage.png)
 
 ## I. Créer un Dialog Asset
 
 Une fois sur la fenêtre d'édition de dialogues, vous pouvez faire un clic droit pour ouvrir un menu qui vous proposera deux options: créer ou ouvrir un dialogue. Nous allons donc en créer un.
 
-![image-20200302103111533](ReadMe_Images\CreateDialogImage.png)
+![CreateDialogImage](ReadMe_Images\CreateDialogImage.png)
 
-![image-20200302104114621](ReadMe_Images\CreateDialogWindow.png)
+![CreateDialogWindow](ReadMe_Images\CreateDialogWindow.png)
 
 Ici, vous avez donc deux champs à remplir:
 **<u>Dialog Name</u>** : Ceci sera le nom de votre dialogue, vous pourrez le retrouver dans le dossier Assets/DialogsDatas/Dialogs.
