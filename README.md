@@ -41,8 +41,8 @@ Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'
 
 
 
-1. <u>**Starting Node**</u>:
-   
+1. ### <u>**Starting Node**</u>:
+
 ![StartingNode](./ReadMe_Images/StartingNode.png)
 
 Le Start Node est utilisé pour savoir où le dialogue va commencer, il est présent par défaut et ne peut pas être supprimé. Vous pouvez ajouter des sorties à ce nœud en ajoutant des entrées à l'enum DialogStarterEnum dans le script EnumHolder.cs. 
@@ -53,7 +53,7 @@ Vous pourrez ensuite préciser vers quels nœuds poursuivre en fonction de l'enu
 
 
 
-2. <u>**Basic Node**</u>:
+2. ### <u>**Basic Node**</u>:
 
 ![BasicNode_1](./ReadMe_Images/BasicNode_1.png) ![BasicNode_2](./ReadMe_Images/BasicNode_2.png)
 
@@ -71,7 +71,7 @@ En plus de cela, le Basic Node a lui aussi des paramètres:
 
 
 
-3. <u>**Answer Node**</u>:
+3. ### <u>**Answer Node**</u>:
 
 L'Answer Node est une variante du Basic Node, on peut l'ajouter en faisant un clic droit sur un Basic Node ou en cliquant sur l'icône en haut à droite du nœud.
 
@@ -85,9 +85,9 @@ On a donc un nœud qui a plusieurs sorties qui peuvent nous diriger vers d'autre
 
 
 
-4. <u>Condition Node</u> 
+4. ### <u>**Condition Node**</u> 
 
-![ConditionNode](./ReadMe_Images/ConditionNode)
+![ConditionNode](./ReadMe_Images/ConditionNode.png)
 
 Le dernier type de nœud est un Condition Node, il permet de vérifier une condition et de continuer la lecture d'un dialogue vers un certain nœud si la condition est vérifiée et vers un autre si elle ne l'est pas.  Ces conditions sont écrites en LUA et sont définies dans les Settings du Dialogue Editor, nous y reviendront juste après.
 L'écriture de conditions en LUA est différente de l'écriture en C#:
@@ -97,11 +97,11 @@ L'écriture de conditions en LUA est différente de l'écriture en C#:
 - "and" est l'opérateur logique && en C#.
 - "or" est l'opérateur logique || en C#.
 
-L'utilisateur a la possibilité d'écrire lui même ses conditions en LUA en effectuant un clic droit sur le nœud ou en appuyant sur l'icône en haut à droite pour ouvrir un menu contextuel. ![SwitchToLUA](./ReadMe_Images/SwitchToLUA)
+L'utilisateur a la possibilité d'écrire lui même ses conditions en LUA en effectuant un clic droit sur le nœud ou en appuyant sur l'icône en haut à droite pour ouvrir un menu contextuel. ![SwitchToLUA](./ReadMe_Images/SwitchToLUA.png)
 
 Il pourra donc ensuite éditer ses conditions directement en LUA (<b>ATTENTION</b>: la déclaration du est faite <b>automatiquement</b>, il n'est pas nécessaire de la faire lors de l'édition du code en LUA).
 
-![image-20200302140001794](./ReadMe_Images/LUACondition)
+![image-20200302140001794](./ReadMe_Images/LUACondition.png)
 
 
 
@@ -115,16 +115,54 @@ Pour ouvrir la fenêtre d'édition des settings, il suffit d'aller de nouveau da
 
 Cela ouvrira une fenêtre comme celle-ci:
 
-![Settings](./ReadMe_Images/Settings)
+![Settings](./ReadMe_Images/Settings.png)
 
-1. <u>**Conditions**</u>
+1. ### <u>**Conditions**</u>
    
    Dans cette première partie, vous pouvez entrer toutes les conditions utilisées par votre Dialogue Editor. Il suffit d'entrer le nom de votre condition dans le champ correspondant, d'appuyer sur le bouton Apply Conditions et de sauvegarder les settings.
    De plus, pour chaque condition, vous pouvez choisir sa valeur par défaut grâce au Toggle qui la suit.
-2. <u>**Colors**</u>
+   
+2. ### <u>**Colors**</u>
    
    Vous pouvez aussi choisir d'appliquer des presets de couleurs pour certains personnages. Puisque l'identifiant de la ligne de dialogue contient les premières lettres du nom du personnage, nous pouvons les utiliser pour appliquer une couleur sur le TextMesh qui affichera la ligne de dialogue à l'écran.
-3. <u>**Localisations Keys**</u>
+   
+3. ### <u>**Localisations Keys**</u>
    
    Les clés de localisations correspondent aux identifiants utilisés pour afficher le texte ou jouer les Audioclips avec la bonne langue. Les clés de localisations du texte correspondent aux identifiants que vous avez choisi de mettre dans votre spreadsheet. 
    De même pour les AudioClips, la clé de localisation correspondra au suffixe que vous appliquerez à votre asset en fonction de la langue dans laquelle il se trouve.
+
+## IV. Le Runtime
+
+1. ### Dialogue Reader
+
+![DialogueReader](./ReadMe_Images/DialogReader.png)
+
+Le script DialogueReader permet de lire un dialogue grâce à la méthode 
+
+```c#
+StartDisplayingDialogue();
+```
+
+qui permet de lire tous les nœuds de dialogue partants de la sortie Default du Start Node. Cette méthode possède une surcharge qui permet de préciser avec quel enum il faut commencer à lire le dialogue.
+
+```c#
+StartDisplayingDialogue(DialogStarterEnum _starter);
+```
+
+Pour lire un dialogue en particulier, il suffit de sélectionner le dialogue correspondant dans le champ "Displayed Dialogue".
+
+Dans les champs suivants on peut régler des paramètres concernant l'affichage du texte:
+
+- On peut ainsi choisir quel TextMesh va afficher nos lignes de dialogue.
+- On peut ensuite choisir quel police sera utilisée, mais aussi sa taille et sa couleur.
+
+Et pour finir on peut choisir quel sera l'audio source qui émettra les sons relatifs aux lignes de dialogue.
+
+
+
+2. ### Dialogue Event Handler 
+
+![DialogueEventHandler](./ReadMe_Images/DialogueEventHandler.png)
+
+Le Dialogue Event Handler, lorsqu'il est relié à un Dialogue Reader, permet d'appeler des Unity Events et de changer la valeur des conditions lorsqu'une ligne de dialogue est lue.
+En sélectionnant la clé d'activation, qui correspond à l'ID de la ligne de dialogue jouée, on peut donc appeler les Unity Events reliés à celle-ci. Un Dialogue Event Handler peut stocker plusieurs Events à appeler en fonction de différentes clés. 

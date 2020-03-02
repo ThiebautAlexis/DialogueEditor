@@ -56,7 +56,7 @@ public class DialogueReader : MonoBehaviour
     /// Get the Dialog and Start loading the LineDescriptor
     /// </summary>
     /// <param name="_loadedAsset">The loaded asset Handler</param>
-    private void OnDialogAssetLoaded(AsyncOperationHandle<TextAsset> _loadedAsset)
+    private void OnDialogueAssetLoaded(AsyncOperationHandle<TextAsset> _loadedAsset)
     {
         if (_loadedAsset.Result == null)
         {
@@ -86,7 +86,7 @@ public class DialogueReader : MonoBehaviour
             m_lineDescriptor.DoString(DialogueAssetsManager.LineDescriptorsTextAsset.Where(a => a.name == m_dialog.SpreadSheetID.GetHashCode().ToString() + Dialogue.LineDescriptorPostfix).First().ToString());
         }
         yield return null;
-        StartDisplayingDialog();
+        StartDisplayingDialogue();
     }
     #endregion
 
@@ -95,7 +95,7 @@ public class DialogueReader : MonoBehaviour
     /// Display the whole dialog
     /// </summary>
     /// <returns></returns>
-    public void StartDisplayingDialog(DialogStarterEnum _starter)
+    public void StartDisplayingDialogue(DialogStarterEnum _starter)
     {
         if (m_dialog == null)
         {
@@ -104,15 +104,15 @@ public class DialogueReader : MonoBehaviour
         }
         // Get the Starting Dialog Set //
         DialogueSet _set = m_dialog.GetFirstSet(_starter);
-        DisplayDialogSet(_set);
+        DisplayDialogueSet(_set);
     }
 
     /// <summary>
     /// Call the method with the Situation Default
     /// </summary>
-    public void StartDisplayingDialog()
+    public void StartDisplayingDialogue()
     {
-        StartDisplayingDialog(DialogStarterEnum.Default); 
+        StartDisplayingDialogue(DialogStarterEnum.Default); 
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public class DialogueReader : MonoBehaviour
     /// </summary>
     /// <param name="_set"></param>
     /// <param name="_index"></param>
-    private void DisplayDialogSet(DialogueSet _set, int _index = 0)
+    private void DisplayDialogueSet(DialogueSet _set, int _index = 0)
     {
         if (_set == null)
         {
@@ -131,10 +131,10 @@ public class DialogueReader : MonoBehaviour
         {
             case DialogSetType.BasicType:
                 if (_set.PlayRandomly) _index = _set.GetNextRandomIndex(); 
-                StartCoroutine(DisplayDialogLineAtIndex(_set, _index));
+                StartCoroutine(DisplayDialogueLineAtIndex(_set, _index));
                 break;
             case DialogSetType.PlayerAnswer:
-                DisplayAnswerDialogSet(_set);
+                DisplayAnswerDialogueSet(_set);
                 break;
         }
     }
@@ -143,7 +143,7 @@ public class DialogueReader : MonoBehaviour
     /// Instanciate the loaded asset <see cref="m_dialogAnswerHandler"/> and Initialise it using the dialog <paramref name="_set"/>
     /// </summary>
     /// <param name="_set">Displayed Set</param>
-    private void DisplayAnswerDialogSet(DialogueSet _set)
+    private void DisplayAnswerDialogueSet(DialogueSet _set)
     {
         m_onMouseClicked = null; 
         Transform _canvas = FindObjectOfType<Canvas>().transform; 
@@ -155,7 +155,7 @@ public class DialogueReader : MonoBehaviour
     /// Display the selected Dialog Line and procede to the next dialog set
     /// </summary>
     /// <param name="_line">The line to display</param>
-    public IEnumerator DisplayDialogLine(DialogueLine _line)
+    public IEnumerator DisplayDialogueLine(DialogueLine _line)
     {
         // Call the event
         OnDialogLineRead?.Invoke(_line.Key);
@@ -169,7 +169,7 @@ public class DialogueReader : MonoBehaviour
         else
             m_textDisplayer.color = m_fontColor;
         // Change the text of the text displayer
-        m_textDisplayer.text = GetDialogLineContent(_line.Key, DialoguesSettingsManager.DialogsSettings.CurrentLocalisationKey);
+        m_textDisplayer.text = GetDialogueLineContent(_line.Key, DialoguesSettingsManager.DialogsSettings.CurrentLocalisationKey);
         // If there is an audiosource and the AudioClip Exists in the DialogsAssetsManager, play the audioclip in OneShot
         if(m_audioSource != null && DialogueAssetsManager.DialogLinesAudioClips.ContainsKey(_line.Key + "_" + DialoguesSettingsManager.DialogsSettings.CurrentAudioLocalisationKey))
         {
@@ -178,7 +178,7 @@ public class DialogueReader : MonoBehaviour
         yield return new WaitForSeconds(_line.InitialWaitingTime);
         // Go to the next set
         DialogueSet _nextSet = m_dialog.GetNextSet(_line.LinkedToken);
-        DisplayDialogSet(_nextSet);
+        DisplayDialogueSet(_nextSet);
     }
 
     /// <summary>
@@ -186,7 +186,7 @@ public class DialogueReader : MonoBehaviour
     /// </summary>
     /// <param name="_set">Displayed Dialog Set</param>
     /// <returns></returns>
-    private IEnumerator DisplayDialogLineAtIndex(DialogueSet _set, int _index = 0)
+    private IEnumerator DisplayDialogueLineAtIndex(DialogueSet _set, int _index = 0)
     {
         m_onMouseClicked = null; 
         // Get the dialog line at the _index in the _set
@@ -203,7 +203,7 @@ public class DialogueReader : MonoBehaviour
         else
             m_textDisplayer.color = m_fontColor;
         // Change the text of the text displayer
-        m_textDisplayer.text = GetDialogLineContent(_line.Key, DialoguesSettingsManager.DialogsSettings.CurrentLocalisationKey);
+        m_textDisplayer.text = GetDialogueLineContent(_line.Key, DialoguesSettingsManager.DialogsSettings.CurrentLocalisationKey);
         // If there is an audiosource and the AudioClip Exists in the DialogsAssetsManager, play the audioclip in OneShot
         if (m_audioSource != null && DialogueAssetsManager.DialogLinesAudioClips.ContainsKey(_line.Key + "_" + DialoguesSettingsManager.DialogsSettings.CurrentAudioLocalisationKey))
         {
@@ -234,13 +234,13 @@ public class DialogueReader : MonoBehaviour
         switch (_line.WaitingType)
         {
             case WaitingType.None:
-                DisplayDialogSet(_set, _index);
+                DisplayDialogueSet(_set, _index);
                 break;
             case WaitingType.WaitForClick:
-                m_onMouseClicked += () => DisplayDialogSet(_set, _index);
+                m_onMouseClicked += () => DisplayDialogueSet(_set, _index);
                 break;
             case WaitingType.WaitForTime:
-                StartCoroutine(WaitBeforeDisplayDialogSet(_set, _index, _line.ExtraWaitingTime));
+                StartCoroutine(WaitBeforeDisplayDialogueSet(_set, _index, _line.ExtraWaitingTime));
                 break;
             default:
                 break;
@@ -253,7 +253,7 @@ public class DialogueReader : MonoBehaviour
     /// <param name="_dialogLineID">ID of the Dialog Line</param>
     /// <param name="_localisationKey">Localisation Key to use</param>
     /// <returns></returns>
-    public string GetDialogLineContent(string _dialogLineID, string _localisationKey)
+    public string GetDialogueLineContent(string _dialogLineID, string _localisationKey)
     {
         if (_dialogLineID == string.Empty) return string.Empty; 
         DynValue _content = m_lineDescriptor.Globals.Get(_dialogLineID).Table.Get(_localisationKey);
@@ -268,10 +268,10 @@ public class DialogueReader : MonoBehaviour
     /// <param name="_index">Index of the dialog line to display</param>
     /// <param name="_waitingTime">Time to wait before displaying</param>
     /// <returns></returns>
-    private IEnumerator WaitBeforeDisplayDialogSet(DialogueSet _set, int _index, float _waitingTime)
+    private IEnumerator WaitBeforeDisplayDialogueSet(DialogueSet _set, int _index, float _waitingTime)
     {
         yield return new WaitForSeconds(_waitingTime);
-        DisplayDialogSet(_set, _index);
+        DisplayDialogueSet(_set, _index);
     }
     #endregion
 
@@ -283,13 +283,13 @@ public class DialogueReader : MonoBehaviour
         if (m_dialogName != string.Empty)
         {
             m_dialogAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName);
-            m_dialogAssetAsyncHandler.Completed += OnDialogAssetLoaded;
+            m_dialogAssetAsyncHandler.Completed += OnDialogueAssetLoaded;
         }
         InitReader(); 
     }
     private void Start()
     {
-        m_onMouseClicked += StartDisplayingDialog;
+        m_onMouseClicked += StartDisplayingDialogue;
     }
     private void Update()
     {

@@ -348,7 +348,7 @@ GameObject:
   - component: {fileID: 202039720}
   - component: {fileID: 202039722}
   m_Layer: 0
-  m_Name: Dialog Reader
+  m_Name: Dialogue Reader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 1028591281}
   - component: {fileID: 1028591282}
   m_Layer: 0
-  m_Name: DialogEventHandler
+  m_Name: DialogueEventHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -703,29 +703,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1028591280}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2638e21f79335604fbda952e84c95f8c, type: 3}
+  m_Script: {fileID: 11500000, guid: 5dcc4ceb6189db34a871e4ab9644c373, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_dialogReader: {fileID: 202039720}
   m_dialogEvents:
   - m_dialogEvent:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 202039720}
-          m_MethodName: StartDisplayingDialog
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    m_activationKey: EV15POL
+        m_Calls: []
+    m_activationKey: AL13STR
     m_changedConditions:
-    - m_conditionName: condition_1
-      m_conditionValue: 1
     - m_conditionName: condition_2
       m_conditionValue: 1
 --- !u!1 &2015950021
