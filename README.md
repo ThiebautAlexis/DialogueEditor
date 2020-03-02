@@ -75,7 +75,7 @@ Vous pourrez ensuite préciser vers quels nœuds poursuivre en fonction de l'enu
 
 4. <u>Condition Node</u> 
 
-5. ![ConditionNode](./ReadMe_Images/ConditionNode)
+   ![ConditionNode](./ReadMe_Images/ConditionNode)
 
    Le dernier type de nœud est un Condition Node, il permet de vérifier une condition et de continuer la lecture d'un dialogue vers un certain nœud si la condition est vérifiée et vers un autre si elle ne l'est pas.  Ces conditions sont écrites en LUA et sont définies dans les Settings du Dialogue Editor, nous y reviendront juste après.
    L'écriture de conditions en LUA est différente de l'écriture en C#:
@@ -101,10 +101,13 @@ Cela ouvrira une fenêtre comme celle-ci:
 ![Settings](./ReadMe_Images/Settings)
 
 1. <u>Conditions</u>
+   
    Dans cette première partie, vous pouvez entrer toutes les conditions utilisées par votre Dialogue Editor. Il suffit d'entrer le nom de votre condition dans le champ correspondant, d'appuyer sur le bouton Apply Conditions et de sauvegarder les settings.
    De plus, pour chaque condition, vous pouvez choisir sa valeur par défaut grâce au Toggle qui la suit.
 2. <u>Colors</u>
+   
    Vous pouvez aussi choisir d'appliquer des presets de couleurs pour certains personnages. Puisque l'identifiant de la ligne de dialogue contient les premières lettres du nom du personnage, nous pouvons les utiliser pour appliquer une couleur sur le TextMesh qui affichera la ligne de dialogue à l'écran.
 3. <u>Localisations Keys</u>
+   
    Les clés de localisations correspondent aux identifiants utilisés pour afficher le texte ou jouer les Audioclips avec la bonne langue. Les clés de localisations du texte correspondent aux identifiants que vous avez choisi de mettre dans votre spreadsheet. 
    De même pour les AudioClips, la clé de localisation correspondra au suffixe que vous appliquerez à votre asset en fonction de la langue dans laquelle il se trouve.
