@@ -11,15 +11,15 @@ Passons maintenant aux choses sérieuses!
 
 Avant tout pour commencer, comment ouvrir la fenêtre d'édition des dialogues ? Simplement, vous pouvez trouver dans le menu déroulant une section "Dialog Editor" et en cliquant sur Open Editor vous ouvrirez donc la fenêtre d'édition de dialogues.
 
-![image-20200302102349351](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302102349351.png)
+![image-20200302102349351](ReadMe_Images\WindowMenuImage.png)
 
 ## I. Créer un Dialog Asset
 
 Une fois sur la fenêtre d'édition de dialogues, vous pouvez faire un clic droit pour ouvrir un menu qui vous proposera deux options: créer ou ouvrir un dialogue. Nous allons donc en créer un.
 
-![image-20200302103111533](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302103111533.png)
+![image-20200302103111533](ReadMe_Images\CreateDialogImage.png)
 
-![image-20200302104114621](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302104114621.png)
+![image-20200302104114621](ReadMe_Images\CreateDialogWindow.png)
 
 Ici, vous avez donc deux champs à remplir:
 **<u>Dialog Name</u>** : Ceci sera le nom de votre dialogue, vous pourrez le retrouver dans le dossier Assets/DialogsDatas/Dialogs.
@@ -28,7 +28,7 @@ Puis en cliquant sur le bouton "Create Dialog And Load Spreadsheet" vous allez d
 
 [Concernant la Spreadsheet]: La spreadsheet doit être sous cette forme afin de fonctionner avec cet outil.
 
-![image-20200302114008035](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302114008035.png)
+![image-20200302114008035](ReadMe_Images\SpreadsheetImage.png)
 
 Vous pouvez ensuite ajouter autant de langues que vous le souhaitez, mais il faut que cela reste sous cette forme avec les IDs, suivi des lignes de dialogues rangées en fonctions de chaque clé de localisation.
 
@@ -37,16 +37,16 @@ Vous pouvez ensuite ajouter autant de langues que vous le souhaitez, mais il fau
 Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'éditer. Pour cela vous pouvez créer des nœuds en faisant un clic droit, il en existe 4 sortes:
 
 1. <u>Starting Node</u>
-   ![image-20200302111839732](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302111839732.png)
+   ![image-20200302111839732](ReadMe_Images\StartingNode.png)
 
    Le Start Node est utilisé pour savoir où le dialogue va commencer, il est présent par défaut et ne peut pas être supprimé. Vous pouvez ajouter des sorties à ce nœud en ajoutant des entrées à l'enum DialogStarterEnum dans le script EnumHolder.cs. 
-   ![image-20200302112148871](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302112148871.png)
+   ![image-20200302112148871](ReadMe_Images\StartingNodeEnum.png)
 
    Vous pourrez ensuite préciser vers quels nœuds poursuivre en fonction de l'enum choisi au moment de la lecture du dialogue (Cette partie sera expliquée plus en détail plus tard).
    
 
 2. <u>Basic Node</u>
-   ![image-20200302115544681](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302115544681.png) ![image-20200302115732881](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302115732881.png)
+   ![image-20200302115544681](ReadMe_Images\BasicNode_1.png) ![image-20200302115732881](ReadMe_Images\BasicNode_2.png)
 
    Le Basic Node est le nœud de base des dialogues, il peut prendre une ou plusieurs lignes de dialogues.
    Chaque ligne de dialogue possède plusieurs paramètres:
@@ -63,10 +63,10 @@ Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'
 
 3. <u>Answer Node</u>
    L'Answer Node est une variante du Basic Node, on peut l'ajouter en faisant un clic droit sur un Basic Node ou en cliquant sur l'icône en haut à droite du nœud.
-   ![image-20200302114608984](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302114608984.png)
+   ![image-20200302114608984](ReadMe_Images\AnswerNode_1.png)
 
    Une fois converti, on obtient un nœud qui prend cette forme:
-   ![image-20200302114933223](C:\Users\Brassart_S03_Alien3\AppData\Roaming\Typora\typora-user-images\image-20200302114933223.png)  
+   ![image-20200302114933223](ReadMe_Images\AnswerNode_2.png)  
 
    On a donc un nœud qui a plusieurs sorties qui peuvent nous diriger vers d'autres nœuds dans ce dialogue. De la même manière que le Basic Node, on peut choisir quelles seront les lignes de dialogues affichées en sélectionnant les IDs des lignes de dialogues correspondantes. Le joueur aura donc le choix de cliquer sur l'une des lignes de dialogues proposées, nous verrons son fonctionnement dans une partie ultérieure.   
 
