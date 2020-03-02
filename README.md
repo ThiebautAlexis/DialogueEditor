@@ -41,7 +41,7 @@ Maintenant que votre dialogue est créé, vous pouvez désormais commencer à l'
 
 
 
-1. <u>Starting Node</u>
+1. <u>**Starting Node**</u>:
    
 ![StartingNode](./ReadMe_Images/StartingNode.png)
 
@@ -53,27 +53,28 @@ Vous pourrez ensuite préciser vers quels nœuds poursuivre en fonction de l'enu
 
 
 
-2. <u>Basic Node</u>
+2. <u>**Basic Node**</u>:
 
-1. ![BasicNode_1](./ReadMe_Images/BasicNode_1.png) ![BasicNode_2](./ReadMe_Images/BasicNode_2.png)
+![BasicNode_1](./ReadMe_Images/BasicNode_1.png) ![BasicNode_2](./ReadMe_Images/BasicNode_2.png)
 
-   Le Basic Node est le nœud de base des dialogues, il peut prendre une ou plusieurs lignes de dialogues.
-   Chaque ligne de dialogue possède plusieurs paramètres:
+Le Basic Node est le nœud de base des dialogues, il peut prendre une ou plusieurs lignes de dialogues.
+Chaque ligne de dialogue possède plusieurs paramètres:
 
-   - <u>Line ID</u>: La clé d'identification de la ligne dans la spreadsheet du dialogue. Elle sera utilisée pour retrouver le contenu de la ligne de dialogue, et ce en fonction du langage sélectionné dans les options.
-   - <u>Inital Waiting Time</u>: Le temps d'affichage de la ligne de dialogue à l'écran. Si il y a un AudioClip lié à cette ligne de dialogue, ce temps d'affichage sera égal à la durée de l'audio clip, sinon il sera égal à la durée précisée dans ce champ.
-   - <u>Extra Waiting Type</u>: Il s'agit de type d'attente qui sera exécuté après le temps d'affichage de la ligne. Il peut s'agir d'un temps d'attente, l'attente d'un input par le joueur ou alors ne rien attendre. 
+- <u>Line ID</u>: La clé d'identification de la ligne dans la spreadsheet du dialogue. Elle sera utilisée pour retrouver le contenu de la ligne de dialogue, et ce en fonction du langage sélectionné dans les options.
+- <u>Inital Waiting Time</u>: Le temps d'affichage de la ligne de dialogue à l'écran. Si il y a un AudioClip lié à cette ligne de dialogue, ce temps d'affichage sera égal à la durée de l'audio clip, sinon il sera égal à la durée précisée dans ce champ.
+- <u>Extra Waiting Type</u>: Il s'agit de type d'attente qui sera exécuté après le temps d'affichage de la ligne. Il peut s'agir d'un temps d'attente, l'attente d'un input par le joueur ou alors ne rien attendre. 
 
-   En plus de cela, le Basic Node a lui aussi des paramètres:
+En plus de cela, le Basic Node a lui aussi des paramètres:
 
-   - Un premier pour choisir s'il doit jouer tout le set de lignes de dialogues ou seulement une seule.
-   - Un second pour choisir s'il doit jouer son set de lignes de dialogues aléatoirement ou séquentiellement.
+- Un premier pour choisir s'il doit jouer tout le set de lignes de dialogues ou seulement une seule.
+- Un second pour choisir s'il doit jouer son set de lignes de dialogues aléatoirement ou séquentiellement.
 
 
 
-3. <u>Answer Node</u>
-   L'Answer Node est une variante du Basic Node, on peut l'ajouter en faisant un clic droit sur un Basic Node ou en cliquant sur l'icône en haut à droite du nœud.
-   ![AnswerNode_1](./ReadMe_Images/AnswerNode_1.png)
+3. <u>**Answer Node**</u>:
+
+L'Answer Node est une variante du Basic Node, on peut l'ajouter en faisant un clic droit sur un Basic Node ou en cliquant sur l'icône en haut à droite du nœud.
+![AnswerNode_1](./ReadMe_Images/AnswerNode_1.png)
 
 Une fois converti, on obtient un nœud qui prend cette forme:
 
@@ -98,6 +99,7 @@ L'écriture de conditions en LUA est différente de l'écriture en C#:
 L'utilisateur a la possibilité d'écrire lui même ses conditions en LUA en effectuant un clic droit sur le nœud ou en appuyant sur l'icône en haut à droite pour ouvrir un menu contextuel. ![SwitchToLUA](./ReadMe_Images/SwitchToLUA)
 
 Il pourra donc ensuite éditer ses conditions directement en LUA (<b>ATTENTION</b>: la déclaration du est faite <b>automatiquement</b>, il n'est pas nécessaire de la faire lors de l'édition du code en LUA).
+
 ![image-20200302140001794](./ReadMe_Images/LUACondition)
 
 
@@ -114,14 +116,14 @@ Cela ouvrira une fenêtre comme celle-ci:
 
 ![Settings](./ReadMe_Images/Settings)
 
-1. <u>Conditions</u>
+1. <u>**Conditions**</u>
    
    Dans cette première partie, vous pouvez entrer toutes les conditions utilisées par votre Dialogue Editor. Il suffit d'entrer le nom de votre condition dans le champ correspondant, d'appuyer sur le bouton Apply Conditions et de sauvegarder les settings.
    De plus, pour chaque condition, vous pouvez choisir sa valeur par défaut grâce au Toggle qui la suit.
-2. <u>Colors</u>
+2. <u>**Colors**</u>
    
    Vous pouvez aussi choisir d'appliquer des presets de couleurs pour certains personnages. Puisque l'identifiant de la ligne de dialogue contient les premières lettres du nom du personnage, nous pouvons les utiliser pour appliquer une couleur sur le TextMesh qui affichera la ligne de dialogue à l'écran.
-3. <u>Localisations Keys</u>
+3. <u>**Localisations Keys**</u>
    
    Les clés de localisations correspondent aux identifiants utilisés pour afficher le texte ou jouer les Audioclips avec la bonne langue. Les clés de localisations du texte correspondent aux identifiants que vous avez choisi de mettre dans votre spreadsheet. 
    De même pour les AudioClips, la clé de localisation correspondra au suffixe que vous appliquerez à votre asset en fonction de la langue dans laquelle il se trouve.
