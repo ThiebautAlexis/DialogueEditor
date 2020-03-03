@@ -272,7 +272,9 @@ The last node type is the Condition Node, it checks a condition then an reroute 
 - "and" is the && logic operator in C#.
 - "or" is the || logic operator in C#.
 
-The user has the possibility to write themself the LUA conditions by right clicking on the node or by clicking on the top left icon to open a context menu and switch to LUA code.![SwitchToLUA](./ReadMe_Images/SwitchToLUA.png)
+The user has the possibility to write themself the LUA conditions by right clicking on the node or by clicking on the top left icon to open a context menu and switch to LUA code.
+
+![SwitchToLUA](./ReadMe_Images/SwitchToLUA.png)
 
 The user will be able to write the LUA conditions in a text area (**WARNING**: the if statement is made **automatically**, it is not necessary to write in the LUA code).
 
