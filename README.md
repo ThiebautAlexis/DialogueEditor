@@ -4,7 +4,7 @@
 
 ![Dialogue Editor Image](./ReadMe_Images/DialogueEditorImage.png)
 
-
+Contact me at thiebautalexis01@gmail.com if you want to report a bug or give me feedbacks! :)
 
 [Version Française](https://github.com/ThiebautAlexis/DialogEditor#fr)
 
