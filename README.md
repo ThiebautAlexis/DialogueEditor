@@ -1,7 +1,8 @@
 # A Nodal Dialogues Editor For Unity Engine!
 
-[Version Française](https://github.com/ThiebautAlexis/DialogEditor#[FR])
-[English Version](https://github.com/ThiebautAlexis/DialogEditor#[EN])
+[Version Française](https://github.com/ThiebautAlexis/DialogEditor#fr)
+
+[English Version](https://github.com/ThiebautAlexis/DialogEditor#en)
 
 ### [FR] 
 
@@ -172,7 +173,7 @@ En sélectionnant la clé d'activation, qui correspond à l'ID de la ligne de di
 
 
 
-
+<b>-------------------------------------------------------------------------------------------------------------------------------------------------</b
 
 
 
