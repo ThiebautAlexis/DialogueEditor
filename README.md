@@ -1,5 +1,11 @@
 # A Nodal Dialogues Editor For Unity Engine!
 
+
+
+![Dialogue Editor Image](./ReadMe_Images/DialogueEditorImage.png)
+
+
+
 [Version Française](https://github.com/ThiebautAlexis/DialogEditor#fr)
 
 [English Version](https://github.com/ThiebautAlexis/DialogEditor#en)
