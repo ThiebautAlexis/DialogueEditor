@@ -14,6 +14,8 @@ namespace DialogueEditor
         private SerializedProperty m_fontSize;
         private SerializedProperty m_fontColor;
         private SerializedProperty m_audioSource;
+        private SerializedProperty m_onStartReading;
+        private SerializedProperty m_onEndReading; 
 
         private string[] m_dialogsName;
         private int m_currentIndex = -1;
@@ -29,6 +31,8 @@ namespace DialogueEditor
             m_fontSize = serializedObject.FindProperty("m_fontSize");
             m_fontColor = serializedObject.FindProperty("m_fontColor");
             m_audioSource = serializedObject.FindProperty("m_audioSource");
+            m_onStartReading = serializedObject.FindProperty("m_onStartReading");
+            m_onEndReading = serializedObject.FindProperty("m_onEndReading");
             m_dialogsName = Directory.GetFiles(Dialogue.DialogAssetPath, "*" + Dialogue.DialogAssetExtension).Select(Path.GetFileNameWithoutExtension).ToArray();
 
             if (m_dialogName.stringValue != string.Empty)
@@ -55,6 +59,11 @@ namespace DialogueEditor
 
             EditorGUILayout.LabelField(new GUIContent("Audio Settings"), m_style);
             EditorGUILayout.PropertyField(m_audioSource, new GUIContent("Audio Source"));
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField(new GUIContent("Events Settings"), m_style);
+            EditorGUILayout.PropertyField(m_onStartReading, new GUIContent("On Start Reading", "Event called when the Reader starts the dialogue"));
+            EditorGUILayout.PropertyField(m_onEndReading, new GUIContent("On End Reading", "Event called when the Reader has reached the end of the dialogue"));
 
             serializedObject.ApplyModifiedProperties();
         }

@@ -19,6 +19,9 @@ namespace DialogueEditor
         [SerializeField] private Color m_fontColor = Color.black;
         [SerializeField] private AudioSource m_audioSource = null;
 
+        [SerializeField] private UnityEvent m_onStartReading = null;
+        [SerializeField] private UnityEvent m_onEndReading = null; 
+
         private AsyncOperationHandle<TextAsset> m_dialogAssetAsyncHandler;
 
         private Dialogue m_dialog = null;
@@ -105,6 +108,7 @@ namespace DialogueEditor
                 Debug.Log("Dialog is null");
                 return;
             }
+            m_onStartReading?.Invoke();
             // Get the Starting Dialog Set //
             DialogueSet _set = m_dialog.GetFirstSet(_starter);
             DisplayDialogueSet(_set);
@@ -127,6 +131,7 @@ namespace DialogueEditor
         {
             if (_set == null)
             {
+                m_onEndReading?.Invoke(); 
                 m_textDisplayer.text = string.Empty;
                 return;
             }

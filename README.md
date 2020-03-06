@@ -186,7 +186,7 @@ En sélectionnant la clé d'activation, qui correspond à l'ID de la ligne de di
 ### [EN]
 
 Hello everyone! 
-I made a dialogues editing tool inspired by this lecture presented by Anna Kipnis from Double Fine Production at GDC 2015. I highly recommend to watch it because I use many features from this lecture (And it's really cool and interesting!) 
+I made a dialogues editing tool inspired by this lecture presented by Anna Kipnis from Double Fine Productions at GDC 2015. I highly recommend to watch it because I use many features from this lecture (And it's really cool and interesting!) 
 
 [![Dialogue Systems in Double Fine Games](https://img.youtube.com/vi/0hMiPBe_VRc/0.jpg)](https://www.youtube.com/watch?v=0hMiPBe_VRc "Dialogue Systems in Double Fine Games")
 
@@ -206,9 +206,9 @@ Once the Editing Window opened, you can right click to open a new menu that will
 
 Here, you have two fields to fill.
 
-**<u>Dialogue Name</u>** : This will be the name of your dialogue. It will be saved in the folder Assets/DialoguesDatas/Dialogues.
+**<u>Dialogue Name</u>** : This will be the name of your dialogue. It will be saved in Assets/DialoguesDatas/Dialogues.
 
-**<u>Spreadsheet ID</u>**: Here you have to write the sharing ID of your Google Sheets. You can find it by clicking on the "Share" Button in the top left of your spreadsheet. You'll copy a link that looks like this one: https:/docs.google.com/spreadsheets/d/[spreadsheet_ID]/edit?usp=sharing and You'll have to paste this spreadsheet_ID in the Spreadsheet ID field.
+**<u>Spreadsheet ID</u>**: Here you have to write the sharing ID of your Google Sheets. You can find it by clicking on the "Share" Button in the top left of your spreadsheet. You'll copy a link that looks like this one: https:/docs.google.com/spreadsheets/d/[spreadsheet_ID]/edit?usp=sharing and You'll have to paste this "spreadsheet_ID" in the Spreadsheet ID field.
 
 Then, when you click on the "Create Dialogue and Load Spreadsheet", it will create a Dialogue Asset and download the TSV file from your spreadsheet on your computer. If you modified your spreadsheet, you can update it by right clicking and click on "Update Spreadsheet"
 

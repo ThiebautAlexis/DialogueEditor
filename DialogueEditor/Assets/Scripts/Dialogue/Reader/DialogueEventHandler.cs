@@ -7,8 +7,8 @@ namespace DialogueEditor
     public class DialogueEventHandler : MonoBehaviour
     {
         #region Fields and properties
-        [SerializeField] private DialogueReader m_dialogReader = null;
-        [SerializeField] private DialogueEvent[] m_dialogEvents = new DialogueEvent[] { };
+        [SerializeField] private DialogueReader m_dialogueReader = null;
+        [SerializeField] private DialogueEvent[] m_dialogueEvents = new DialogueEvent[] { };
         #endregion
 
         #region Methods
@@ -16,16 +16,16 @@ namespace DialogueEditor
         #region Original Methods
         private void CallEvent(string _key)
         {
-            m_dialogEvents.ToList().ForEach(e => e.CallEvents(_key));
+            m_dialogueEvents.ToList().ForEach(e => e.CallEvents(_key));
         }
         #endregion
 
         #region UnityMethods
         private void Start()
         {
-            if (m_dialogReader != null)
+            if (m_dialogueReader != null)
             {
-                m_dialogReader.OnDialogLineRead.AddListener(CallEvent);
+                m_dialogueReader.OnDialogLineRead.AddListener(CallEvent);
             }
         }
         #endregion
@@ -36,13 +36,13 @@ namespace DialogueEditor
     [System.Serializable]
     public class DialogueEvent
     {
-        [SerializeField] private UnityEvent m_dialogEvent = null;
+        [SerializeField] private UnityEvent m_dialogueEvent = null;
         [SerializeField] private string m_activationKey = string.Empty;
         [SerializeField] private ConditionEvent[] m_changedConditions = new ConditionEvent[] { };
 
-        public UnityEvent DialogEventCallBack
+        public UnityEvent DialogueEventCallBack
         {
-            get { return m_dialogEvent; }
+            get { return m_dialogueEvent; }
         }
         public string ActivationKey
         {
@@ -53,7 +53,7 @@ namespace DialogueEditor
         {
             if (m_activationKey == _key)
             {
-                m_dialogEvent?.Invoke();
+                m_dialogueEvent?.Invoke();
                 m_changedConditions.ToList().ForEach(e => DialoguesSettingsManager.SetConditionBoolValue(e.ConditionName, e.ConditionValue));
             }
         }

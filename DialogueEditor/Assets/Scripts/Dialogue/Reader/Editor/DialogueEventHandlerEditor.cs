@@ -11,12 +11,12 @@ namespace DialogueEditor
     public class DialogueEventHandlerEditor : Editor
     {
         #region Fields and Properties
-        [SerializeField] private SerializedProperty m_dialogReader = null;
-        [SerializeField] private SerializedProperty m_dialogEvents = null;
+        [SerializeField] private SerializedProperty m_dialogueReader = null;
+        [SerializeField] private SerializedProperty m_dialogueEvents = null;
 
         private string[] m_keys = new string[] { };
         private string[] m_conditions = new string[] { };
-        private List<int> m_currentIndexes = new List<int>();
+        private List<int> m_currentEventIndexes = new List<int>();
         private List<bool> m_displayEventAtIndex = new List<bool>();
         #endregion
 
@@ -26,46 +26,53 @@ namespace DialogueEditor
         private void DrawEditor()
         {
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(m_dialogReader, new GUIContent("Dialog Reader"));
+            EditorGUILayout.PropertyField(m_dialogueReader, new GUIContent("Dialogue Reader"));
             if (EditorGUI.EndChangeCheck())
             {
-                InitDialogReaderKeys();
+                InitDialogueReaderKeys();
             }
-            if (m_dialogReader.objectReferenceValue != null)
+            if(m_displayEventAtIndex.Count != m_dialogueEvents.arraySize ||m_currentEventIndexes.Count != m_dialogueEvents.arraySize)
             {
-                Color _originalColor = GUI.color;
+                InitDialogueReaderKeys(); 
+            }
+            if (m_dialogueReader.objectReferenceValue != null)
+            {
                 Color _originalBackgroundColor = GUI.backgroundColor;
 
                 GUILayout.Space(11);
-                GUI.color = Color.blue;
-                GUILayout.Box("", GUILayout.Height(3), GUILayout.Width(Screen.width - 20));
-                GUI.color = _originalColor;
+                EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 3), Color.blue);
                 GUILayout.Space(11);
 
                 if (m_keys != null)
                 {
                     SerializedProperty _prop;
                     SerializedProperty _conditionEventProp;
-                    for (int i = 0; i < m_dialogEvents.arraySize; i++)
+                    for (int i = 0; i < m_dialogueEvents.arraySize; i++)
                     {
-                        _prop = m_dialogEvents.GetArrayElementAtIndex(i);
-                        m_displayEventAtIndex[i] = EditorGUILayout.Foldout(m_displayEventAtIndex[i], "Dialog Event called at " + _prop.FindPropertyRelative("m_activationKey").stringValue);
+                        _prop = m_dialogueEvents.GetArrayElementAtIndex(i);
+                        m_displayEventAtIndex[i] = EditorGUILayout.Foldout(m_displayEventAtIndex[i], "Dialogue Event called at " + _prop.FindPropertyRelative("m_activationKey").stringValue);
                         if (m_displayEventAtIndex[i])
                         {
                             EditorGUI.BeginChangeCheck();
-                            m_currentIndexes[i] = EditorGUILayout.Popup("Activation Key", m_currentIndexes[i], m_keys);
+                            m_currentEventIndexes[i] = EditorGUILayout.Popup("Activation Key", m_currentEventIndexes[i], m_keys);
                             if (EditorGUI.EndChangeCheck())
                             {
-                                _prop.FindPropertyRelative("m_activationKey").stringValue = m_keys[m_currentIndexes[i]];
+                                _prop.FindPropertyRelative("m_activationKey").stringValue = m_keys[m_currentEventIndexes[i]];
                             }
-
+                            
                             GUILayout.Space(10);
                             GUILayout.Label("Unity Events");
-                            EditorGUILayout.PropertyField(_prop.FindPropertyRelative("m_dialogEvent"), new GUIContent("Dialog Unity Event"));
+                            EditorGUILayout.PropertyField(_prop.FindPropertyRelative("m_dialogueEvent"), new GUIContent("Dialogue Unity Event"));
+                            _conditionEventProp = _prop.FindPropertyRelative("m_changedConditions");
 
                             GUILayout.Space(10);
-                            GUILayout.Label("Changing Condtiion Events");
-                            _conditionEventProp = _prop.FindPropertyRelative("m_changedConditions");
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Label("Changing Condition Events");
+                            if (GUILayout.Button("+", GUILayout.Width(Screen.width / 8)))
+                            {
+                                _conditionEventProp.InsertArrayElementAtIndex(0);
+                            }
+                            GUILayout.EndHorizontal();
                             for (int j = 0; j < _conditionEventProp.arraySize; j++)
                             {
                                 SerializedProperty _subProperty = _conditionEventProp.GetArrayElementAtIndex(j);
@@ -86,34 +93,26 @@ namespace DialogueEditor
                                 _subProperty.FindPropertyRelative("m_conditionValue").boolValue = EditorGUILayout.Toggle("To the value", _subProperty.FindPropertyRelative("m_conditionValue").boolValue);
                                 GUILayout.Space(5);
                             }
-                            GUILayout.BeginHorizontal();
-                            GUILayout.Label("Add Changing condition Event");
-                            if (GUILayout.Button("+", GUILayout.Width(Screen.width / 8)))
-                            {
-                                _conditionEventProp.InsertArrayElementAtIndex(0);
-                            }
-                            GUILayout.EndHorizontal();
 
                             GUI.backgroundColor = Color.red;
-                            if (GUILayout.Button("Remove DialogEvent"))
+                            if (GUILayout.Button("Remove DialogueEvent"))
                             {
-                                m_dialogEvents.DeleteArrayElementAtIndex(i);
-                                m_currentIndexes.RemoveAt(i);
+                                m_dialogueEvents.DeleteArrayElementAtIndex(i);
+                                m_currentEventIndexes.RemoveAt(i);
                                 m_displayEventAtIndex.RemoveAt(i);
                             }
                             GUI.backgroundColor = _originalBackgroundColor;
-                            GUI.color = Color.red;
-                            GUILayout.Box("", GUILayout.Height(3), GUILayout.Width(Screen.width - 20));
-                            GUI.color = _originalColor;
+                            EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 3), Color.red);
                         }
-
                     }
                 }
+                GUILayout.Space(5); 
+
                 GUI.backgroundColor = Color.green;
-                if (GUILayout.Button("Add DialogEvent"))
+                if (GUILayout.Button("Add Dialogue Event"))
                 {
-                    m_dialogEvents.InsertArrayElementAtIndex(m_dialogEvents.arraySize);
-                    m_currentIndexes.Add(-1);
+                    m_dialogueEvents.InsertArrayElementAtIndex(m_dialogueEvents.arraySize);
+                    m_currentEventIndexes.Add(-1);
                     m_displayEventAtIndex.Add(false);
                 }
                 GUI.backgroundColor = _originalBackgroundColor;
@@ -122,26 +121,23 @@ namespace DialogueEditor
             serializedObject.ApplyModifiedProperties();
         }
 
-
-        private void InitDialogReaderKeys()
+        private void InitDialogueReaderKeys()
         {
-            if (m_dialogReader.objectReferenceValue == null)
-            {
-                m_keys = new string[] { };
-                m_currentIndexes = new List<int>();
-                return;
-            }
-            string _spreadsheetID = JsonUtility.FromJson<Dialogue>(File.ReadAllText(Path.Combine(Dialogue.DialogAssetPath, (m_dialogReader.objectReferenceValue as DialogueReader).DialogName + Dialogue.DialogAssetExtension))).SpreadSheetID;
+            m_keys = new string[] { };
+            m_currentEventIndexes = new List<int>();
+            m_displayEventAtIndex = new List<bool>();
+            string _spreadsheetID = JsonUtility.FromJson<Dialogue>(File.ReadAllText(Path.Combine(Dialogue.DialogAssetPath, (m_dialogueReader.objectReferenceValue as DialogueReader).DialogName + Dialogue.DialogAssetExtension))).SpreadSheetID;
             string _lineDescriptor = File.ReadAllText(Path.Combine(Dialogue.LineDescriptorPath, _spreadsheetID.GetHashCode().ToString() + Dialogue.LineDescriptorPostfixWithExtension));
             LoadKeys(_lineDescriptor);
-            m_currentIndexes = new List<int>();
-            if (m_dialogEvents.arraySize != 0)
+            m_currentEventIndexes = new List<int>();
+            if (m_dialogueEvents.arraySize != 0)
             {
-                for (int i = 0; i < m_dialogEvents.arraySize; i++)
+                for (int i = 0; i < m_dialogueEvents.arraySize; i++)
                 {
-                    if (m_dialogEvents.GetArrayElementAtIndex(i).FindPropertyRelative("m_activationKey").stringValue != string.Empty)
-                        m_currentIndexes.Add(m_keys.ToList().IndexOf(m_dialogEvents.GetArrayElementAtIndex(i).FindPropertyRelative("m_activationKey").stringValue));
-                    else m_currentIndexes.Add(-1);
+                    if (m_dialogueEvents.GetArrayElementAtIndex(i).FindPropertyRelative("m_activationKey").stringValue != string.Empty)
+                        m_currentEventIndexes.Add(m_keys.ToList().IndexOf(m_dialogueEvents.GetArrayElementAtIndex(i).FindPropertyRelative("m_activationKey").stringValue));
+                    else m_currentEventIndexes.Add(-1);
+                    m_displayEventAtIndex.Add(false); 
                 }
             }
         }
@@ -162,18 +158,18 @@ namespace DialogueEditor
         #region UnityMethods
         private void OnEnable()
         {
-            m_dialogEvents = serializedObject.FindProperty("m_dialogEvents");
-            m_dialogReader = serializedObject.FindProperty("m_dialogReader");
-            m_displayEventAtIndex = new List<bool>(m_dialogEvents.arraySize) { false };
+            m_dialogueEvents = serializedObject.FindProperty("m_dialogueEvents");
+            m_dialogueReader = serializedObject.FindProperty("m_dialogueReader");
+            m_displayEventAtIndex = new List<bool>(m_dialogueEvents.arraySize) { false };
             string[] _conditionsLua = DialoguesSettingsManager.DialogsSettings.LuaConditions.Split('\n');
             m_conditions = new string[_conditionsLua.Length];
             for (int i = 0; i < _conditionsLua.Length; i++)
             {
                 m_conditions[i] = _conditionsLua[i].Split('=')[0].Trim();
             }
-            if (m_dialogReader.objectReferenceValue != null)
+            if (m_dialogueReader.objectReferenceValue != null)
             {
-                InitDialogReaderKeys();
+                InitDialogueReaderKeys();
             }
         }
         public override void OnInspectorGUI()

@@ -4,8 +4,8 @@
     "m_dialogStarter": {
         "m_nodeRect": {
             "serializedVersion": "2",
-            "x": 152.6428680419922,
-            "y": 84.10020446777344,
+            "x": 54.032508850097659,
+            "y": 165.4378204345703,
             "width": 250.0,
             "height": 107.0
         },
@@ -21,8 +21,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1530.34521484375,
-                "y": 497.9129333496094,
+                "x": 1431.7352294921875,
+                "y": 579.2503662109375,
                 "width": 250.0,
                 "height": 362.0
             },
@@ -52,8 +52,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 737.7269287109375,
-                "y": 131.0702362060547,
+                "x": 639.1163940429688,
+                "y": 212.40780639648438,
                 "width": 250.0,
                 "height": 362.0
             },
@@ -83,8 +83,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1468.4881591796875,
-                "y": 985.7701416015625,
+                "x": 1369.878173828125,
+                "y": 1067.1082763671875,
                 "width": 250.0,
                 "height": 362.0
             },
@@ -114,8 +114,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1881.7813720703125,
-                "y": 416.44720458984377,
+                "x": 1783.1712646484375,
+                "y": 497.7848205566406,
                 "width": 250.0,
                 "height": 247.0
             },
@@ -137,8 +137,8 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1927.6640625,
-                "y": 797.8738403320313,
+                "x": 1829.0540771484375,
+                "y": 879.2112426757813,
                 "width": 250.0,
                 "height": 247.0
             },
@@ -156,37 +156,14 @@
             "m_type": 0,
             "m_playOnlyOneLine": false,
             "m_playRandomly": false
-        },
-        {
-            "m_nodeRect": {
-                "serializedVersion": "2",
-                "x": 603.2015991210938,
-                "y": 580.04052734375,
-                "width": 250.0,
-                "height": 247.0
-            },
-            "m_NodeToken": 1361914428,
-            "m_dialogLines": [
-                {
-                    "m_index": -1,
-                    "m_key": "",
-                    "m_linkedToken": -1,
-                    "m_initalWaitingTime": 1.0,
-                    "m_waitingType": 1,
-                    "m_extraWaitingTime": 0.0
-                }
-            ],
-            "m_type": 0,
-            "m_playOnlyOneLine": true,
-            "m_playRandomly": true
         }
     ],
     "m_dialogConditions": [
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1090.0706787109375,
-                "y": 633.507568359375,
+                "x": 991.46044921875,
+                "y": 714.844970703125,
                 "width": 250.0,
                 "height": 152.0
             },
