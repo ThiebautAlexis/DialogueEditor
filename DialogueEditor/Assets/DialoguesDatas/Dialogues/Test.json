@@ -1,0 +1,176 @@
+{
+    "m_dialogName": "Test",
+    "m_spreadSheetID": "15zUWaJyK8YBBAKbx9x_uvrRAT_sBNRSmL5fDfmvOzH0",
+    "m_dialogStarter": {
+        "m_nodeRect": {
+            "serializedVersion": "2",
+            "x": 54.032508850097659,
+            "y": 165.4378204345703,
+            "width": 250.0,
+            "height": 107.0
+        },
+        "m_NodeToken": 0,
+        "m_startersEnum": [
+            {
+                "m_starter": 0,
+                "m_linkedToken": 942570906
+            }
+        ]
+    },
+    "m_dialogSets": [
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 1431.7352294921875,
+                "y": 579.2503662109375,
+                "width": 250.0,
+                "height": 362.0
+            },
+            "m_NodeToken": 39801549,
+            "m_dialogLines": [
+                {
+                    "m_index": 2,
+                    "m_key": "WIL21STR",
+                    "m_linkedToken": 1255118738,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 0,
+                    "m_extraWaitingTime": 0.0
+                },
+                {
+                    "m_index": 0,
+                    "m_key": "AL13STR",
+                    "m_linkedToken": 1409974374,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
+                }
+            ],
+            "m_type": 1,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 639.1163940429688,
+                "y": 212.40780639648438,
+                "width": 250.0,
+                "height": 362.0
+            },
+            "m_NodeToken": 942570906,
+            "m_dialogLines": [
+                {
+                    "m_index": 1,
+                    "m_key": "EV15POL",
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 1.5
+                },
+                {
+                    "m_index": 0,
+                    "m_key": "AL13STR",
+                    "m_linkedToken": 1496495172,
+                    "m_initalWaitingTime": 10.0,
+                    "m_waitingType": 0,
+                    "m_extraWaitingTime": 1.5
+                }
+            ],
+            "m_type": 0,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 1369.878173828125,
+                "y": 1067.1082763671875,
+                "width": 250.0,
+                "height": 362.0
+            },
+            "m_NodeToken": 1111069342,
+            "m_dialogLines": [
+                {
+                    "m_index": 1,
+                    "m_key": "EV15POL",
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
+                },
+                {
+                    "m_index": 0,
+                    "m_key": "AL13STR",
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
+                }
+            ],
+            "m_type": 0,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 1783.1712646484375,
+                "y": 497.7848205566406,
+                "width": 250.0,
+                "height": 247.0
+            },
+            "m_NodeToken": 1255118738,
+            "m_dialogLines": [
+                {
+                    "m_index": 1,
+                    "m_key": "EV15POL",
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
+                }
+            ],
+            "m_type": 0,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 1829.0540771484375,
+                "y": 879.2112426757813,
+                "width": 250.0,
+                "height": 247.0
+            },
+            "m_NodeToken": 1409974374,
+            "m_dialogLines": [
+                {
+                    "m_index": 2,
+                    "m_key": "WIL21STR",
+                    "m_linkedToken": -1,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 1,
+                    "m_extraWaitingTime": 0.0
+                }
+            ],
+            "m_type": 0,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        }
+    ],
+    "m_dialogConditions": [
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 991.46044921875,
+                "y": 714.844970703125,
+                "width": 250.0,
+                "height": 152.0
+            },
+            "m_NodeToken": 1496495172,
+            "m_condition": "(condition_2 ~= false)\nor(condition_1 ~= false)",
+            "m_linkedTokenTrue": 39801549,
+            "m_linkedTokenFalse": 1111069342
+        }
+    ]
+}
