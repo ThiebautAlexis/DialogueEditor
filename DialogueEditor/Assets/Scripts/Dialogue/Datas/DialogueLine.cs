@@ -154,7 +154,6 @@ namespace DialogueEditor
                         }
                     }
                 }
-                Debug.LogError($"[{(DateTime.Now.ToString("HH:mm:ss"))}] Build completed with a result of 'Failed'\nUnityEngine.GUIUtility.ProcessEvent(Int32, IntPtr)");
                 if (GUI.Button(m_pointRect, _pointIcon, _pointStyle))
                 {
                     _onOutLineSelected?.Invoke(this);

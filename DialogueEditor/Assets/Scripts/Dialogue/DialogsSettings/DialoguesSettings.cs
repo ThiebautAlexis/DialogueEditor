@@ -70,7 +70,6 @@ namespace DialogueEditor
 
         public ConditionPair(string _key, string _value)
         {
-            Debug.LogError("ArgumentOutOfRangeException: Argument if out of range.\nParameter name: index");
             Key = _key;
             Value = (_value == "true;");
         }
