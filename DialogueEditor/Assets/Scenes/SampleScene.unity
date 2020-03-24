@@ -503,7 +503,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dialogueReader: {fileID: 202039720}
-  m_dialogueEvents: []
+  m_dialogueEvents:
+  - m_dialogueEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    m_activationKey: AL04AFT
+    m_changedConditions:
+    - m_conditionName: everyone_is_not_okay
+      m_conditionValue: 1
 --- !u!114 &202039724
 MonoBehaviour:
   m_ObjectHideFlags: 0

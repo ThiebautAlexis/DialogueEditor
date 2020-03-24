@@ -4,8 +4,8 @@
     "m_dialogStarter": {
         "m_nodeRect": {
             "serializedVersion": "2",
-            "x": 54.032508850097659,
-            "y": 165.4378204345703,
+            "x": -1421.598388671875,
+            "y": -37.93511962890625,
             "width": 250.0,
             "height": 107.0
         },
@@ -21,27 +21,66 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1431.7352294921875,
-                "y": 579.2503662109375,
+                "x": -836.513916015625,
+                "y": 10.034680366516114,
                 "width": 250.0,
                 "height": 362.0
             },
-            "m_NodeToken": 39801549,
+            "m_NodeToken": 942570906,
             "m_dialogLines": [
                 {
-                    "m_index": 2,
-                    "m_key": "WIL21STR",
-                    "m_linkedToken": 1255118738,
+                    "m_index": 3,
+                    "m_key": "AL01AFT",
+                    "m_linkedToken": -1,
                     "m_initalWaitingTime": 1.0,
                     "m_waitingType": 0,
+                    "m_extraWaitingTime": 1.5
+                },
+                {
+                    "m_index": 4,
+                    "m_key": "AL02AFT",
+                    "m_linkedToken": 1195484898,
+                    "m_initalWaitingTime": 1.5,
+                    "m_waitingType": 0,
+                    "m_extraWaitingTime": 1.5
+                }
+            ],
+            "m_type": 0,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": -410.91571044921877,
+                "y": 274.19781494140627,
+                "width": 250.0,
+                "height": 477.0
+            },
+            "m_NodeToken": 1195484898,
+            "m_dialogLines": [
+                {
+                    "m_index": 5,
+                    "m_key": "ME01AFT",
+                    "m_linkedToken": 917910862,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 2,
                     "m_extraWaitingTime": 0.0
                 },
                 {
-                    "m_index": 0,
-                    "m_key": "AL13STR",
-                    "m_linkedToken": 1409974374,
+                    "m_index": 6,
+                    "m_key": "ME02AFT",
+                    "m_linkedToken": 578284133,
                     "m_initalWaitingTime": 1.0,
-                    "m_waitingType": 1,
+                    "m_waitingType": 2,
+                    "m_extraWaitingTime": 0.0
+                },
+                {
+                    "m_index": 7,
+                    "m_key": "ME03AFT",
+                    "m_linkedToken": 578284133,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 2,
                     "m_extraWaitingTime": 0.0
                 }
             ],
@@ -52,28 +91,20 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 639.1163940429688,
-                "y": 212.40780639648438,
+                "x": 43.51368713378906,
+                "y": 239.0546112060547,
                 "width": 250.0,
-                "height": 362.0
+                "height": 247.0
             },
-            "m_NodeToken": 942570906,
+            "m_NodeToken": 917910862,
             "m_dialogLines": [
                 {
-                    "m_index": 1,
-                    "m_key": "EV15POL",
-                    "m_linkedToken": -1,
+                    "m_index": 8,
+                    "m_key": "AL03AFT",
+                    "m_linkedToken": 1691732279,
                     "m_initalWaitingTime": 1.0,
-                    "m_waitingType": 1,
-                    "m_extraWaitingTime": 1.5
-                },
-                {
-                    "m_index": 0,
-                    "m_key": "AL13STR",
-                    "m_linkedToken": 1496495172,
-                    "m_initalWaitingTime": 10.0,
                     "m_waitingType": 0,
-                    "m_extraWaitingTime": 1.5
+                    "m_extraWaitingTime": 0.0
                 }
             ],
             "m_type": 0,
@@ -83,27 +114,42 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1369.878173828125,
-                "y": 1067.1082763671875,
+                "x": 48.51362991333008,
+                "y": 612.05224609375,
                 "width": 250.0,
-                "height": 362.0
+                "height": 247.0
             },
-            "m_NodeToken": 1111069342,
+            "m_NodeToken": 578284133,
+            "m_dialogLines": [
+                {
+                    "m_index": 9,
+                    "m_key": "AL04AFT",
+                    "m_linkedToken": 1691732279,
+                    "m_initalWaitingTime": 1.0,
+                    "m_waitingType": 0,
+                    "m_extraWaitingTime": 0.0
+                }
+            ],
+            "m_type": 0,
+            "m_playOnlyOneLine": false,
+            "m_playRandomly": false
+        },
+        {
+            "m_nodeRect": {
+                "serializedVersion": "2",
+                "x": 839.511474609375,
+                "y": 334.0549621582031,
+                "width": 250.0,
+                "height": 247.0
+            },
+            "m_NodeToken": 1674478781,
             "m_dialogLines": [
                 {
                     "m_index": 1,
                     "m_key": "EV15POL",
                     "m_linkedToken": -1,
                     "m_initalWaitingTime": 1.0,
-                    "m_waitingType": 1,
-                    "m_extraWaitingTime": 0.0
-                },
-                {
-                    "m_index": 0,
-                    "m_key": "AL13STR",
-                    "m_linkedToken": -1,
-                    "m_initalWaitingTime": 1.0,
-                    "m_waitingType": 1,
+                    "m_waitingType": 2,
                     "m_extraWaitingTime": 0.0
                 }
             ],
@@ -114,42 +160,19 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 1783.1712646484375,
-                "y": 497.7848205566406,
+                "x": 835.511474609375,
+                "y": 834.0521850585938,
                 "width": 250.0,
                 "height": 247.0
             },
-            "m_NodeToken": 1255118738,
-            "m_dialogLines": [
-                {
-                    "m_index": 1,
-                    "m_key": "EV15POL",
-                    "m_linkedToken": -1,
-                    "m_initalWaitingTime": 1.0,
-                    "m_waitingType": 1,
-                    "m_extraWaitingTime": 0.0
-                }
-            ],
-            "m_type": 0,
-            "m_playOnlyOneLine": false,
-            "m_playRandomly": false
-        },
-        {
-            "m_nodeRect": {
-                "serializedVersion": "2",
-                "x": 1829.0540771484375,
-                "y": 879.2112426757813,
-                "width": 250.0,
-                "height": 247.0
-            },
-            "m_NodeToken": 1409974374,
+            "m_NodeToken": 2130142826,
             "m_dialogLines": [
                 {
                     "m_index": 2,
                     "m_key": "WIL21STR",
                     "m_linkedToken": -1,
                     "m_initalWaitingTime": 1.0,
-                    "m_waitingType": 1,
+                    "m_waitingType": 2,
                     "m_extraWaitingTime": 0.0
                 }
             ],
@@ -162,15 +185,15 @@
         {
             "m_nodeRect": {
                 "serializedVersion": "2",
-                "x": 991.46044921875,
-                "y": 714.844970703125,
+                "x": 460.5133056640625,
+                "y": 651.0521850585938,
                 "width": 250.0,
-                "height": 152.0
+                "height": 137.0
             },
-            "m_NodeToken": 1496495172,
-            "m_condition": "(condition_2 ~= false)\nor(condition_1 ~= false)",
-            "m_linkedTokenTrue": 39801549,
-            "m_linkedTokenFalse": 1111069342
+            "m_NodeToken": 1691732279,
+            "m_condition": "(everyone_is_not_okay == true)",
+            "m_linkedTokenTrue": 1674478781,
+            "m_linkedTokenFalse": 2130142826
         }
     ]
 }

@@ -64,7 +64,7 @@ namespace DialogueEditor
             m_dialogsSettings = LoadProfile(CurrentProfileName);
             if (m_dialogsSettings != null) return; 
         }
-        AsyncOperationHandle<TextAsset> _settingsAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(DialogsSettings.SettingsFileName);
+        AsyncOperationHandle<TextAsset> _settingsAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(DialoguesSettings.SettingsFileName);
         _settingsAssetAsyncHandler.Completed += OnSettingsAssetLoaded;
 #endif
 

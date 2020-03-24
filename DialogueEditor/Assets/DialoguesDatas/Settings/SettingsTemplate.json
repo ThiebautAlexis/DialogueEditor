@@ -1,5 +1,5 @@
 {
-    "m_luaConditions": "condition_1 = false;\ncondition_2 = false;\ncondition_3 = false;\ncondition_4 = false;\n",
+    "m_luaConditions": "condition_1 = false;\ncondition_2 = false;\ncondition_3 = false;\ncondition_4 = false;\neveryone_is_not_okay = false;\n",
     "m_charactersColor": [
         {
             "m_characterName": "alexis",
@@ -25,6 +25,15 @@
                 "r": 0.0,
                 "g": 0.3396226167678833,
                 "b": 0.08139331638813019,
+                "a": 1.0
+            }
+        },
+        {
+            "m_characterName": "members",
+            "m_characterColor": {
+                "r": 1.0,
+                "g": 0.0,
+                "b": 0.860541820526123,
                 "a": 1.0
             }
         }

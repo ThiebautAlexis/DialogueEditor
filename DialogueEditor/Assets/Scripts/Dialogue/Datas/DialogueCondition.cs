@@ -74,7 +74,11 @@ namespace DialogueEditor
         private void AddCondition()
         {
             if (m_conditionsConverted == null) m_conditionsConverted = new List<Condition>();
-            if (m_conditionsDescriptor == null) m_conditionsDescriptor = m_dialogSettings.LuaConditions.Split('\n').Select(c => c.Split('=')[0].Trim()).ToArray();
+            if (m_conditionsDescriptor == null)
+            {
+                if (m_dialogSettings == null) m_dialogSettings = JsonUtility.FromJson<DialoguesSettings>(System.IO.File.ReadAllText(DialoguesSettings.SettingsFilePath));
+                m_conditionsDescriptor = m_dialogSettings.LuaConditions.Split('\n').Select(c => c.Split('=')[0].Trim()).ToArray();
+            }
             string _conditionString = $"{(m_conditionsConverted.Count > 0 ? "and" : string.Empty)}({m_conditionsDescriptor[0]} == false)";
             m_conditionsConverted.Add(new Condition(_conditionString, m_conditionsDescriptor));
             m_nodeRect.height += POPUP_HEIGHT;

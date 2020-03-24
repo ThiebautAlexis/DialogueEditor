@@ -13,3 +13,38 @@ ID = "WIL21STR";
 Text_En_en = "What?";
 Text_Fr_fr  = "Quoi?";
 };
+AL01AFT = {
+ID = "AL01AFT";
+Text_En_en = "Hello Unity Afterwork Members! ";
+Text_Fr_fr  = "Bonjour les membres de l'Unity Afterwork!";
+};
+AL02AFT = {
+ID = "AL02AFT";
+Text_En_en = "I hope everyone is good! ";
+Text_Fr_fr  = "J'espère que tout le monde va bien !";
+};
+ME01AFT = {
+ID = "ME01AFT";
+Text_En_en = "Yes, we're good! ";
+Text_Fr_fr  = "Oui, nous allons bien! ";
+};
+ME02AFT = {
+ID = "ME02AFT";
+Text_En_en = "No, the quarantine is driving us crazy! ";
+Text_Fr_fr  = "Non, la quarantaine nous rend fous !";
+};
+ME03AFT = {
+ID = "ME03AFT";
+Text_En_en = "No, we miss the events of SudPiccel :(";
+Text_Fr_fr  = "Non, les évènement de SudPiccel nous manquent :(";
+};
+AL03AFT = {
+ID = "AL03AFT";
+Text_En_en = "Great! This is fine if everyone is good! ";
+Text_Fr_fr  = "Super! C'est génial si tout le monde va bien! ";
+};
+AL04AFT = {
+ID = "AL04AFT";
+Text_En_en = "Yeah, me too :(";
+Text_Fr_fr  = "Ouais, moi aussi :(";
+};

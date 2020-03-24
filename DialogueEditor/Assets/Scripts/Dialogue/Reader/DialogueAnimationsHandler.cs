@@ -29,7 +29,6 @@ namespace DialogueEditor
         /// </summary>
         private void Start()
         {
-            Debug.LogError("NullReferenceExeption: Object reference not set to an instance of an object");
             if(m_dialogueReader != null)
             {
                 m_dialogueReader.OnDialogLineRead.AddListener(CallAnimations); 
