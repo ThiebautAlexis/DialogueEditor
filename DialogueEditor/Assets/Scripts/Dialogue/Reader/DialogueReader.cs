@@ -70,8 +70,6 @@ namespace DialogueEditor
                 return;
             }
             m_dialog = JsonUtility.FromJson<Dialogue>(_loadedAsset.Result.ToString());
-            StartCoroutine(WaitForLineDescriptorLoaded());
-
         }
 
         /// <summary>
@@ -79,20 +77,13 @@ namespace DialogueEditor
         /// When they are loaded, get the Line Descriptor of the Dialog Asset
         /// </summary>
         /// <returns></returns>
-        private IEnumerator WaitForLineDescriptorLoaded()
+        private void OnLineDescriptorLoaded()
         {
-            while (DialogueAssetsManager.LineDescriptorsTextAsset == null)
-            {
-                yield return null;
-            }
-
             if (DialogueAssetsManager.LineDescriptorsTextAsset.Any(a => a.name == m_dialog.SpreadSheetID.GetHashCode().ToString() + Dialogue.LineDescriptorPostfix))
             {
                 m_lineDescriptor = new Script();
                 m_lineDescriptor.DoString(DialogueAssetsManager.LineDescriptorsTextAsset.Where(a => a.name == m_dialog.SpreadSheetID.GetHashCode().ToString() + Dialogue.LineDescriptorPostfix).First().ToString());
             }
-            yield return null;
-            StartDisplayingDialogue();
         }
         #endregion
 
@@ -293,12 +284,10 @@ namespace DialogueEditor
                 m_dialogAssetAsyncHandler = Addressables.LoadAssetAsync<TextAsset>(m_dialogName);
                 m_dialogAssetAsyncHandler.Completed += OnDialogueAssetLoaded;
             }
+            DialogueAssetsManager.LineDescriptorsLoadedCallBack += OnLineDescriptorLoaded; 
             InitReader();
         }
-        private void Start()
-        {
-            m_onMouseClicked += StartDisplayingDialogue;
-        }
+
         private void Update()
         {
             if (Input.GetMouseButtonDown(0))

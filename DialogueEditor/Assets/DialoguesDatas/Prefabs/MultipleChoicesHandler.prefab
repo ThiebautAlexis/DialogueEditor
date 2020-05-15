@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8131321608513876663}
   - component: {fileID: 8131321608513876662}
-  - component: {fileID: 8131321608513876659}
   - component: {fileID: 8131321608513876660}
   - component: {fileID: 8131321608513876661}
+  - component: {fileID: 100207508630642783}
   m_Layer: 5
   m_Name: MultipleChoicesHandler
   m_TagString: Untagged
@@ -62,20 +62,6 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
---- !u!114 &8131321608513876659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8131321608513876616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a13efc690bebf3347b7431379d22c2f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_buttonPrefab: {fileID: 8334357022177869642, guid: afe7d0a9cfcfd434fae6b08833e2bc11,
-    type: 3}
 --- !u!222 &8131321608513876660
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -111,3 +97,17 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &100207508630642783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8131321608513876616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 446fd03b50fe2284690fe752235f5140, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_buttonPrefab: {fileID: 8334357022177869642, guid: afe7d0a9cfcfd434fae6b08833e2bc11,
+    type: 3}

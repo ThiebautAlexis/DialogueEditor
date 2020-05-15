@@ -201,7 +201,7 @@ namespace DialogueEditor
         {
             m_isCreationPopupOpen = false;
             GUILayout.Label("Open Dialog");
-            if (Directory.Exists(Path.Combine(Application.persistentDataPath, "Dialogs")))
+            if(Directory.Exists(Dialogue.DialogAssetPath))
             {
                 string[] _names = Directory.GetFiles(Dialogue.DialogAssetPath, "*" + Dialogue.DialogAssetExtension).Select(Path.GetFileNameWithoutExtension).ToArray();
                 m_DialogIndex = EditorGUILayout.Popup(m_DialogIndex, _names);
@@ -418,6 +418,10 @@ namespace DialogueEditor
             }
         }
 
+        /// <summary>
+        /// Select the out point of the starting node
+        /// </summary>
+        /// <param name="_startingPair">Pair to link</param>
         private void SelectOutStarter(StarterPair _startingPair)
         {
             if (m_outSelectedCondition != null) m_outSelectedCondition = null;

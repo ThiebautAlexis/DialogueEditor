@@ -250,5 +250,6 @@ namespace DialogueEditor
             return _returnedValue;
         }
         #endregion
+
     }
 }
