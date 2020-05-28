@@ -114,6 +114,7 @@ namespace DialogueEditor
 
         private void InitDialogueReaderKeys()
         {
+            if (m_dialogueReader == null) return; 
             m_keys = new string[] { };
             m_currentAnimationIndexes = new List<int>();
             m_displayAnimationsAtIndex = new List<bool>(); 
