@@ -48,7 +48,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8131321608513876616}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -62,6 +62,8 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
 --- !u!222 &8131321608513876660
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -79,7 +81,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8131321608513876616}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -97,6 +99,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &100207508630642783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,7 +109,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8131321608513876616}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 446fd03b50fe2284690fe752235f5140, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ec3ca7baae02c14fa50ba82fc61ed6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_buttonPrefab: {fileID: 8334357022177869642, guid: afe7d0a9cfcfd434fae6b08833e2bc11,
