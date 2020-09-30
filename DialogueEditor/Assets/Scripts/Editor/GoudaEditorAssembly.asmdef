@@ -1,0 +1,20 @@
+{
+    "name": "GoudaEditorAssembly",
+    "references": [
+        "GUID:68b4b9e2f9cb6bd4398d91fb90383daf",
+        "GUID:69448af7b92c7f342b298e06a37122aa",
+        "GUID:6546d7765b4165b40850b3667f981c26",
+        "GUID:aba8702b3910cfa4190cab71264acf77"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
