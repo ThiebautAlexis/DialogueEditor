@@ -40,6 +40,7 @@ namespace DialogueEditor
         private void DrawEditor()
         {
             EditorGUILayout.LabelField(new GUIContent("Dialogue Line"), m_style);
+            if (m_lineDescriptors == null) return; 
             EditorGUI.BeginChangeCheck();
             m_lineDescriptorIndex = EditorGUILayout.Popup(new GUIContent("Line Descriptor"), m_lineDescriptorIndex, m_lineDescriptors); 
             if(EditorGUI.EndChangeCheck())
@@ -47,18 +48,33 @@ namespace DialogueEditor
                 m_lineDescriptorName.stringValue = m_lineDescriptors[m_lineDescriptorIndex];
                 InitLineKeys(); 
             }
-            EditorGUI.BeginChangeCheck();
-            m_dialogueLineKeyIndex = EditorGUILayout.Popup(new GUIContent("Line Descriptor"), m_dialogueLineKeyIndex, m_linesKey);
-            if (EditorGUI.EndChangeCheck())
+            if (m_linesKey != null)
             {
-                m_dialogueLineKey.stringValue = m_linesKey[m_dialogueLineKeyIndex];
-                m_content = GetContent(); 
+                EditorGUI.BeginChangeCheck();
+                m_dialogueLineKeyIndex = EditorGUILayout.Popup(new GUIContent("Line Key"), m_dialogueLineKeyIndex, m_linesKey);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    m_dialogueLineKey.stringValue = m_linesKey[m_dialogueLineKeyIndex];
+                    m_content = GetContent();
+                }
+                if(m_dialogueLineKey.stringValue.Length > 0)
+                {
+                    Color _originalColor = GUI.color;
+                    CharacterColorSettings _s;
+                    for (int i = 0; i < DialoguesSettingsManager.DialogsSettings.CharactersColor.Count; i++)
+                    {
+                        _s = DialoguesSettingsManager.DialogsSettings.CharactersColor[i];
+                        if (_s.CharacterIdentifier == m_dialogueLineKey.stringValue.Substring(0, 2))
+                        {
+                            GUI.color = _s.CharacterColor;
+                            break;
+                        }
+                    }
+                    EditorGUILayout.TextArea(m_content);
+                    GUI.color = _originalColor;
+                }
             }
-            Color _originalColor = GUI.color;
-            if (DialoguesSettingsManager.DialogsSettings.CharactersColor.Any(c => c.CharacterIdentifier == m_dialogueLineKey.stringValue.Substring(0,2)))
-                GUI.color = DialoguesSettingsManager.DialogsSettings.CharactersColor.Where(c => c.CharacterIdentifier == m_dialogueLineKey.stringValue.Substring(0, 2)).Select(c => c.CharacterColor).FirstOrDefault();
-            EditorGUILayout.TextArea(m_content);
-            GUI.color = _originalColor; 
+
 
             EditorGUILayout.LabelField(new GUIContent("Settings"), m_style);
             m_intialWaitingTime.floatValue = EditorGUILayout.Slider(new GUIContent("Initial Waiting Time", "Used only if the dialogue line has no Audio Asset linked to it."), m_intialWaitingTime.floatValue, .1f, 5.0f);
