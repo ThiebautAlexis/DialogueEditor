@@ -12,17 +12,20 @@ namespace DialogueEditor
     {
         #region Fields and Properties
         [SerializeField] private int m_index = -1;
-        private int m_nextIndex = -1;
         [SerializeField] private string m_key = "";
-        private string m_content = "";
         [SerializeField] private int m_linkedToken = -1;
         [SerializeField] private float m_initalWaitingTime = 1.0f;
         [SerializeField] private WaitingType m_waitingType = WaitingType.WaitForTime;
         [SerializeField] private float m_extraWaitingTime = 0.0f;
-        private Rect m_pointRect;
+
+#if UNITY_EDITOR
+        private Rect m_pointRect = Rect.zero;
+        private string m_content = "";
+        private int m_nextIndex = -1;
 
         private string[] m_ids = null;
         public Rect PointRect { get { return m_pointRect; } }
+#endif
 
         public string Key { get { return m_key; } }
         public string CharacterIdentifier { get { return m_key.Substring(0, 2); } }

@@ -44,7 +44,7 @@ namespace DialogueEditor
         [SerializeField] private string m_spreadSheetID = "";
         public string SpreadSheetID { get { return m_spreadSheetID; } }
 
-        [SerializeField] private DialogueStarter m_dialogStarter;
+        [SerializeField] private DialogueStarter m_dialogStarter = null;
         [SerializeField] private List<DialogueSet> m_dialogSets = new List<DialogueSet>();
         [SerializeField] private List<DialogueCondition> m_dialogConditions = new List<DialogueCondition>();
         private string m_lineDescriptor = "";
